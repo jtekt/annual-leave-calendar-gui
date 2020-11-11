@@ -1,32 +1,41 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
+    <AppTemplate
+      :authenticate="true"
+      applicationName="行先掲示板">
+
+      <template v-slot:navigation>
+        <router-link :to="{ name: 'new_entry'}">新しい予定</router-link>
+        <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">私の予定</router-link>
+        <router-link :to="{ name: 'groups'}">グループ</router-link>
+      </template>
+
+
+    </AppTemplate>
+
   </div>
 </template>
 
+<script>
+import AppTemplate from '@moreillon/vue_application_template_flex'
+
+
+export default {
+  name: 'app',
+  components: {
+    AppTemplate,
+  },
+  data(){
+    return {
+    }
+  },
+
+}
+</script>
+
+
 <style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
-}
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
 </style>
