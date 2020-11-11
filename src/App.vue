@@ -2,7 +2,7 @@
   <div id="app">
     <AppTemplate
       :authenticate="true"
-      applicationName="行先掲示板">
+      applicationName="年休カレンダー">
 
       <template v-slot:navigation>
         <router-link :to="{ name: 'home'}">ホーム</router-link>
