@@ -21,7 +21,7 @@
       </p>
 
       <p class="">
-        <label>取った: </label>
+        <label>取得した: </label>
         <input
           type="checkbox"
           v-model="entry.taken"
