@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${APPLICATION_NAME}
+  name: nenkyuu-calendar-front
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${APPLICATION_NAME}
+      app: nenkyuu-calendar-front
   template:
     metadata:
       labels:
-        app: ${APPLICATION_NAME}
+        app: nenkyuu-calendar-front
     spec:
       containers:
-      - name: ${APPLICATION_NAME}
-        image: ${CONTAINER_REGISTRY}/${APPLICATION_NAME}
+      - name: nenkyuu-calendar-front
+        image: 172.16.98.151:5000/nenkyuu-calendar-front
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -22,11 +22,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${APPLICATION_NAME}
+  name: nenkyuu-calendar-front
 spec:
   ports:
   - port: 80
-    nodePort: 31619
+    nodePort: 30515
   selector:
-    app: ${APPLICATION_NAME}
+    app: nenkyuu-calendar-front
   type: NodePort

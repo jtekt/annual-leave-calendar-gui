@@ -1,6 +1,7 @@
 <template>
   <div class="group_entries">
-    <h1>Group entries</h1>
+    <h1 v-if="group">{{group.properties.name}}</h1>
+    <h1 v-else>Group entries</h1>
 
     <div
       class="user_calendar_wrapper"
@@ -35,11 +36,13 @@ export default {
   },
   data() {
     return {
-      users: []
+      users: [],
+      group: null,
     }
   },
   mounted(){
     this.get_entries()
+    this.get_group()
   },
   methods: {
     get_entries(){
@@ -52,6 +55,16 @@ export default {
           this.users.push(user)
         })
 
+      })
+      .catch(error => {
+        console.error(error)
+      })
+    },
+    get_group(){
+      const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
+      this.axios.get(url)
+      .then(response => {
+        this.group = response.data
       })
       .catch(error => {
         console.error(error)

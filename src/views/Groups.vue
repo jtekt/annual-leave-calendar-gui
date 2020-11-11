@@ -37,3 +37,13 @@ export default {
 
 }
 </script>
+
+<style scoped>
+.group_picker {
+  text-align: left;
+  max-width: 600px;
+  max-height: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>

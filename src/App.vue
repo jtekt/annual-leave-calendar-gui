@@ -5,9 +5,11 @@
       applicationName="行先掲示板">
 
       <template v-slot:navigation>
+        <router-link :to="{ name: 'home'}">ホーム</router-link>
         <router-link :to="{ name: 'new_entry'}">新しい予定</router-link>
         <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">私の予定</router-link>
         <router-link :to="{ name: 'groups'}">グループ</router-link>
+        <router-link :to="{ name: 'about'}">About</router-link>
       </template>
 
 
@@ -36,6 +38,9 @@ export default {
 
 <style>
 
+main {
+  text-align: center;
+}
 
 
 </style>
