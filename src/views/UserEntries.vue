@@ -35,6 +35,12 @@ export default {
     this.get_entries()
     this.get_user(this.user_id)
   },
+  watch: {
+    user_id(){
+      this.get_entries()
+      this.get_user(this.user_id)
+    }
+  },
   methods: {
     get_entries(){
       const url = `${process.env.VUE_APP_API_URL}/users/${this.user_id}/entries`

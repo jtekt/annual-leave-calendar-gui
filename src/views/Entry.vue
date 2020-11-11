@@ -2,55 +2,65 @@
   <div class="entry">
     <h1>Entry</h1>
 
-    <p class="">
-      <input
-        type="date"
-        v-model="entry.date"
-        @change="update_entry()">
-    </p>
+    <template v-if="entry">
+      <p class="">
+        <input
+          type="date"
+          v-model="entry.date"
+          @change="update_entry()">
+      </p>
 
-    <div class="" v-if="user">
-      <span>User: </span><User :user="user" />
-    </div>
+      <p v-if="user">
+        User: <User :user="user" />
+      </p>
 
-    <p class="">
-      <label>取った: </label>
-      <input
-        type="checkbox"
-        v-model="entry.taken"
-        @change="update_entry()">
-    </p>
+      <p v-else>
+        User: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
+          {{entry.user_id}}
+        </router-link>
+      </p>
 
-    <p class="">
-      <label>Refresh: </label>
-      <input
-        type="checkbox"
-        v-model="entry.refresh"
-        @change="update_entry()">
-    </p>
+      <p class="">
+        <label>取った: </label>
+        <input
+          type="checkbox"
+          v-model="entry.taken"
+          @change="update_entry()">
+      </p>
 
-    <p class="">
-      <label>AM: </label>
-      <input
-        type="checkbox"
-        v-model="entry.am"
-        @change="update_entry()">
-    </p>
-    <p class="">
-      <label>PM: </label>
-      <input
-        type="checkbox"
-        v-model="entry.pm"
-        @change="update_entry()">
-    </p>
+      <p class="">
+        <label>Refresh: </label>
+        <input
+          type="checkbox"
+          v-model="entry.refresh"
+          @change="update_entry()">
+      </p>
+
+      <p class="">
+        <label>AM: </label>
+        <input
+          type="checkbox"
+          v-model="entry.am"
+          @change="update_entry()">
+      </p>
+      <p class="">
+        <label>PM: </label>
+        <input
+          type="checkbox"
+          v-model="entry.pm"
+          @change="update_entry()">
+      </p>
 
 
 
-    <p class="">
-      <button type="button" @click="delete_entry()">
-        delete
-      </button>
-    </p>
+      <p class="">
+        <button type="button" @click="delete_entry()">
+          delete
+        </button>
+      </p>
+    </template>
+
+
 
 
 
@@ -67,7 +77,7 @@ export default {
   },
   data() {
     return {
-      entry: {},
+      entry: null,
       user: null
     }
   },
@@ -109,6 +119,7 @@ export default {
       })
     },
     delete_entry(){
+      if(!confirm('ホンマに？')) return
       const entry_id = this.$route.params.id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.delete(url)
