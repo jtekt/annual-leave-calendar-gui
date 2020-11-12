@@ -67,7 +67,7 @@ export default {
   flex-shrink: 0;
   flex-basis: 0;
 
-  border: 1px solid #dddddd;
+  border: 1px solid #aaaaaa;
   border-radius: 5px;
   margin: 0.25em;
   padding: 0.25em;
