@@ -33,12 +33,8 @@ export default {
       const url = `${process.env.VUE_APP_API_URL}/users/${user_id}/entries`
       const body = {date: this.date}
       this.axios.post(url,body)
-      .then(response => {
-        this.$router.push({name: 'entry', params: {id: response.data.insertedId}})
-      })
-      .catch(error => {
-        console.error(error)
-      })
+      .then(response => { this.$router.push({name: 'entry', params: {id: response.data._id}}) })
+      .catch(error => { console.error(error) })
     }
   }
 }

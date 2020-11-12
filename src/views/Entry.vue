@@ -1,14 +1,11 @@
 <template>
   <div class="entry">
-    <h1>Entry</h1>
+
+
 
     <template v-if="entry">
-      <p class="">
-        <input
-          type="date"
-          v-model="entry.date"
-          @change="update_entry()">
-      </p>
+
+      <h1>{{format_date(entry.date)}}</h1>
 
       <p v-if="user">
         ユーザー: <User :user="user" />
@@ -28,13 +25,7 @@
           @change="update_entry()">
       </p>
 
-      <p class="">
-        <label>Refresh: </label>
-        <input
-          type="checkbox"
-          v-model="entry.refresh"
-          @change="update_entry()">
-      </p>
+
 
       <p class="">
         <label>AM: </label>
@@ -51,11 +42,21 @@
           @change="update_entry()">
       </p>
 
+      <p class="">
+        <label>Refresh: </label>
+        <input
+          type="checkbox"
+          v-model="entry.refresh"
+          @change="update_entry()">
+      </p>
+
 
 
       <p class="">
         <button type="button" @click="delete_entry()">
-          delete
+          <delete-icon/>
+          <span>予定削除</span>
+
         </button>
       </p>
     </template>
@@ -95,6 +96,7 @@ export default {
         this.get_user(this.entry.user_id)
       })
       .catch(error => {
+        alert(`Error while getting the entry`)
         console.error(error)
       })
     },
@@ -110,23 +112,33 @@ export default {
       })
     },
     update_entry(){
-      const entry_id = this.$route.params.id
+      const entry_id = this.entry._id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.put(url, this.entry)
       .then(() => {})
       .catch(error => {
         console.error(error)
+        alert(`Error while updating the entry`)
       })
     },
+    format_date(date){
+
+      var options = {year: '2-digit', month: '2-digit', day: '2-digit' };
+      return new Date(date).toLocaleString('ja-JP', options)
+
+
+    },
+
     delete_entry(){
       if(!confirm('ホンマに？')) return
-      const entry_id = this.$route.params.id
+      const entry_id = this.entry._id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.delete(url)
       .then(() => {
-        this.$router.push({name: 'user_entries', params: {id: 'self'}})
+        this.$router.push({name: 'user_entries', params: {id: this.entry.user_id}})
       })
       .catch(error => {
+        alert(`Error while deleting the entry`)
         console.error(error)
       })
     },

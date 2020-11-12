@@ -5,8 +5,11 @@
     <h1 v-else>Entries of {{user_id}}</h1>
 
     <p>
-      <router-link :to="{ name: 'new_entry'}">
-        新しい予定
+      <router-link
+        class="button"
+        :to="{ name: 'new_entry'}">
+        <plus-icon />
+        <span>予定追加</span>
       </router-link>
     </p>
 

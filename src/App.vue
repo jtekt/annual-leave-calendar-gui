@@ -5,11 +5,27 @@
       applicationName="年休カレンダー">
 
       <template v-slot:navigation>
-        <router-link :to="{ name: 'home'}">ホーム</router-link>
-        <router-link :to="{ name: 'new_entry'}">新しい予定</router-link>
-        <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">私の予定</router-link>
-        <router-link :to="{ name: 'groups'}">グループ</router-link>
-        <router-link :to="{ name: 'about'}">About</router-link>
+        <router-link :to="{ name: 'home'}">
+          <home-icon/><span>ホーム</span>
+        </router-link>
+        <router-link :to="{ name: 'new_entry'}">
+          <plus-icon/>
+          <span>予定追加</span>
+        </router-link>
+        <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">
+          <account-icon/>
+          <span>私の予定</span>
+
+        </router-link>
+        <router-link :to="{ name: 'groups'}">
+          <account-multiple-icon />
+          <span>グループ</span>
+
+        </router-link>
+        <router-link :to="{ name: 'about'}">
+          <information-outline-icon />
+          <span>About</span>
+        </router-link>
       </template>
 
 
@@ -38,8 +54,38 @@ export default {
 
 <style>
 
+.material-design-icon__svg {
+  bottom: 0 !important;
+}
+
 main {
   text-align: center;
+}
+
+.button, button {
+  text-decoration: none;
+  color: currentcolor;
+
+  font-size: 90%;
+  border: 1px solid #444444;
+  border-radius: 0.25em;
+  padding: 0.25em 0.5em;
+
+  display: inline-flex;
+  align-items: center;
+  background-color: transparent;
+  transition: 0.25s;
+}
+
+.button > *:not(:last-child),
+button > *:not(:last-child)
+ {
+  margin-right: 0.25em;
+}
+
+.button:hover, button:hover {
+  color: #c00000;
+  border-color: #c00000;
 }
 
 
