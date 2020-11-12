@@ -26,16 +26,6 @@
 
     </div>
 
-    <div class="total">
-      <div class="">
-        Total
-      </div>
-      <div class="">
-         {{total_taken}} / {{total_yotei}}
-      </div>
-
-
-    </div>
 
   </div>
 </template>
@@ -60,17 +50,6 @@ export default {
     },
   },
   computed: {
-
-    total_yotei(){
-      return this.entries.reduce( (total, entry) => {
-        return  total + 0.5*entry.am + 0.5*entry.pm
-      }, 0)
-    },
-    total_taken(){
-      return this.entries.reduce( (total, entry) => {
-        return  total + (0.5*entry.am + 0.5*entry.pm)*entry.taken
-      }, 0)
-    },
     current_month(){
       return new Date().getMonth() + 1
     }
@@ -88,7 +67,7 @@ export default {
   flex-shrink: 0;
   flex-basis: 0;
 
-  border: 1px solid #444444;
+  border: 1px solid #dddddd;
   border-radius: 5px;
   margin: 0.25em;
   padding: 0.25em;
@@ -99,7 +78,8 @@ export default {
   background-color: #eeeeee;
 }
 .month.current {
-  background-color: #ffdddd;
+  //background-color: #ffdddd;
+  border-color: #444444;
 }
 
 .entries_container {
@@ -120,7 +100,9 @@ export default {
 }
 
 .month_header {
-  color: #444444;
+  text-align: left;
+  color: #aaaaaa;
+  font-size: 80%;
 }
 
 .entry.taken {

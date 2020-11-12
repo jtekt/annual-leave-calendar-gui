@@ -3,17 +3,27 @@
     <h1 v-if="group">{{group.properties.name}}</h1>
     <h1 v-else>Group entries</h1>
 
-    <div
-      class="user_calendar_wrapper"
-      v-for="user in users"
-      :key="user.identity.low" >
+    <template v-if="!loading">
+      <div
+        class="user_calendar_wrapper"
+        v-for="user in users"
+        :key="user.identity.low" >
+
+        <div class="user_wrapper">
+          <User :user="user" />
+          <Total :entries="user.entries" />
+        </div>
 
 
-      <User :user="user" />
 
-      <Calendar :entries="user.entries"/>
+        <Calendar :entries="user.entries"/>
 
-    </div>
+      </div>
+    </template>
+
+    <p v-if="loading">
+      Loading...
+    </p>
 
 
 
@@ -27,17 +37,20 @@
 // @ is an alias to /src
 import Calendar from '@/components/Calendar.vue'
 import User from '@/components/User.vue'
+import Total from '@/components/Total.vue'
 
 export default {
   name: 'GroupEntries',
   components: {
     Calendar,
-    User
+    User,
+    Total
   },
   data() {
     return {
       users: [],
       group: null,
+      loading: false,
     }
   },
   mounted(){
@@ -46,6 +59,7 @@ export default {
   },
   methods: {
     get_entries(){
+      this.loading = true
       const url = `${process.env.VUE_APP_API_URL}/groups/${this.group_id}/entries`
       this.axios.get(url)
       .then(response => {
@@ -56,8 +70,9 @@ export default {
         })
 
       })
-      .catch(error => {
-        console.error(error)
+      .catch(error => { console.error(error) })
+      .finally( () => {
+        this.loading = false
       })
     },
     get_group(){
@@ -82,7 +97,7 @@ export default {
 <style scoped>
 .user_calendar_wrapper {
   display: flex;
-  align-items: center;
+  align-items: stretch;
 }
 
 .user_calendar_wrapper:not(:last-child) {
@@ -91,13 +106,14 @@ export default {
   border-bottom: 1px solid #dddddd;
 }
 
-.user_calendar_wrapper > .user {
+.user_calendar_wrapper > .user_wrapper {
   flex-basis: 150px;
   flex-grow: 0;
   flex-shrink: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: left;
 
   padding: 0.25em;
 

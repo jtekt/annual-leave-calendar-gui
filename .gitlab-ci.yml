@@ -1,6 +1,6 @@
 stages:
   - containerization
-  #- deployment
+  - deployment
 
 variables:
   APPLICATION_NAME: nenkyuu-calendar-front
@@ -12,12 +12,11 @@ containerization:
     - docker build -t ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME} .
     - docker push ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME}
 
-#deployment:
-#  stage: deployment
-#  script:
-#    - envsubst < deployment.yml | kubectl apply -f -
-#    - kubectl rollout restart deployment/${APPLICATION_NAME}
-#  environment:
-#    name: production
-#    kubernetes:
-#      namespace: ${KUBERNETES_NAMESPACE}
+deployment:
+  stage: deployment
+  script:
+    - kubectl rollout restart deployment/${APPLICATION_NAME}
+  environment:
+    name: production
+    kubernetes:
+      namespace: ${KUBERNETES_NAMESPACE}

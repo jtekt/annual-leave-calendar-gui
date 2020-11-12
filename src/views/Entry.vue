@@ -11,11 +11,11 @@
       </p>
 
       <p v-if="user">
-        User: <User :user="user" />
+        ユーザー: <User :user="user" />
       </p>
 
       <p v-else>
-        User: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
+        ユーザー: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
           {{entry.user_id}}
         </router-link>
       </p>

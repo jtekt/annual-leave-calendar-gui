@@ -10,6 +10,10 @@
       </router-link>
     </p>
 
+    <p>
+      <Total :entries="entries" />
+    </p>
+
     <Calendar :entries="entries"/>
 
 
@@ -19,11 +23,13 @@
 <script>
 // @ is an alias to /src
 import Calendar from '@/components/Calendar.vue'
+import Total from '@/components/Total.vue'
 
 export default {
   name: 'UserEntries',
   components: {
     Calendar,
+    Total,
   },
   data() {
     return {
