@@ -60,12 +60,14 @@ export default {
 <style scoped>
 .calendar {
   display: flex;
+  overflow-x: auto;
 }
 
 .month {
   flex-grow: 1;
   flex-shrink: 0;
-  flex-basis: 0;
+  flex-basis: 50px;
+  min-height: 50px;
 
   border: 1px solid #aaaaaa;
   border-radius: 5px;

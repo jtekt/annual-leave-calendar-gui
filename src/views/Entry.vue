@@ -1,14 +1,21 @@
 <template>
   <div class="entry">
 
+    <h1 v-if="entry_loading">
+      <loader>Loading</loader>
+    </h1>
 
+    <template v-else-if="entry">
 
-    <template v-if="entry">
-
+      <!-- date as header -->
       <h1>{{format_date(entry.date)}}</h1>
 
-      <p v-if="user">
-        ユーザー: <User :user="user" />
+      <!-- user info -->
+      <p v-if="user_loading">
+        <Loader>Loading user info</loader>
+      </p>
+      <p v-else-if="user">
+        <User :user="user" />
       </p>
 
       <p v-else>
@@ -22,7 +29,8 @@
         <input
           type="checkbox"
           v-model="entry.taken"
-          @change="update_entry()">
+          @change="update_entry()"
+          :disabled="!editable">
       </p>
 
 
@@ -32,14 +40,16 @@
         <input
           type="checkbox"
           v-model="entry.am"
-          @change="update_entry()">
+          @change="update_entry()"
+          :disabled="!editable">
       </p>
       <p class="">
         <label>PM: </label>
         <input
           type="checkbox"
           v-model="entry.pm"
-          @change="update_entry()">
+          @change="update_entry()"
+          :disabled="!editable">
       </p>
 
       <p class="">
@@ -47,16 +57,19 @@
         <input
           type="checkbox"
           v-model="entry.refresh"
-          @change="update_entry()">
+          @change="update_entry()"
+          :disabled="!editable">
       </p>
 
 
 
       <p class="">
-        <button type="button" @click="delete_entry()">
+        <button
+          type="button"
+          @click="delete_entry()"
+          v-if="editable">
           <delete-icon/>
           <span>予定削除</span>
-
         </button>
       </p>
     </template>
@@ -79,7 +92,9 @@ export default {
   data() {
     return {
       entry: null,
-      user: null
+      entry_loading: false,
+      user: null,
+      user_loading: false,
     }
   },
   mounted(){
@@ -88,6 +103,7 @@ export default {
   },
   methods: {
     get_entry(){
+      this.entry_loading = true
       const entry_id = this.$route.params.id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.get(url)
@@ -99,8 +115,10 @@ export default {
         alert(`Error while getting the entry`)
         console.error(error)
       })
+      .finally( () => {this.entry_loading = false})
     },
     get_user(user_id){
+      this.user_loading = true
       const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/employees/${user_id}`
       this.axios.get(url)
       .then(response => {
@@ -110,6 +128,7 @@ export default {
       .catch(error => {
         console.error(error)
       })
+      .finally( () => {this.user_loading = false})
     },
     update_entry(){
       const entry_id = this.entry._id
@@ -122,13 +141,9 @@ export default {
       })
     },
     format_date(date){
-
-      var options = {year: '2-digit', month: '2-digit', day: '2-digit' };
+      const options = {year: '2-digit', month: '2-digit', day: '2-digit' };
       return new Date(date).toLocaleString('ja-JP', options)
-
-
     },
-
     delete_entry(){
       if(!confirm('ホンマに？')) return
       const entry_id = this.entry._id
@@ -142,7 +157,15 @@ export default {
         console.error(error)
       })
     },
-  }
+  },
+  computed:{
+    editable(){
+      if(!this.$store.state.current_user) return false
+      const user_id = String(this.entry.user_id)
+      const current_user_id = String(this.$store.state.current_user.identity.low)
+      return user_id === current_user_id
+    }
+  },
 }
 </script>
 

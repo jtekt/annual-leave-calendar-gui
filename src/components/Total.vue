@@ -41,11 +41,12 @@ export default {
 
 <style scoped>
 .total {
-
+  display: inline-flex;
+  font-weight: bold;
 }
 
 .total > * {
-  margin: 0.25em 0;
+  margin: 0.25em;
 }
 .yotei {
   color: #c00000;

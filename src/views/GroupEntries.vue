@@ -1,29 +1,45 @@
 <template>
   <div class="group_entries">
-    <h1 v-if="group">{{group.properties.name}}</h1>
-    <h1 v-else>Group entries</h1>
 
-    <template v-if="!loading">
+    <h1 v-if="users_loading">
+      <loader>Loading</loader>
+    </h1>
+
+    <template v-else>
+
+      <h1 v-if="group_loading">
+        <Loader>Loading group info</loader>
+      </h1>
+
+      <h1 v-else-if="group">{{group.properties.name}}さんの予定</h1>
+      <h1 v-else>グループ{{group_id}}の予定</h1>
+
+
       <div
         class="user_calendar_wrapper"
         v-for="user in users"
         :key="user.identity.low" >
 
-        <div class="user_wrapper">
-          <User :user="user" />
+        <div class="top_wrapper">
+          <div class="user_wrapper">
+            <User :user="user" />
+          </div>
+
           <Total :entries="user.entries" />
         </div>
 
-
-
         <Calendar :entries="user.entries"/>
+
+
+
+
 
       </div>
     </template>
 
-    <p v-if="loading">
-      Loading...
-    </p>
+
+
+
 
 
 
@@ -49,7 +65,9 @@ export default {
   data() {
     return {
       users: [],
+      users_loading: false,
       group: null,
+      group_loading: false,
       loading: false,
     }
   },
@@ -59,7 +77,7 @@ export default {
   },
   methods: {
     get_entries(){
-      this.loading = true
+      this.users_loading = true
       const url = `${process.env.VUE_APP_API_URL}/groups/${this.group_id}/entries`
       this.axios.get(url)
       .then(response => {
@@ -71,9 +89,7 @@ export default {
 
       })
       .catch(error => { console.error(error) })
-      .finally( () => {
-        this.loading = false
-      })
+      .finally( () => { this.users_loading = false })
     },
     get_group(){
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
@@ -95,31 +111,38 @@ export default {
 </script>
 
 <style scoped>
+
+
 .user_calendar_wrapper {
-  display: flex;
-  align-items: stretch;
+  //border: 1px solid #dddddd;
+  margin: 1em 0;
+  padding: 1em 0;
 }
 
+
+
 .user_calendar_wrapper:not(:last-child) {
-  margin-bottom: 0.25em;
-  padding-bottom: 0.25em;
   border-bottom: 1px solid #dddddd;
 }
 
-.user_calendar_wrapper > .user_wrapper {
+
+.user_calendar_wrapper > .top_wrapper {
+  display: flex;
   flex-basis: 150px;
-  flex-grow: 0;
+  flex-grow: 1;
   flex-shrink: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+
   text-align: left;
 
   padding: 0.25em;
 
+}
 
+.user_wrapper {
+  flex-basis: 250px;
 }
 .user_calendar_wrapper > .calendar{
+  margin-top: 0.5em;
   flex-grow: 1;
 }
 </style>

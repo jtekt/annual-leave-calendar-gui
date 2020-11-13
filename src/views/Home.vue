@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <h1>年休カレンダー</h1>
-    <p class="bold">このアプリは開発中なので、データが消される可能性があります。</p>
     <p>
       自分の予定をみるために、<router-link :to="{ name: 'user_entries', params: {id: 'self'} }">こちら</router-link>.
     </p>
@@ -20,14 +19,9 @@
 
 export default {
   name: 'Home',
-  components: {
-
-  }
 }
 </script>
 
 <style scoped>
-.bold {
-  font-weight: bold;
-}
+
 </style>

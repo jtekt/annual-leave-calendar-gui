@@ -43,10 +43,17 @@ export default {
   components: {
     AppTemplate,
   },
-  data(){
-    return {
-    }
+  mounted(){
+    this.get_current_user()
   },
+  methods: {
+    get_current_user(){
+      const url = `${process.env.VUE_APP_AUTHENTICATION_API_URL}/whoami`
+      this.axios.get(url)
+      .then(response => { this.$store.commit('set_current_user',response.data) })
+      .catch(error => { console.error(error) })
+    }
+  }
 
 }
 </script>

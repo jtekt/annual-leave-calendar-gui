@@ -9,6 +9,10 @@ Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
+import Loader from '@moreillon/vue_loader'
+Vue.component('Loader', Loader)
+
+
 // icons
 import HomeIcon from 'vue-material-design-icons/Home.vue'
 import AccountMultipleIcon from 'vue-material-design-icons/AccountMultiple.vue'
