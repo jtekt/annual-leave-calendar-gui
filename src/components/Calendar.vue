@@ -19,8 +19,8 @@
           :key="entry._id"
           :to="{ name: 'entry', params: {id: entry._id} }">
           {{day_of_entry(entry)}}
-          <span v-if="entry.am && !entry.pm">AM</span>
-          <span v-if="entry.pm && !entry.am">PM</span>
+          <span class="half_indicator" v-if="entry.am && !entry.pm">am</span>
+          <span class="half_indicator" v-if="entry.pm && !entry.am">pm</span>
         </router-link>
       </div>
 
@@ -92,12 +92,15 @@ export default {
   text-decoration: none;
   color: #c00000;
   font-weight: bold;
-  padding: 0.1em;
+  padding: 0.25em;
+  display: inline-flex;
+  align-items: flex-start;
+  border: 1px solid transparent;
+  border-radius: 0.25em;
 }
 
-.entry:hover {
-  text-decoration: underline;
-}
+
+
 
 .month_header {
   text-align: left;
@@ -118,5 +121,10 @@ export default {
   flex-basis: 0;
   background-color: #ddddff;
   text-align: center;
+}
+
+.half_indicator {
+  font-size: 75%;
+  margin-left: 0.25em;
 }
 </style>
