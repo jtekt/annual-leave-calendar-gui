@@ -6,7 +6,7 @@
 
     <img
       class="avatar"
-      v-if="user.properties.avatar_srcs"
+      v-if="user.properties.avatar_src"
       :src="user.properties.avatar_src">
 
     <account-icon

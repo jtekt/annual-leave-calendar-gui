@@ -11,7 +11,7 @@
         <Loader>Loading group info</loader>
       </h1>
 
-      <h1 v-else-if="group">{{group.properties.name}}さんの予定</h1>
+      <h1 v-else-if="group">{{group.properties.name}}の予定</h1>
       <h1 v-else>グループ{{group_id}}の予定</h1>
 
 
@@ -20,31 +20,18 @@
         v-for="user in users"
         :key="user.identity.low" >
 
-        <div class="top_wrapper">
-          <div class="user_wrapper">
-            <User :user="user" />
-          </div>
-
+        <!-- top: user and total -->
+        <div class="user_wrapper">
+          <User :user="user" />
+          <span class="spacer" />
           <Total :entries="user.entries" />
         </div>
 
+        <!-- bottom: calendar view -->
         <Calendar :entries="user.entries"/>
-
-
-
-
 
       </div>
     </template>
-
-
-
-
-
-
-
-
-
 
   </div>
 </template>
@@ -115,7 +102,9 @@ export default {
 
 .user_calendar_wrapper {
   //border: 1px solid #dddddd;
+  //border-radius: 0.5em;
   margin: 1em 0;
+  //padding: 1em;
   padding: 1em 0;
 }
 
@@ -126,8 +115,9 @@ export default {
 }
 
 
-.user_calendar_wrapper > .top_wrapper {
+.user_calendar_wrapper > .user_wrapper {
   display: flex;
+  align-items: center;
   flex-basis: 150px;
   flex-grow: 1;
   flex-shrink: 0;
@@ -138,9 +128,10 @@ export default {
 
 }
 
-.user_wrapper {
-  flex-basis: 250px;
+.spacer {
+  flex-grow: 1;
 }
+
 .user_calendar_wrapper > .calendar{
   margin-top: 0.5em;
   flex-grow: 1;
