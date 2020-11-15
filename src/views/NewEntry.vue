@@ -34,7 +34,16 @@ export default {
       const body = {date: this.date}
       this.axios.post(url,body)
       .then(response => { this.$router.push({name: 'entry', params: {id: response.data._id}}) })
-      .catch(error => { console.error(error) })
+      .catch(error => {
+        if(!error.response) {
+          alert(`Error while creating 予定`)
+          console.error(error)
+          return
+        }
+
+        alert(error.response.data)
+
+      })
     }
   }
 }
