@@ -4,9 +4,10 @@
     <p>年休カレンダー</p>
     <p>Developped in 4 hours by Maxime MOREILLON</p>
     <p>Version {{version}}</p>
-    <p>User manager API url: {{user_manager_api_url}}</p>
-    <p>Authentication API url: {{authentication_api_url}}</p>
-    <p>Group manager API url: {{group_manager_api_url}}</p>
+    <p>API URL: {{api_url}}</p>
+    <p>User manager API URL: {{user_manager_api_url}}</p>
+    <p>Authentication API URL: {{authentication_api_url}}</p>
+    <p>Group manager API URL: {{group_manager_api_url}}</p>
   </div>
 </template>
 
