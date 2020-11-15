@@ -85,7 +85,8 @@ export default {
         this.group = response.data
       })
       .catch(error => {
-        console.error(error)
+        if(error.response) console.error(error.response.data)
+        else console.error(error)
       })
     }
   },
