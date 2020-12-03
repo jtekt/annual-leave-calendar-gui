@@ -14,6 +14,8 @@
       <h1 v-else-if="group">{{group.properties.name}}の予定</h1>
       <h1 v-else>グループ{{group_id}}の予定</h1>
 
+      <p>江戸時代の方はこちらのボタンでエクセルにエクスポートできます： <button @click="excel_export()">Export</button> </p>
+
 
       <div
         class="user_calendar_wrapper"
@@ -31,6 +33,10 @@
         <Calendar :entries="user.entries"/>
 
       </div>
+
+      <ExcelExportTable :users="users" />
+
+
     </template>
 
   </div>
@@ -41,13 +47,16 @@
 import Calendar from '@/components/Calendar.vue'
 import User from '@/components/User.vue'
 import Total from '@/components/Total.vue'
+import ExcelExportTable from '@/components/ExcelExportTable.vue'
+import XLSX from 'xlsx'
 
 export default {
   name: 'GroupEntries',
   components: {
     Calendar,
     User,
-    Total
+    Total,
+    ExcelExportTable
   },
   data() {
     return {
@@ -88,7 +97,16 @@ export default {
         if(error.response) console.error(error.response.data)
         else console.error(error)
       })
-    }
+    },
+    excel_export(){
+      var workbook = XLSX.utils.book_new()
+      var ws1 = XLSX.utils.table_to_sheet(document.getElementById('export_table'))
+      XLSX.utils.book_append_sheet(workbook, ws1, "Sheet1")
+      XLSX.writeFile(workbook, 'export.xlsx')
+
+      alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
+
+    },
   },
   computed: {
     group_id(){
