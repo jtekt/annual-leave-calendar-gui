@@ -14,7 +14,7 @@
       <h1 v-else-if="group">{{group.properties.name}}の予定</h1>
       <h1 v-else>グループ{{group_id}}の予定</h1>
 
-      <p>江戸時代の方はこちらのボタンでエクセルにエクスポートできます： <button @click="excel_export()">Export</button> </p>
+      <p><button @click="excel_export()">エクセルにエクスポート</button> </p>
 
 
       <div
@@ -104,7 +104,7 @@ export default {
       XLSX.utils.book_append_sheet(workbook, ws1, "Sheet1")
       XLSX.writeFile(workbook, 'export.xlsx')
 
-      alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
+      //alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
 
     },
   },
