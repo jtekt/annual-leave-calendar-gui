@@ -6,6 +6,10 @@
       <th>名前</th>
       <th>Type</th>
       <th>Previous year</th>
+      <th>1-6月r</th>
+      <th>7-12月r</th>
+      <th>1-6月r</th>
+      <th>7-12月r</th>
 
       <template v-for="month in 12">
 
@@ -37,19 +41,48 @@
         <!-- Previous year -->
         <td rowspan="3"></td>
 
+        <!-- Refresh 1-6 -->
+        <td rowspan="3">
+          {{
+            refresh_entries_first_semester(user)
+            .map(entry => {return `${month_of_entry(entry)}/${day_of_entry(entry)}`})
+            .join(', ')
+          }}
+        </td>
+
+        <!-- Refresh 1-6 -->
+        <td rowspan="3">{{
+          refresh_entries_second_semester(user)
+          .map(entry => {return `${month_of_entry(entry)}/${day_of_entry(entry)}`})
+          .join(', ')
+        }}</td>
+
+        <!-- Consecutive 1-6 -->
+        <td rowspan="3"></td>
+
+        <!-- Consecutive 1-6 -->
+        <td rowspan="3"></td>
+
         <template v-for="month in 12">
           <td v-bind:key="`user_${user_index}_yotei_${month}`">
             {{
               entries_of_month(user, month)
               .filter(entry => {return entry.taken})
-              .map(day_of_entry).join(', ')
+              .map(day_of_entry)
+              .join(', ')
             }}
           </td>
           <td
-            v-if="month === 5 || month === 8"
+            v-if="month === 5"
             rowspan="3"
             :key="`user_${user_index}_5_days_taken_${month}`">
-            N/A
+            {{five_days_taken(user, month)}}
+          </td>
+          <td
+            v-if="month === 8"
+            rowspan="3"
+            :key="`user_${user_index}_5_days_taken_${month}`">
+            {{five_days_taken(user, month)}}
           </td>
         </template>
 
@@ -62,7 +95,11 @@
         <template v-for="month in 12">
           <td
             :key="`user_${user_index}_taken_${month}`">
-            {{entries_of_month(user, month).map(day_of_entry).join(', ')}}
+            {{
+              entries_of_month(user, month)
+              .map(day_of_entry)
+              .join(', ')
+            }}
           </td>
 
 
@@ -107,6 +144,33 @@ export default {
       else if(!entry.am && entry.pm) output = `${output}PM`
       return output
     },
+    month_of_entry(entry){
+      return new Date(entry.date).getMonth() + 1
+    },
+    refresh_entries_first_semester(user) {
+      return user.entries
+      .filter(entry => {return entry.refresh})
+      .filter(entry => { return this.month_of_entry(entry) <= 6 })
+    },
+    refresh_entries_second_semester(user) {
+      return user.entries
+      .filter(entry => {return entry.refresh})
+      .filter(entry => { return this.month_of_entry(entry) > 6 })
+    },
+    five_days_taken(user, month) {
+
+      let count = user.entries
+      .filter(entry => {
+        return this.month_of_entry(entry) <= month
+      })
+      .reduce( (total, entry) => {
+        return  total + (0.5*entry.am + 0.5*entry.pm)*entry.taken
+      }, 0)
+
+      if(count > 5) return '〇'
+      else return '✖'
+
+    }
   },
 
 }

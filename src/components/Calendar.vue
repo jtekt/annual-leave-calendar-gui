@@ -14,7 +14,7 @@
       <div class="entries_container">
         <router-link
           class="entry"
-          :class="{taken: entry.taken}"
+          :class="{taken: entry.taken, refresh: entry.refresh}"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
           :to="{ name: 'entry', params: {id: entry._id} }">
@@ -112,6 +112,10 @@ export default {
 
 .entry.taken {
   color: #00c000;
+}
+
+.entry.refresh {
+  border: 2px solid red;
 }
 
 .total {
