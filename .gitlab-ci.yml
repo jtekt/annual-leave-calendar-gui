@@ -14,7 +14,7 @@ containerization:
   tags:
     - moreillon
   script:
-    # DOcker Hub login
+    # Docker Hub login
     - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin
     # Building the container image
     - docker build -t ${CONTAINER_IMAGE} .
@@ -25,12 +25,11 @@ deployment:
   stage: deployment
   tags:
     - moreillon
-  allow_failure: true
   script:
     # create/update the deployment
     - envsubst < kubernetes_manifest.yml | kubectl apply -f -
     # Pull latest image of deployment
-    - kubectl rollout restart deployment/${APPLICATION_NAME}
+    #- kubectl rollout restart deployment/${APPLICATION_NAME}
   environment:
     name: production
     kubernetes:
