@@ -1,10 +1,20 @@
 <template>
   <div class="new_entry">
-    <h1>新しい予定</h1>
+    <h1>予定追加</h1>
 
     <form class="" @submit.prevent="submit()">
       <input type="date" v-model="date">
-      <input type="submit" :disabled="!date">
+
+      <div class="">
+        <label>AM</label>
+        <input type="checkbox" v-model="am">
+      </div>
+      <div class="">
+        <label>PM</label>
+        <input type="checkbox" v-model="pm">
+      </div>
+
+      <input type="submit" :disabled="submit_disabled">
     </form>
 
 
@@ -25,13 +35,19 @@ export default {
   data() {
     return {
       date: null,
+      am: true,
+      pm: true,
     }
   },
   methods: {
     submit(){
       const user_id = 'self'
       const url = `${process.env.VUE_APP_API_URL}/users/${user_id}/entries`
-      const body = {date: this.date}
+      const body = {
+        date: this.date,
+        am: this.am,
+        pm: this.pm,
+      }
       this.axios.post(url,body)
       .then(response => { this.$router.push({name: 'entry', params: {id: response.data._id}}) })
       .catch(error => {
@@ -45,6 +61,11 @@ export default {
 
       })
     }
+  },
+  computed: {
+    submit_disabled(){
+      return !this.date || (!this.am && !this.pm)
+    },
   }
 }
 </script>
@@ -59,7 +80,9 @@ h1 {
 }
 
 form {
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 form > * {
