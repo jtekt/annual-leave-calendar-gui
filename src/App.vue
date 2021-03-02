@@ -14,7 +14,7 @@
         </router-link>
         <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">
           <account-icon/>
-          <span>私の予定</span>
+          <span>自分の予定f</span>
 
         </router-link>
         <router-link :to="{ name: 'groups'}">
