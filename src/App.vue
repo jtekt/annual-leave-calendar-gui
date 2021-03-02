@@ -95,5 +95,7 @@ button > *:not(:last-child)
   border-color: #c00000;
 }
 
-
+select {
+  padding: 0.5em;
+}
 </style>

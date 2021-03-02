@@ -14,6 +14,18 @@
       <h1 v-else-if="group">{{group.properties.name}}の予定</h1>
       <h1 v-else>グループ{{group_id}}の予定</h1>
 
+      <p>
+        <select
+          class=""
+          v-model="year"
+          @change="get_entries()">
+          <option
+            v-for="year in Array.from(Array(50).keys()).map(x => x+2015)"
+            :key="`year_option_${year}`"
+            :value="year">{{year}}</option>
+        </select>
+      </p>
+
       <p><button @click="excel_export()">エクセルにエクスポート</button> </p>
 
 
@@ -60,6 +72,7 @@ export default {
   },
   data() {
     return {
+      year: new Date().getYear() + 1900,
       users: [],
       users_loading: false,
       group: null,
@@ -75,7 +88,8 @@ export default {
     get_entries(){
       this.users_loading = true
       const url = `${process.env.VUE_APP_API_URL}/groups/${this.group_id}/entries`
-      this.axios.get(url)
+      const params = {year: this.year}
+      this.axios.get(url, {params})
       .then(response => {
         this.users = []
         response.data.forEach((record) => {

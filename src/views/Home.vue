@@ -58,7 +58,5 @@ export default {
 </script>
 
 <style scoped>
-select {
-  padding: 0.5em;
-}
+
 </style>

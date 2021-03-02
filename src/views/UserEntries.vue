@@ -13,14 +13,26 @@
       <h1 v-else-if="user">{{user.properties.display_name}}さんの予定</h1>
       <h1 v-else>ユーザー{{user_id}}の予定</h1>
 
-
-      <p v-if="this.$store.state.current_user.identity.low === user_id || user_id === 'self' ">
+      <!-- Button to add an entry -->
+      <p v-if=" current_user_id === user_id || user_id === 'self' ">
         <router-link
           class="button"
           :to="{ name: 'new_entry'}">
           <plus-icon />
           <span>予定追加</span>
         </router-link>
+      </p>
+
+      <p>
+        <select
+          class=""
+          v-model="year"
+          @change="get_entries()">
+          <option
+            v-for="year in Array.from(Array(50).keys()).map(x => x+2015)"
+            :key="`year_option_${year}`"
+            :value="year">{{year}}</option>
+        </select>
       </p>
 
       <p>
@@ -47,6 +59,7 @@ export default {
   },
   data() {
     return {
+      year: new Date().getYear() + 1900,
       entries: [],
       entries_loading: false,
       user: null,
@@ -67,12 +80,16 @@ export default {
     get_entries(){
       this.entries_loading = true
       const url = `${process.env.VUE_APP_API_URL}/users/${this.user_id}/entries`
-      this.axios.get(url)
+      const params = {year: this.year}
+      this.axios.get(url, {params})
       .then(response => {
         this.entries = []
         response.data.forEach((entry) => { this.entries.push(entry) })
       })
-      .catch(error => { console.error(error) })
+      .catch(error => {
+        alert(`Failed to query items`)
+        console.error(error)
+       })
       .finally(() => {this.entries_loading = false})
     },
     entries_of_month(month){
@@ -97,6 +114,11 @@ export default {
     }
   },
   computed: {
+    current_user_id(){
+      if(!this.$store.state.current_user) return undefined
+      return this.$store.state.current_user.identity.low
+        || this.$store.state.current_user.identity
+    },
     user_id(){
       return this.$route.params.id
     },
