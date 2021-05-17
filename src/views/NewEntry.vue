@@ -5,6 +5,7 @@
     <form class="" @submit.prevent="submit()">
       <input type="date" v-model="date">
 
+      <!--
       <div class="">
         <label>AM</label>
         <input type="checkbox" v-model="am">
@@ -13,6 +14,13 @@
         <label>PM</label>
         <input type="checkbox" v-model="pm">
       </div>
+      -->
+
+      <select v-model="type">
+        <option value="有休">有休 / All day</option>
+        <option value="前半休">前半休 / Morning</option>
+        <option value="後半休">後半休 / Afternoon</option>
+      </select>
 
       <input type="submit" :disabled="submit_disabled">
     </form>
@@ -35,8 +43,7 @@ export default {
   data() {
     return {
       date: null,
-      am: true,
-      pm: true,
+      type: "有休",
     }
   },
   methods: {
@@ -45,8 +52,7 @@ export default {
       const url = `${process.env.VUE_APP_API_URL}/users/${user_id}/entries`
       const body = {
         date: this.date,
-        am: this.am,
-        pm: this.pm,
+        type: this.type,
       }
       this.axios.post(url,body)
       .then(response => { this.$router.push({name: 'entry', params: {id: response.data._id}}) })
@@ -64,7 +70,7 @@ export default {
   },
   computed: {
     submit_disabled(){
-      return !this.date || (!this.am && !this.pm)
+      return !this.date
     },
   }
 }

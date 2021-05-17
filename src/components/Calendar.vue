@@ -19,8 +19,8 @@
           :key="entry._id"
           :to="{ name: 'entry', params: {id: entry._id} }">
           {{day_of_entry(entry)}}
-          <span class="half_indicator" v-if="entry.am && !entry.pm">am</span>
-          <span class="half_indicator" v-if="entry.pm && !entry.am">pm</span>
+          <span class="half_indicator" v-if="(entry.am && !entry.pm) || entry.type==='前半休'">am</span>
+          <span class="half_indicator" v-if="(entry.pm && !entry.am) || entry.type==='後半休'">pm</span>
         </router-link>
       </div>
 

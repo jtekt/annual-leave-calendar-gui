@@ -33,8 +33,7 @@
           :disabled="!editable">
       </p>
 
-
-
+      <!--
       <p class="">
         <label>AM: </label>
         <input
@@ -50,6 +49,17 @@
           v-model="entry.pm"
           @change="update_entry()"
           :disabled="!editable">
+      </p>
+      -->
+
+      <p>
+        <select
+          @change="update_entry()"
+          v-model="entry.type">
+          <option value="有休">有休 / All day</option>
+          <option value="前半休">前半休 / Morning</option>
+          <option value="後半休">後半休 / Afternoon</option>
+        </select>
       </p>
 
       <p class="">
