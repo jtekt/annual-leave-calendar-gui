@@ -15,6 +15,7 @@
 <script>
 // @ is an alias to /src
 import GroupPicker from '@moreillon/vue_group_picker'
+import IdUtils from '@/mixins/IdUtils.js'
 
 
 export default {
@@ -22,6 +23,7 @@ export default {
   components: {
     GroupPicker,
   },
+  mixins: [IdUtils],
   data() {
     return {
 
@@ -29,7 +31,7 @@ export default {
   },
   methods: {
     select_group(group){
-      const group_id = group.identity.low
+      const group_id = this.get_id_of_item(group)
       this.$router.push({name: 'group_entries', params: {id: group_id}})
     }
 

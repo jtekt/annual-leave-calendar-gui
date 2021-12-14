@@ -31,8 +31,8 @@
 
       <div
         class="user_calendar_wrapper"
-        v-for="user in users"
-        :key="user.identity.low" >
+        v-for="(user, index) in users"
+        :key="`user_${index}`" >
 
         <!-- top: user and total -->
         <div class="user_wrapper">

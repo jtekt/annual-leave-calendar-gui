@@ -94,11 +94,14 @@
 <script>
 // @ is an alias to /src
 import User from '@/components/User.vue'
+import IdUtils from '@/mixins/IdUtils.js'
+
 export default {
   name: 'Entry',
   components: {
     User
   },
+  mixins: [IdUtils],
   data() {
     return {
       entry: null,
@@ -129,11 +132,10 @@ export default {
     },
     get_user(user_id){
       this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/employees/${user_id}`
+      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v2/employees/${user_id}`
       this.axios.get(url)
-      .then(response => {
-        const record = response.data[0]
-        this.user = record._fields[record._fieldLookup.employee]
+      .then( ({data}) => {
+        this.user = data
       })
       .catch(error => {
         console.error(error)
@@ -172,7 +174,7 @@ export default {
     editable(){
       if(!this.$store.state.current_user) return false
       const user_id = String(this.entry.user_id)
-      const current_user_id = String(this.$store.state.current_user.identity.low)
+      const current_user_id = String(this.get_current_user_id)
       return user_id === current_user_id
     }
   },

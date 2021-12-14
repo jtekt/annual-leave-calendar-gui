@@ -2,7 +2,7 @@
 
   <router-link
     class="user"
-    :to="{ name: 'user_entries', params: {id: user.identity.low} }">
+    :to="{ name: 'user_entries', params: {id: get_id_of_item(user)} }">
 
     <img
       class="avatar"
@@ -24,17 +24,14 @@
 
 <script>
 // @ is an alias to /src
+import IdUtils from '@/mixins/IdUtils.js'
 
 export default {
   name: 'User',
-  components: {
-
-  },
+  mixins: [IdUtils],
   props: {
     user: Object,
   }
-
-
 }
 </script>
 

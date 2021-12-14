@@ -50,6 +50,7 @@
 // @ is an alias to /src
 import Calendar from '@/components/Calendar.vue'
 import Total from '@/components/Total.vue'
+import IdUtils from '@/mixins/IdUtils.js'
 
 export default {
   name: 'UserEntries',
@@ -57,6 +58,7 @@ export default {
     Calendar,
     Total,
   },
+  mixins: [IdUtils],
   data() {
     return {
       year: new Date().getYear() + 1900,
@@ -114,11 +116,6 @@ export default {
     }
   },
   computed: {
-    current_user_id(){
-      if(!this.$store.state.current_user) return undefined
-      return this.$store.state.current_user.identity.low
-        || this.$store.state.current_user.identity
-    },
     user_id(){
       return this.$route.params.id
     },
