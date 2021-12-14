@@ -90,13 +90,8 @@ export default {
       const url = `${process.env.VUE_APP_API_URL}/groups/${this.group_id}/entries`
       const params = {year: this.year}
       this.axios.get(url, {params})
-      .then(response => {
-        this.users = []
-        response.data.forEach((record) => {
-          const user = record._fields[record._fieldLookup.user]
-          this.users.push(user)
-        })
-
+      .then( ({data}) => {
+        this.users = data
       })
       .catch(error => { console.error(error) })
       .finally( () => { this.users_loading = false })

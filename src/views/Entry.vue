@@ -172,10 +172,8 @@ export default {
   },
   computed:{
     editable(){
-      if(!this.$store.state.current_user) return false
-      const user_id = String(this.entry.user_id)
-      const current_user_id = String(this.get_current_user_id)
-      return user_id === current_user_id
+      const user_id = this.entry.user_id.toString()
+      return user_id === this.current_user_id
     }
   },
 }
