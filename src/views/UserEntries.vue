@@ -10,7 +10,7 @@
         <Loader>Loading user info</loader>
       </h1>
 
-      <h1 v-else-if="user">{{user.properties.display_name}}さんの予定</h1>
+      <h1 v-else-if="user">{{user.display_name}}さんの予定</h1>
       <h1 v-else>ユーザー{{user_id}}の予定</h1>
 
       <!-- Button to add an entry -->
@@ -105,12 +105,9 @@ export default {
     },
     get_user(user_id){
       this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/employees/${user_id}`
+      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
       this.axios.get(url)
-      .then(response => {
-        const record = response.data[0]
-        this.user = record._fields[record._fieldLookup.employee]
-      })
+      .then( ({data}) => { this.user = data })
       .catch(error => { console.error(error) })
       .finally(() => {this.user_loading = false})
     }
