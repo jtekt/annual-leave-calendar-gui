@@ -6,16 +6,16 @@
 
     <img
       class="avatar"
-      v-if="user.properties.avatar_src"
-      :src="user.properties.avatar_src">
+      v-if="user.avatar_src"
+      :src="user.avatar_src">
 
     <account-icon
       class="avatar"
       v-else />
 
     <span class="name">
-      {{user.properties.display_name ||
-        user.properties.name_kanji}}
+      {{user.display_name ||
+        user.name_kanji}}
     </span>
 
   </router-link>

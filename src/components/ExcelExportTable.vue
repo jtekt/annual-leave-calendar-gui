@@ -28,12 +28,12 @@
 
 
     </tr>
-    <template v-for="(user, user_index) in users">
-      <tr :key="`user_${user_index}_yotei`">
+    <template v-for="(item, index) in items">
+      <tr :key="`user_${index}_yotei`">
         <!-- INDEX -->
-        <td rowspan="3">{{user_index +1}}</td>
+        <td rowspan="3">{{index +1}}</td>
         <!-- User name -->
-        <td rowspan="3">{{user.properties.display_name}}</td>
+        <td rowspan="3">{{item.user.display_name}}</td>
 
         <!-- User rank -->
         <td rowspan="3"></td>
@@ -44,7 +44,7 @@
         <!-- Refresh 1-6 -->
         <td rowspan="3">
           {{
-            refresh_entries_first_semester(user)
+            refresh_entries_first_semester(item.user)
             .map(entry => {return `${month_of_entry(entry)}/${day_of_entry(entry)}`})
             .join(', ')
           }}
@@ -52,7 +52,7 @@
 
         <!-- Refresh 1-6 -->
         <td rowspan="3">{{
-          refresh_entries_second_semester(user)
+          refresh_entries_second_semester(item.user)
           .map(entry => {return `${month_of_entry(entry)}/${day_of_entry(entry)}`})
           .join(', ')
         }}</td>
@@ -64,9 +64,9 @@
         <td rowspan="3"></td>
 
         <template v-for="month in 12">
-          <td v-bind:key="`user_${user_index}_yotei_${month}`">
+          <td v-bind:key="`user_${index}_yotei_${month}`">
             {{
-              entries_of_month(user, month)
+              entries_of_month(item, month)
               .filter(entry => {return entry.taken})
               .map(day_of_entry)
               .join(', ')
@@ -75,28 +75,28 @@
           <td
             v-if="month === 5"
             rowspan="3"
-            :key="`user_${user_index}_5_days_taken_${month}`">
-            {{five_days_taken(user, month)}}
+            :key="`user_${index}_5_days_taken_${month}`">
+            {{five_days_taken(item, month)}}
           </td>
           <td
             v-if="month === 8"
             rowspan="3"
-            :key="`user_${user_index}_5_days_taken_${month}`">
-            {{five_days_taken(user, month)}}
+            :key="`user_${index}_5_days_taken_${month}`">
+            {{five_days_taken(item, month)}}
           </td>
         </template>
 
 
       </tr>
 
-      <tr :key="`user_${user_index}_taken`">
+      <tr :key="`user_${index}_taken`">
         <!-- First item: user name -->
 
         <template v-for="month in 12">
           <td
-            :key="`user_${user_index}_taken_${month}`">
+            :key="`user_${index}_taken_${month}`">
             {{
-              entries_of_month(user, month)
+              entries_of_month(item, month)
               .map(day_of_entry)
               .join(', ')
             }}
@@ -108,10 +108,10 @@
 
       </tr>
 
-      <tr :key="`user_${user_index}_bottom`">
+      <tr :key="`user_${index}_bottom`">
 
         <template v-for="month in 12">
-          <td :key="`user_${user_index}_bottom_${month}`">
+          <td :key="`user_${index}_bottom_${month}`">
             <!-- The originaql calendar has a progress bar here -->
           </td>
         </template>
@@ -129,12 +129,12 @@
 export default {
   name: 'ExcelExportTable',
   props: {
-    users: Array
+    items: Array
   },
   methods: {
 
-    entries_of_month(user, month){
-      return user.entries.filter(entry => {
+    entries_of_month(item, month){
+      return item.entries.filter(entry => {
         return new Date(entry.date).getMonth() + 1 === month
       })
     },
@@ -147,25 +147,21 @@ export default {
     month_of_entry(entry){
       return new Date(entry.date).getMonth() + 1
     },
-    refresh_entries_first_semester(user) {
-      return user.entries
-      .filter(entry => {return entry.refresh})
-      .filter(entry => { return this.month_of_entry(entry) <= 6 })
+    refresh_entries_first_semester(item) {
+      return item.entries
+        .filter(entry => {return entry.refresh})
+        .filter(entry => { return this.month_of_entry(entry) <= 6 })
     },
-    refresh_entries_second_semester(user) {
-      return user.entries
-      .filter(entry => {return entry.refresh})
-      .filter(entry => { return this.month_of_entry(entry) > 6 })
+    refresh_entries_second_semester(item) {
+      return item.entries
+        .filter(entry => {return entry.refresh})
+        .filter(entry => { return this.month_of_entry(entry) > 6 })
     },
-    five_days_taken(user, month) {
+    five_days_taken(item, month) {
 
-      let count = user.entries
-      .filter(entry => {
-        return this.month_of_entry(entry) <= month
-      })
-      .reduce( (total, entry) => {
-        return  total + (0.5*entry.am + 0.5*entry.pm)*entry.taken
-      }, 0)
+      let count = item.entries
+      .filter(entry => this.month_of_entry(entry) <= month)
+      .reduce( (total, entry) => total + (0.5*entry.am + 0.5*entry.pm)*entry.taken, 0)
 
       if(count > 5) return '〇'
       else return '✖'
