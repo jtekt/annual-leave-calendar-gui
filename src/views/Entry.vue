@@ -132,7 +132,7 @@ export default {
     },
     get_user(user_id){
       this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v2/employees/${user_id}`
+      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
       this.axios.get(url)
       .then( ({data}) => {
         this.user = data
