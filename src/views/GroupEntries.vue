@@ -1,7 +1,7 @@
 <template>
   <div class="group_entries">
 
-    <h1 v-if="users_loading">
+    <h1 v-if="items_loading">
       <loader>Loading</loader>
     </h1>
 
@@ -31,22 +31,22 @@
 
       <div
         class="user_calendar_wrapper"
-        v-for="(user, index) in users"
+        v-for="(item, index) in items"
         :key="`user_${index}`" >
 
         <!-- top: user and total -->
         <div class="user_wrapper">
-          <User :user="user" />
+          <User :user="item.user" />
           <span class="spacer" />
-          <Total :entries="user.entries" />
+          <Total :entries="item.entries" />
         </div>
 
         <!-- bottom: calendar view -->
-        <Calendar :entries="user.entries"/>
+        <Calendar :entries="item.entries"/>
 
       </div>
 
-      <ExcelExportTable :users="users" />
+      <ExcelExportTable :items="items" />
 
 
     </template>
@@ -73,8 +73,8 @@ export default {
   data() {
     return {
       year: new Date().getYear() + 1900,
-      users: [],
-      users_loading: false,
+      items: [],
+      items_loading: false,
       group: null,
       group_loading: false,
       loading: false,
@@ -86,15 +86,15 @@ export default {
   },
   methods: {
     get_entries(){
-      this.users_loading = true
+      this.items_loading = true
       const url = `${process.env.VUE_APP_API_URL}/groups/${this.group_id}/entries`
       const params = {year: this.year}
       this.axios.get(url, {params})
       .then( ({data}) => {
-        this.users = data
+        this.items = data
       })
       .catch(error => { console.error(error) })
-      .finally( () => { this.users_loading = false })
+      .finally( () => { this.items_loading = false })
     },
     get_group(){
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
@@ -111,7 +111,7 @@ export default {
       var workbook = XLSX.utils.book_new()
       var ws1 = XLSX.utils.table_to_sheet(document.getElementById('export_table'))
       XLSX.utils.book_append_sheet(workbook, ws1, "Sheet1")
-      XLSX.writeFile(workbook, 'export.xlsx')
+      XLSX.writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export`)
 
       //alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
 
