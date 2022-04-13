@@ -1,35 +1,57 @@
 stages:
-  - containerization
-  - deployment
+  - build
+  - deploy
 
 variables:
   APPLICATION_NAME: nenkyuu-calendar-front
-  KUBERNETES_PORT: 30515
+  CONTAINER_IMAGE: ${AWS_ECR_URL}/${APPLICATION_NAME}
+  CONTAINER_IMAGE_TAGGED: ${CONTAINER_IMAGE}:${CI_COMMIT_SHORT_SHA}
+  K8S_SERVICE_PORT: 30515
+  K8S_ECR_SECRET_NAME: ecr-credentials
 
-  # Container image will be stored on Docker HUb
-  CONTAINER_IMAGE: ${DOCKER_HUB_USERNAME}/${APPLICATION_NAME}
-
-containerization:
-  stage: containerization
-  tags:
-    - moreillon
+build:
+  stage: build
+  only:
+    - master
+  before_script:
+    # Create repository if needed
+    - >
+      aws ecr create-repository --repository-name ${APPLICATION_NAME}
+      || echo "Repository might have already existed"
+    # Log in to the registry (AWS credentials are stored as GitLab env variables)
+    - >
+      aws ecr get-login-password
+      | docker login
+      --username AWS
+      --password-stdin
+      ${AWS_ECR_URL}
   script:
-    # Docker Hub login
-    - echo "${DOCKER_HUB_PASSWORD}" | docker login --username ${DOCKER_HUB_USERNAME} --password-stdin
     # Building the container image
     - docker build -t ${CONTAINER_IMAGE} .
+    # Tagging
+    - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
     # Push the container image to the container registry
     - docker push ${CONTAINER_IMAGE}
+    - docker push ${CONTAINER_IMAGE_TAGGED}
 
-deployment:
-  stage: deployment
-  tags:
-    - moreillon
+deploy:
+  stage: deploy
+  only:
+    - master
+  before_script:
+    # Create a secret with ECR credentials for K8s to pull
+    # Here, we use apply to update it
+    # https://stackoverflow.com/questions/47369351/kubectl-apply-vs-kubectl-create
+    - >
+      kubectl create secret docker-registry ${K8S_ECR_SECRET_NAME}
+      --docker-server=${AWS_ECR_URL}
+      --docker-username=AWS
+      --docker-password $(aws ecr get-login-password)
+      --dry-run=client -o yaml
+      | kubectl apply -f -
   script:
     # create/update the deployment
-    #- envsubst < kubernetes_manifest.yml | kubectl apply -f -
-    # Pull latest image of deployment
-    - kubectl rollout restart deployment/${APPLICATION_NAME}
+    - envsubst < kubernetes_manifest.yml | kubectl apply -f -
   environment:
     name: production
     kubernetes:
