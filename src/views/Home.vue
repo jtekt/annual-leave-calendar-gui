@@ -22,7 +22,7 @@
     </template>
 
     <template v-if="language === 'en'">
-      <h1>Holiday calendar</h1>
+      <h1>Annual leaves calendar</h1>
       <p>
         To see your plans for days off, click <router-link :to="{ name: 'user_entries', params: {id: 'self'} }">here</router-link>.
       </p>

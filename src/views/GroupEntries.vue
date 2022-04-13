@@ -60,7 +60,9 @@ import Calendar from '@/components/Calendar.vue'
 import User from '@/components/User.vue'
 import Total from '@/components/Total.vue'
 import ExcelExportTable from '@/components/ExcelExportTable.vue'
-import XLSX from 'xlsx'
+// import XLSX from 'xlsx'
+import {utils, writeFile} from "xlsx";
+
 
 export default {
   name: 'GroupEntries',
@@ -108,10 +110,10 @@ export default {
       })
     },
     excel_export(){
-      var workbook = XLSX.utils.book_new()
-      var ws1 = XLSX.utils.table_to_sheet(document.getElementById('export_table'))
-      XLSX.utils.book_append_sheet(workbook, ws1, "Sheet1")
-      XLSX.writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export`)
+      var workbook = utils.book_new()
+      var ws1 = utils.table_to_sheet(document.getElementById('export_table'))
+      utils.book_append_sheet(workbook, ws1, "Sheet1")
+      writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export.xlsx`)
 
       //alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
 

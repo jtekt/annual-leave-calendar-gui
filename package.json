@@ -1,6 +1,6 @@
 {
   "name": "nenkyuu_calendar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -9,26 +9,26 @@
   },
   "dependencies": {
     "@moreillon/vue_application_template_flex": "^1.1.18",
-    "@moreillon/vue_group_picker": "^1.0.0",
-    "@moreillon/vue_loader": "^1.0.1",
-    "axios": "^0.21.1",
-    "core-js": "^3.9.1",
-    "vue": "^2.6.11",
-    "vue-axios": "^3.2.4",
-    "vue-material-design-icons": "^4.11.0",
-    "vue-router": "^3.5.1",
+    "@moreillon/vue_group_picker": "^1.0.2",
+    "@moreillon/vue_loader": "^1.0.3",
+    "axios": "^0.21.4",
+    "core-js": "^3.21.1",
+    "vue": "^2.6.14",
+    "vue-axios": "^3.4.1",
+    "vue-material-design-icons": "^4.13.0",
+    "vue-router": "^3.5.3",
     "vuex": "^3.6.2",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^4.5.11",
-    "@vue/cli-plugin-eslint": "^4.5.11",
-    "@vue/cli-plugin-router": "^4.5.11",
-    "@vue/cli-plugin-vuex": "^4.5.11",
-    "@vue/cli-service": "^4.5.11",
+    "@vue/cli-plugin-babel": "^4.5.17",
+    "@vue/cli-plugin-eslint": "^4.5.17",
+    "@vue/cli-plugin-router": "^4.5.17",
+    "@vue/cli-plugin-vuex": "^4.5.17",
+    "@vue/cli-service": "^4.5.17",
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.14"
   }
 }
