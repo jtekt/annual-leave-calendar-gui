@@ -12,7 +12,7 @@
   "dependencies": {
     "@moreillon/vue_application_template_flex": "^1.1.18",
     "@moreillon/vue_group_picker": "^1.0.2",
-    "@moreillon/vue_loader": "^1.0.3",
+    "@moreillon/vue_loader": "^1.0.4",
     "axios": "^0.21.4",
     "core-js": "^3.21.1",
     "vue": "^2.6.14",
