@@ -1,24 +1,12 @@
-# nenkyuu_calendar
+# 年休カレンダー GUI
 
-## Project setup
-```
-npm install
-```
+This is the GUI for 年休カレンダー, an application to keep track of annual leaves.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+## Environment variables
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+| Variable  | Description |
+| ---  | --- |
+| VUE_APP_API_URL  | URL of the 年休カレンダー API |
+| VUE_APP_USER_MANAGER_API_URL | URL of the user management service API |
+| VUE_APP_GROUP_MANAGER_API_URL | URL of the group management service API |
+| VUE_APP_AUTHENTICATION_API_URL | URL of the authentication API |
