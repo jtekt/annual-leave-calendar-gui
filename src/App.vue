@@ -1,41 +1,39 @@
 <template>
-  <div id="app">
-    <AppTemplate
-      :authenticate="true"
-      applicationName="年休カレンダー">
+  <AppTemplate
+    :options="options"
+    @user="get_user($event)">
 
-      <template v-slot:navigation>
-        <router-link :to="{ name: 'home'}">
-          <home-icon/><span>ホーム</span>
-        </router-link>
-        <router-link :to="{ name: 'new_entry'}">
-          <plus-icon/>
-          <span>予定追加</span>
-        </router-link>
-        <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">
-          <account-icon/>
-          <span>自分の予定</span>
+    <template v-slot:nav>
+      <router-link :to="{ name: 'home'}">
+        <home-icon/><span>ホーム</span>
+      </router-link>
+      <router-link :to="{ name: 'new_entry'}">
+        <plus-icon/>
+        <span>予定追加</span>
+      </router-link>
+      <router-link :to="{ name: 'user_entries', params: {id: 'self'}}">
+        <account-icon/>
+        <span>自分の予定</span>
 
-        </router-link>
-        <router-link :to="{ name: 'groups'}">
-          <account-multiple-icon />
-          <span>グループ</span>
+      </router-link>
+      <router-link :to="{ name: 'groups'}">
+        <account-multiple-icon />
+        <span>グループ</span>
 
-        </router-link>
-        <router-link :to="{ name: 'about'}">
-          <information-outline-icon />
-          <span>About</span>
-        </router-link>
-      </template>
+      </router-link>
+      <router-link :to="{ name: 'about'}">
+        <information-outline-icon />
+        <span>About</span>
+      </router-link>
+    </template>
 
+  </AppTemplate>
 
-    </AppTemplate>
-
-  </div>
 </template>
 
 <script>
-import AppTemplate from '@moreillon/vue_application_template_flex'
+// import AppTemplate from '@moreillon/vue_application_template_flex'
+import AppTemplate from '@moreillon/vue_application_template'
 
 
 export default {
@@ -43,15 +41,20 @@ export default {
   components: {
     AppTemplate,
   },
-  mounted(){
-    this.get_current_user()
+  data(){
+    return {
+      options: {
+        title: '年休カレンダー',
+        authenticate: true,
+        login_url: process.env.VUE_APP_LOGIN_URL || `${process.env.VUE_APP_AUTHENTICATION_API_URL}/login`,
+        identification_url: process.env.VUE_APP_IDENTIFICATION_URL || `${process.env.VUE_APP_AUTHENTICATION_API_URL}/whoami`
+      }
+    }
   },
+
   methods: {
-    get_current_user(){
-      const url = `${process.env.VUE_APP_AUTHENTICATION_API_URL}/whoami`
-      this.axios.get(url)
-      .then(response => { this.$store.commit('set_current_user',response.data) })
-      .catch(error => { console.error(error) })
+    get_user(user){
+      this.$store.commit('set_current_user',user)
     }
   }
 
