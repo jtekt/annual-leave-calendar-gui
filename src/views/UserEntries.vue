@@ -2,11 +2,8 @@
   <v-card
     :loading="entries_loading">
 
-    <h1 v-if="entries_loading">
-      <Loader>Loading entries</loader>
-    </h1>
 
-    <template v-else>
+    <template v-if="!entries_loading">
 
       <v-container fluid>
         <v-row align="baseline">
@@ -27,7 +24,7 @@
             cols="auto"
             v-if=" current_user_id === user_id || user_id === 'self' ">
             <v-btn
-              :to="{ name: 'new_entry'}">
+              :to="{ name: 'new_entry' }">
               <v-icon>mdi-plus</v-icon>
               <span class="ml-2">予定追加</span>
             </v-btn>
