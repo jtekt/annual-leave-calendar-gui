@@ -60,7 +60,7 @@
         <p>
           <v-select
             :disabled="!editable"
-            :items="[ '有休', '前半休', '後半休' ]"
+            :items="types"
             v-model="entry.type"
             :label="$t('Type')" />
         </p>
@@ -181,6 +181,13 @@ export default {
     editable(){
       const user_id = this.entry.user_id.toString()
       return user_id === this.current_user_id
+    },
+    types(){
+      return [
+        {text: this.$t('All day'), value: '有休'},
+        {text: this.$t('Morning'), value: '前半休'},
+        {text: this.$t('Afternoon'), value: '後半休',}
+      ]
     }
   },
 }

@@ -6,5 +6,8 @@
   "My entries": "自分の予定",
   "Export": "エクスポート",
   "Type": "タイプ",
-  "Taken": "取得した"
+  "Taken": "取得した",
+  "Afternoon": "後半休",
+  "Morning": "前半休",
+  "All day": "有休"
 }

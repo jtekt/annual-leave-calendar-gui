@@ -20,7 +20,7 @@
         <v-row>
           <v-col>
             <v-select
-              :items="[ '有休', '前半休', '後半休' ]"
+              :items="types"
               v-model="type"
               :label="$t('Type')" />
           </v-col>
@@ -55,6 +55,7 @@ export default {
     return {
       date: null,
       type: "有休",
+      
     }
   },
   methods: {
@@ -83,6 +84,13 @@ export default {
     submit_disabled(){
       return !this.date
     },
+    types(){
+      return [
+        {text: this.$t('All day'), value: '有休'},
+        {text: this.$t('Morning'), value: '前半休'},
+        {text: this.$t('Afternoon'), value: '後半休',}
+      ]
+    }
   }
 }
 </script>
