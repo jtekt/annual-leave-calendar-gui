@@ -51,7 +51,7 @@
 
         <p class="">
           <v-checkbox 
-            label="取得した" 
+            :label="$t('Taken')" 
             :disabled="!editable"
             v-model="entry.taken"
             @change="update_entry()"/>
@@ -62,7 +62,7 @@
             :disabled="!editable"
             :items="[ '有休', '前半休', '後半休' ]"
             v-model="entry.type"
-            label="タイプ" />
+            :label="$t('Type')" />
         </p>
 
         <p class="">
