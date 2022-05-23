@@ -1,55 +1,59 @@
 <template>
-  <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
+  <AppTemplate
+    :options="options"
+    @user="get_user($event)">
 
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
+    <template v-slot:nav>
+      <v-list
+        dense
+        nav >
+        <v-list-item
+          v-for="(item, index) in nav"
+          :key="`nav_item_${index}`"
+          :to="item.to"
+          exact>
+          <v-list-item-icon>
+            <v-icon>{{item.icon}}</v-icon>
+          </v-list-item-icon>
 
-      <v-spacer></v-spacer>
+          <v-list-item-content>
+            <v-list-item-title>{{item.title}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+    </template>
 
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+  </AppTemplate>
 </template>
 
 <script>
-
+import AppTemplate from '@moreillon/vue_application_template_vuetify'
 export default {
   name: 'App',
 
+  components: {
+    AppTemplate
+  },
+
   data: () => ({
-    //
+    options: {
+      title: "年休カレンダー",
+      authenticate: true,
+      login_url: `${process.env.VUE_APP_AUTHENTICATION_API_URL}/login`,
+      identification_url: `${process.env.VUE_APP_AUTHENTICATION_API_URL}/v2/whoami`,
+    },
+    nav: [
+      {title: '予定追加', to: {name: 'new_entry'}, icon: 'mdi-plus'},
+      {title: '自分の予定', to: {name: 'user_entries', params: {id: 'self'}}, icon: 'mdi-account'},
+      {title: '自分の予定', to: {name: 'groups'}, icon: 'mdi-account-multiple'},
+      {title: 'アプリについて', to: {name: 'about'}, icon: 'mdi-information-outline'},
+    ]
   }),
+
+  methods: {
+    get_user(user){
+      console.log(user)
+    }
+  }
 };
 </script>
