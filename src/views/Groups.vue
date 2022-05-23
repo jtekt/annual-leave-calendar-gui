@@ -1,10 +1,19 @@
 <template>
-  <v-card>
-    <h1>Groups</h1>
+  <v-card
+    max-width="30rem"
+    class="mx-auto">
 
-    <GroupPicker
-      class="group_picker"
-      @selection="select_group($event)"/>
+    <v-card-title>
+      Groups
+    </v-card-title>
+
+    <v-card-text>
+      <GroupPicker
+        class="group_picker"
+        @selection="select_group($event)"/>
+    </v-card-text>
+
+    
 
 
 
@@ -43,9 +52,6 @@ export default {
 <style scoped>
 .group_picker {
   text-align: left;
-  max-width: 600px;
-  max-height: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  max-height: 70vh;
 }
 </style>

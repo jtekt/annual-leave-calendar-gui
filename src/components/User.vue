@@ -8,10 +8,12 @@
       class="avatar"
       v-if="user.avatar_src"
       :src="user.avatar_src">
+    
+    <v-icon v-else>mdi-account</v-icon>
 
-    <account-icon
+    <!-- <account-icon
       class="avatar"
-      v-else />
+      v-else /> -->
 
     <span class="name">
       {{user.display_name ||

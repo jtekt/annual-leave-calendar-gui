@@ -1,89 +1,82 @@
 <template>
-  <v-card>
-
-    <h1 v-if="entry_loading">
-      <loader>Loading</loader>
-    </h1>
-
-    <template v-else-if="entry">
-
-      <!-- date as header -->
-      <h1>{{format_date(entry.date)}}</h1>
-
-      <!-- user info -->
-      <p v-if="user_loading">
-        <Loader>Loading user info</loader>
-      </p>
-      <p v-else-if="user">
-        <User :user="user" />
-      </p>
-
-      <p v-else>
-        ユーザー: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
-          {{entry.user_id}}
-        </router-link>
-      </p>
-
-      <p class="">
-        <label>取得した: </label>
-        <input
-          type="checkbox"
-          v-model="entry.taken"
-          @change="update_entry()"
-          :disabled="!editable">
-      </p>
-
-      <!--
-      <p class="">
-        <label>AM: </label>
-        <input
-          type="checkbox"
-          v-model="entry.am"
-          @change="update_entry()"
-          :disabled="!editable">
-      </p>
-      <p class="">
-        <label>PM: </label>
-        <input
-          type="checkbox"
-          v-model="entry.pm"
-          @change="update_entry()"
-          :disabled="!editable">
-      </p>
-      -->
-
-      <p>
-        <select
-          @change="update_entry()"
-          v-model="entry.type">
-          <option value="有休">有休 / All day</option>
-          <option value="前半休">前半休 / Morning</option>
-          <option value="後半休">後半休 / Afternoon</option>
-        </select>
-      </p>
-
-      <p class="">
-        <label>Refresh: </label>
-        <input
-          type="checkbox"
-          v-model="entry.refresh"
-          @change="update_entry()"
-          :disabled="!editable">
-      </p>
+  <v-card
+    max-width="30rem"
+    class="mx-auto"
+    :loading="entry_loading">
 
 
+    <template v-if="entry">
 
-      <p class="">
-        <button
-          type="button"
-          @click="delete_entry()"
-          v-if="editable">
-          <delete-icon/>
-          <span>予定削除</span>
-        </button>
-      </p>
+      <v-container fluid>
+        <v-row align="baseline">
+          <v-col>
+            <v-toolbar-title>{{format_date(entry.date)}}</v-toolbar-title>
+          </v-col>
+          <v-spacer />
+
+          <v-col
+            cols="auto"
+            v-if="editable">
+            <v-btn
+              color="#c00000"
+              dark
+              @click="delete_entry()">
+              <v-icon>mdi-delete</v-icon>
+              <span class="ml-2">予定削除</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+        
+      </v-container>
+      <v-divider/>
+
+      <v-card-text>
+        <!-- user info -->
+        <p v-if="user_loading">
+          <Loader>Loading user info</loader>
+        </p>
+        <p v-else-if="user">
+          <User :user="user" />
+        </p>
+
+        <p v-else>
+          ユーザー: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
+            {{entry.user_id}}
+          </router-link>
+        </p>
+
+        <p class="">
+          <v-checkbox 
+            label="取得した" 
+            :disabled="!editable"
+            v-model="entry.taken"
+            @change="update_entry()"/>
+        </p>
+
+        <p>
+          <v-select
+              :items="[ '有休', '前半休', '後半休' ]"
+              v-model="entry.type"
+              label="タイプ" />
+        </p>
+
+        <p class="">
+          <v-checkbox 
+            label="Refresh" 
+            :disabled="!editable"
+            v-model="entry.refresh"
+            @change="update_entry()"/>
+        </p>
+      </v-card-text>
+
     </template>
 
+
+    <v-snackbar
+      v-model="snackbar.show" 
+      :color="snackbar.color">
+      {{snackbar.message}}
+    </v-snackbar>
 
 
 
@@ -108,6 +101,11 @@ export default {
       entry_loading: false,
       user: null,
       user_loading: false,
+      snackbar: {
+        show: false,
+        message: null,
+        color: 'red',
+      }
     }
   },
   mounted(){
@@ -146,7 +144,11 @@ export default {
       const entry_id = this.entry._id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.put(url, this.entry)
-      .then(() => {})
+      .then(() => {
+        this.snackbar.show = true
+        this.snackbar.message = 'Entry saved'
+        this.snackbar.color = 'green'
+      })
       .catch(error => {
         console.error(error)
         alert(`Error while updating the entry`)

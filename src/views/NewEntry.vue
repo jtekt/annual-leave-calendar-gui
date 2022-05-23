@@ -20,7 +20,7 @@
         <v-row>
           <v-col>
             <v-select
-              :items="types"
+              :items="[ '有休', '前半休', '後半休' ]"
               v-model="type"
               label="タイプ" />
           </v-col>
@@ -54,11 +54,6 @@ export default {
     return {
       date: null,
       type: "有休",
-      types: [
-        '有休',
-        '前半休',
-        '後半休',
-      ]
     }
   },
   methods: {

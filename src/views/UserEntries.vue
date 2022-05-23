@@ -17,8 +17,7 @@
             <v-select
               :items="Array.from(Array(50).keys()).map(x => x+2015)"
               v-model="year"
-              label="Year"
-            ></v-select>
+              label="Year" />
           </v-col>
           <v-col
             cols="auto"

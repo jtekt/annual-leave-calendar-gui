@@ -45,14 +45,14 @@ export default {
     nav: [
       {title: '予定追加', to: {name: 'new_entry'}, icon: 'mdi-plus'},
       {title: '自分の予定', to: {name: 'user_entries', params: {id: 'self'}}, icon: 'mdi-account'},
-      {title: '自分の予定', to: {name: 'groups'}, icon: 'mdi-account-multiple'},
-      {title: 'アプリについて', to: {name: 'groups'}, icon: 'mdi-account-multiple'},
+      {title: 'グループ', to: {name: 'groups'}, icon: 'mdi-account-multiple'},
+      {title: 'アプリについて', to: {name: 'about'}, icon: 'mdi-information-outline'},
     ]
   }),
 
   methods: {
     get_user(user){
-      console.log(user)
+      this.$store.commit('set_current_user',user)
     }
   }
 };
