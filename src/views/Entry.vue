@@ -1,5 +1,5 @@
 <template>
-  <div class="entry">
+  <v-card>
 
     <h1 v-if="entry_loading">
       <loader>Loading</loader>
@@ -88,7 +88,7 @@
 
 
 
-  </div>
+  </v-card>
 </template>
 
 <script>

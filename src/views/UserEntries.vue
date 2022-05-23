@@ -1,49 +1,56 @@
 <template>
-  <div class="user_entries">
+  <v-card
+    :loading="entries_loading">
 
     <h1 v-if="entries_loading">
       <Loader>Loading entries</loader>
     </h1>
 
     <template v-else>
-      <h1 v-if="user_loading">
-        <Loader>Loading user info</loader>
-      </h1>
 
-      <h1 v-else-if="user">{{user.display_name}}さんの予定</h1>
-      <h1 v-else>ユーザー{{user_id}}の予定</h1>
+      <v-container fluid>
+        <v-row align="baseline">
+          <v-col>
+            <v-toolbar-title v-if="user">{{user.display_name}}さんの予定</v-toolbar-title>
+            <v-toolbar-title v-else>ユーザー{{user_id}}の予定</v-toolbar-title>
+          </v-col>
+          <v-spacer />
+          <v-col
+            cols="auto">
+            <v-select
+              :items="Array.from(Array(50).keys()).map(x => x+2015)"
+              v-model="year"
+              label="Year"
+            ></v-select>
+          </v-col>
+          <v-col
+            cols="auto"
+            v-if=" current_user_id === user_id || user_id === 'self' ">
+            <v-btn
+              :to="{ name: 'new_entry'}">
+              <v-icon>mdi-plus</v-icon>
+              <span class="ml-2">予定追加</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+        
+      </v-container>
+      <v-divider/>
 
-      <!-- Button to add an entry -->
-      <p v-if=" current_user_id === user_id || user_id === 'self' ">
-        <router-link
-          class="button"
-          :to="{ name: 'new_entry'}">
-          <plus-icon />
-          <span>予定追加</span>
-        </router-link>
-      </p>
+      <v-card-text>
+        <p>
+          <Total :entries="entries" />
+        </p>
 
-      <p>
-        <select
-          class=""
-          v-model="year"
-          @change="get_entries()">
-          <option
-            v-for="year in Array.from(Array(50).keys()).map(x => x+2015)"
-            :key="`year_option_${year}`"
-            :value="year">{{year}}</option>
-        </select>
-      </p>
+        <Calendar :entries="entries"/>
+      </v-card-text>
 
-      <p>
-        <Total :entries="entries" />
-      </p>
 
-      <Calendar :entries="entries"/>
+      
     </template>
 
 
-  </div>
+  </v-card>
 </template>
 
 <script>

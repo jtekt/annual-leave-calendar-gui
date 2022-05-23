@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <v-card>
 
     <p>
       <select class="" v-model="language">
@@ -40,7 +40,7 @@
 
 
 
-  </div>
+  </v-card>
 </template>
 
 <script>

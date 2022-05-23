@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <v-card>
     <h1>Groups</h1>
 
     <GroupPicker
@@ -9,7 +9,7 @@
 
 
 
-  </div>
+  </v-card>
 </template>
 
 <script>

@@ -1,5 +1,5 @@
 <template>
-  <div class="group_entries">
+  <v-card>
 
     <h1 v-if="items_loading">
       <loader>Loading</loader>
@@ -51,7 +51,7 @@
 
     </template>
 
-  </div>
+  </v-card>
 </template>
 
 <script>

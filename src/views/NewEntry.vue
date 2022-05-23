@@ -1,5 +1,5 @@
 <template>
-  <div class="new_entry">
+  <v-card>
     <h1>予定追加</h1>
 
     <form class="" @submit.prevent="submit()">
@@ -29,7 +29,7 @@
 
 
 
-  </div>
+  </v-card>
 </template>
 
 <script>
