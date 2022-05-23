@@ -32,18 +32,22 @@
 
       <v-card-text>
         <!-- user info -->
-        <p v-if="user_loading">
-          <Loader>Loading user info</loader>
-        </p>
-        <p v-else-if="user">
-          <User :user="user" />
-        </p>
 
-        <p v-else>
-          ユーザー: <router-link :to="{ name: 'user_entries', params: {id: entry.user_id} }">
-            {{entry.user_id}}
-          </router-link>
-        </p>
+        <v-row align="baseline">
+          <v-col cols="auto">
+            User:
+          </v-col>
+          <v-col>
+            <Loader v-if="user_loading">Loading user info</loader>
+            <User v-else-if="user" :user="user" />
+            <router-link 
+              v-else
+              :to="{ name: 'user_entries', params: {id: entry.user_id} }">
+              {{entry.user_id}}
+            </router-link>
+          </v-col>
+        </v-row>
+
 
         <p class="">
           <v-checkbox 
@@ -55,9 +59,10 @@
 
         <p>
           <v-select
-              :items="[ '有休', '前半休', '後半休' ]"
-              v-model="entry.type"
-              label="タイプ" />
+            :disabled="!editable"
+            :items="[ '有休', '前半休', '後半休' ]"
+            v-model="entry.type"
+            label="タイプ" />
         </p>
 
         <p class="">
