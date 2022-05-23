@@ -4,7 +4,7 @@
     class="mx-auto">
 
     <v-card-title>
-      予定追加
+      {{ $t('Create entry') }}
     </v-card-title>
     <v-divider />
 
