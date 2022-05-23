@@ -1,35 +1,45 @@
 <template>
-  <div class="new_entry">
-    <h1>予定追加</h1>
+  <v-card
+    max-width="30rem"
+    class="mx-auto">
 
-    <form class="" @submit.prevent="submit()">
-      <input type="date" v-model="date">
+    <v-card-title>
+      予定追加
+    </v-card-title>
+    <v-divider />
 
-      <!--
-      <div class="">
-        <label>AM</label>
-        <input type="checkbox" v-model="am">
-      </div>
-      <div class="">
-        <label>PM</label>
-        <input type="checkbox" v-model="pm">
-      </div>
-      -->
+    <v-card-text>
+      <v-form @submit.prevent="submit()">
+        <v-row>
+          <v-col>
+            <v-date-picker 
+              elevation="1"
+              v-model="date" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-select
+              :items="[ '有休', '前半休', '後半休' ]"
+              v-model="type"
+              label="タイプ" />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <v-btn 
+              :disabled="submit_disabled"
+              type="submit">
+              作成
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-form>
+    </v-card-text>
 
-      <select v-model="type">
-        <option value="有休">有休 / All day</option>
-        <option value="前半休">前半休 / Morning</option>
-        <option value="後半休">後半休 / Afternoon</option>
-      </select>
+    
 
-      <input type="submit" :disabled="submit_disabled">
-    </form>
-
-
-
-
-
-  </div>
+  </v-card>
 </template>
 
 <script>

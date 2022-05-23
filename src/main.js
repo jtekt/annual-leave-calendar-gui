@@ -4,12 +4,12 @@ import router from './router'
 import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import Loader from '@moreillon/vue_loader'
 
 Vue.use(VueAxios, axios)
 
 Vue.config.productionTip = false
 
-import Loader from '@moreillon/vue_loader'
 Vue.component('Loader', Loader)
 
 
@@ -20,6 +20,7 @@ import PluseIcon from 'vue-material-design-icons/Plus.vue'
 import AccountIcon from 'vue-material-design-icons/Account.vue'
 import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
 import DeleteIcon from 'vue-material-design-icons/Delete.vue'
+import vuetify from './plugins/vuetify'
 
 Vue.component('home-icon', HomeIcon)
 Vue.component('account-multiple-icon', AccountMultipleIcon)
@@ -31,5 +32,6 @@ Vue.component('delete-icon', DeleteIcon)
 new Vue({
   router,
   store,
+  vuetify,
   render: h => h(App)
 }).$mount('#app')

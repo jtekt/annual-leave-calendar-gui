@@ -1,13 +1,20 @@
 <template>
-  <div class="about">
-    <h1>年休カレンダー</h1>
-    <p>Developped by Maxime MOREILLON</p>
-    <p>Version {{version}}</p>
-    <p>API URL: {{api_url}}</p>
-    <p>User manager API URL: {{user_manager_api_url}}</p>
-    <p>Authentication API URL: {{authentication_api_url}}</p>
-    <p>Group manager API URL: {{group_manager_api_url}}</p>
-  </div>
+  <v-card
+    max-width="30rem"
+    class="mx-auto">
+    <v-card-title>
+      年休カレンダー
+    </v-card-title>
+    <v-card-text>
+      <p>Developped by Maxime MOREILLON</p>
+      <p>Version {{version}}</p>
+      <p>API URL: {{api_url}}</p>
+      <p>User manager API URL: {{user_manager_api_url}}</p>
+      <p>Authentication API URL: {{authentication_api_url}}</p>
+      <p>Group manager API URL: {{group_manager_api_url}}</p>
+    </v-card-text>
+    
+  </v-card>
 </template>
 
 <script>

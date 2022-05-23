@@ -1,57 +1,63 @@
 <template>
-  <div class="group_entries">
+  <v-card
+    :loading="items_loading">
 
-    <h1 v-if="items_loading">
-      <loader>Loading</loader>
-    </h1>
+    <template v-if="!items_loading">
 
-    <template v-else>
+      <v-container fluid>
+        <v-row align="baseline">
+          <v-col>
+            <v-toolbar-title v-if="group">{{group.properties.name}}の予定</v-toolbar-title>
+            <v-toolbar-title v-else>グループ{{group_id}}の予定</v-toolbar-title>
+          </v-col>
+          <v-spacer />
+          <v-col
+            cols="auto">
+            <v-select
+              :items="Array.from(Array(50).keys()).map(x => x+2015)"
+              v-model="year"
+              label="Year" />
+          </v-col>
+          <v-col cols="auto">
+            <v-btn @click="excel_export()">
+              <v-icon>mdi-download</v-icon>
+              <span class="ml-2">エクセルにエクスポート</span>
+            </v-btn>
+          </v-col>
+        </v-row>
+        
+      </v-container>
+      <v-divider/>
 
-      <h1 v-if="group_loading">
-        <Loader>Loading group info</loader>
-      </h1>
+      <v-card-text>
+        <div
+          class="user_calendar_wrapper"
+          v-for="(item, index) in items"
+          :key="`user_${index}`" >
 
-      <h1 v-else-if="group">{{group.properties.name}}の予定</h1>
-      <h1 v-else>グループ{{group_id}}の予定</h1>
+          <!-- top: user and total -->
+          <div class="user_wrapper">
+            <User :user="item.user" />
+            <span class="spacer" />
+            <Total :entries="item.entries" />
+          </div>
 
-      <p>
-        <select
-          class=""
-          v-model="year"
-          @change="get_entries()">
-          <option
-            v-for="year in Array.from(Array(50).keys()).map(x => x+2015)"
-            :key="`year_option_${year}`"
-            :value="year">{{year}}</option>
-        </select>
-      </p>
+          <!-- bottom: calendar view -->
+          <Calendar :entries="item.entries"/>
 
-      <p><button @click="excel_export()">エクセルにエクスポート</button> </p>
-
-
-      <div
-        class="user_calendar_wrapper"
-        v-for="(item, index) in items"
-        :key="`user_${index}`" >
-
-        <!-- top: user and total -->
-        <div class="user_wrapper">
-          <User :user="item.user" />
-          <span class="spacer" />
-          <Total :entries="item.entries" />
         </div>
+      </v-card-text>
 
-        <!-- bottom: calendar view -->
-        <Calendar :entries="item.entries"/>
 
-      </div>
+
+      
 
       <ExcelExportTable :items="items" />
 
 
     </template>
 
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -131,10 +137,7 @@ export default {
 
 
 .user_calendar_wrapper {
-  //border: 1px solid #dddddd;
-  //border-radius: 0.5em;
   margin: 1em 0;
-  //padding: 1em;
   padding: 1em 0;
 }
 
