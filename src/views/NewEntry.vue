@@ -4,7 +4,7 @@
     class="mx-auto">
 
     <v-card-title>
-      予定追加
+      {{ $t('Create entry') }}
     </v-card-title>
     <v-divider />
 
@@ -22,7 +22,7 @@
             <v-select
               :items="[ '有休', '前半休', '後半休' ]"
               v-model="type"
-              label="タイプ" />
+              :label="$t('Type')" />
           </v-col>
         </v-row>
         <v-row>
@@ -30,7 +30,8 @@
             <v-btn 
               :disabled="submit_disabled"
               type="submit">
-              作成
+              <v-icon>mdi-plus</v-icon>
+              <span class="ml-2">{{$t('Create entry')}}</span>
             </v-btn>
           </v-col>
         </v-row>

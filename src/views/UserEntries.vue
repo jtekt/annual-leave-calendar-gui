@@ -8,8 +8,8 @@
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
-            <v-toolbar-title v-if="user">{{user.display_name}}さんの予定</v-toolbar-title>
-            <v-toolbar-title v-else>ユーザー{{user_id}}の予定</v-toolbar-title>
+            <v-toolbar-title v-if="user">{{user.display_name}}</v-toolbar-title>
+            <v-toolbar-title v-else>{{user_id}}</v-toolbar-title>
           </v-col>
           <v-spacer />
           <v-col
@@ -25,7 +25,7 @@
             <v-btn
               :to="{ name: 'new_entry' }">
               <v-icon>mdi-plus</v-icon>
-              <span class="ml-2">予定追加</span>
+              <span class="ml-2">{{ $t('Create entry')}}</span>
             </v-btn>
           </v-col>
         </v-row>

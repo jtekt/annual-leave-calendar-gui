@@ -7,6 +7,11 @@
       <v-list
         dense
         nav >
+        <v-list-item>
+          <LocaleSelector />
+        </v-list-item>
+        <v-divider />
+
         <v-list-item
           v-for="(item, index) in nav"
           :key="`nav_item_${index}`"
@@ -28,11 +33,15 @@
 
 <script>
 import AppTemplate from '@moreillon/vue_application_template_vuetify'
+import LocaleSelector from './components/LocaleSelector.vue'
+
+
 export default {
   name: 'App',
 
   components: {
-    AppTemplate
+    AppTemplate,
+    LocaleSelector
   },
 
   data: () => ({
@@ -42,17 +51,21 @@ export default {
       login_url: process.env.VUE_APP_LOGIN_URL || `${process.env.VUE_APP_AUTHENTICATION_API_URL}/login`,
       identification_url: process.env.VUE_APP_IDENTIFICATION_URL || `${process.env.VUE_APP_AUTHENTICATION_API_URL}/v2/whoami`,
     },
-    nav: [
-      {title: '予定追加', to: {name: 'new_entry'}, icon: 'mdi-plus'},
-      {title: '自分の予定', to: {name: 'user_entries', params: {id: 'self'}}, icon: 'mdi-account'},
-      {title: 'グループ', to: {name: 'groups'}, icon: 'mdi-account-multiple'},
-      {title: 'アプリについて', to: {name: 'about'}, icon: 'mdi-information-outline'},
-    ]
   }),
 
   methods: {
     get_user(user){
       this.$store.commit('set_current_user',user)
+    },
+  },
+  computed: {
+    nav(){
+      return [
+        {title: this.$t('Create entry'), to: {name: 'new_entry'}, icon: 'mdi-plus'},
+        {title: this.$t('My entries'), to: {name: 'user_entries', params: {id: 'self'}}, icon: 'mdi-account'},
+        {title: this.$t('Groups'), to: {name: 'groups'}, icon: 'mdi-account-multiple'},
+        {title: this.$t('About'), to: {name: 'about'}, icon: 'mdi-information-outline'},
+      ]
     }
   }
 };

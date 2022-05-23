@@ -7,8 +7,8 @@
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
-            <v-toolbar-title v-if="group">{{group.properties.name}}の予定</v-toolbar-title>
-            <v-toolbar-title v-else>グループ{{group_id}}の予定</v-toolbar-title>
+            <v-toolbar-title v-if="group">{{group.properties.name}}</v-toolbar-title>
+            <v-toolbar-title v-else>{{group_id}}</v-toolbar-title>
           </v-col>
           <v-spacer />
           <v-col
@@ -21,7 +21,7 @@
           <v-col cols="auto">
             <v-btn @click="excel_export()">
               <v-icon>mdi-download</v-icon>
-              <span class="ml-2">エクセルにエクスポート</span>
+              <span class="ml-2">{{$t('Export')}}</span>
             </v-btn>
           </v-col>
         </v-row>

@@ -21,6 +21,7 @@ import AccountIcon from 'vue-material-design-icons/Account.vue'
 import InformationOutlineIcon from 'vue-material-design-icons/InformationOutline.vue'
 import DeleteIcon from 'vue-material-design-icons/Delete.vue'
 import vuetify from './plugins/vuetify'
+import i18n from './i18n'
 
 Vue.component('home-icon', HomeIcon)
 Vue.component('account-multiple-icon', AccountMultipleIcon)
@@ -33,5 +34,6 @@ new Vue({
   router,
   store,
   vuetify,
+  i18n,
   render: h => h(App)
 }).$mount('#app')
