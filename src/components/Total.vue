@@ -25,14 +25,20 @@ export default {
   computed: {
     total_yotei(){
       return this.entries.reduce( (total, entry) => {
-        if(entry.type === '前半休' || entry.type === '後半休') return total + 0.5
-        return  total + 0.5*entry.am + 0.5*entry.pm
+        if (entry.type === '前半休' || entry.type === '後半休') return total + 0.5
+        else if (entry.am || entry.pm) return total + (0.5 * entry.am + 0.5 * entry.pm)
+        else return total + 1
       }, 0)
     },
     total_taken(){
       return this.entries.reduce( (total, entry) => {
-        if(entry.type === '前半休' || entry.type === '後半休') return total+0.5*entry.taken
-        return  total + (0.5*entry.am + 0.5*entry.pm)*entry.taken
+        if (entry.taken) {
+          if (entry.type === '前半休' || entry.type === '後半休') return total + 0.5
+          else if (entry.am || entry.pm) return total + (0.5 * entry.am + 0.5 * entry.pm)
+          else return total + 1
+        }
+        else return total
+        
       }, 0)
     },
   }

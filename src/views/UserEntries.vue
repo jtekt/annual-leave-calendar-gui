@@ -87,9 +87,8 @@ export default {
       const url = `${process.env.VUE_APP_API_URL}/users/${this.user_id}/entries`
       const params = {year: this.year}
       this.axios.get(url, {params})
-      .then(response => {
-        this.entries = []
-        response.data.forEach((entry) => { this.entries.push(entry) })
+      .then( ({data}) => {
+        this.entries = data
       })
       .catch(error => {
         alert(`Failed to query items`)
@@ -97,6 +96,7 @@ export default {
        })
       .finally(() => {this.entries_loading = false})
     },
+
     entries_of_month(month){
       return this.entries.filter(entry => {
         // NOTE: month start at 0
