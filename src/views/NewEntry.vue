@@ -13,6 +13,7 @@
         <v-row>
           <v-col>
             <v-date-picker 
+              color="black"
               elevation="1"
               v-model="date" />
           </v-col>
