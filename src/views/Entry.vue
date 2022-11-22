@@ -62,7 +62,8 @@
             :disabled="!editable"
             :items="types"
             v-model="entry.type"
-            :label="$t('Type')" />
+            :label="$t('Type')"
+            @change="update_entry()" />
         </p>
 
         <p class="">
@@ -146,6 +147,7 @@ export default {
       .finally( () => {this.user_loading = false})
     },
     update_entry(){
+      this.entry_loading = true
       const entry_id = this.entry._id
       const url = `${process.env.VUE_APP_API_URL}/entries/${entry_id}`
       this.axios.put(url, this.entry)
@@ -158,6 +160,8 @@ export default {
         console.error(error)
         alert(`Error while updating the entry`)
       })
+      .finally(() => { this.entry_loading = false })
+
     },
     format_date(date){
       const options = {year: '2-digit', month: '2-digit', day: '2-digit' };
