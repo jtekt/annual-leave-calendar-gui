@@ -15,7 +15,6 @@ variables:
   CONTAINER_IMAGE_TAGGED: ${CONTAINER_IMAGE}:${CI_COMMIT_SHORT_SHA}
 
   K8S_SERVICE_PORT: 30515
-  K8S_ECR_SECRET_NAME: ecr-credentials
 
 build:
   stage: build
