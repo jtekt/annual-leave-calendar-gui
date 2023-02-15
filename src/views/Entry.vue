@@ -24,7 +24,7 @@
         <v-row align="baseline">
           <v-col cols="auto"> User: </v-col>
           <v-col>
-            <Loader v-if="user_loading">Loading user info</Loader>
+            <v-progress-circular v-if="user_loading" indeterminate />
             <User v-else-if="user" :user="user" />
             <router-link
               v-else

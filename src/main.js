@@ -7,8 +7,7 @@ import VueAxios from "vue-axios"
 import vuetify from "./plugins/vuetify"
 import i18n from "./i18n"
 
-// TODO: rename to something more specific
-axios.defaults.baseURL = process.env.VUE_APP_API_URL
+axios.defaults.baseURL = process.env.VUE_APP_NENKYUU_CALENDAR_API_URL
 
 Vue.use(VueAxios, axios)
 
