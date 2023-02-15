@@ -1,10 +1,7 @@
 <template>
-  <v-card
-    max-width="30rem"
-    class="mx-auto">
-
+  <v-card max-width="30rem" class="mx-auto">
     <v-card-title>
-      {{ $t('Create entry') }}
+      {{ $t("Create entry") }}
     </v-card-title>
     <v-divider />
 
@@ -12,35 +9,24 @@
       <v-form @submit.prevent="submit()">
         <v-row>
           <v-col>
-            <v-date-picker 
-              color="black"
-              elevation="1"
-              v-model="date" />
+            <v-date-picker color="black" elevation="1" v-model="date" />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-select
-              :items="types"
-              v-model="type"
-              :label="$t('Type')" />
+            <v-select :items="types" v-model="type" :label="$t('Type')" />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn 
-              :disabled="submit_disabled"
-              type="submit">
+            <v-btn :disabled="submit_disabled" type="submit">
               <v-icon>mdi-plus</v-icon>
-              <span class="ml-2">{{$t('Create entry')}}</span>
+              <span class="ml-2">{{ $t("Create entry") }}</span>
             </v-btn>
           </v-col>
         </v-row>
       </v-form>
     </v-card-text>
-
-    
-
   </v-card>
 </template>
 
@@ -48,51 +34,53 @@
 // @ is an alias to /src
 
 export default {
-  name: 'Entry',
-  components: {
-
-  },
+  name: "Entry",
+  components: {},
   data() {
     return {
       date: null,
       type: "有休",
-      
     }
   },
   methods: {
-    submit(){
-      const user_id = 'self'
-      const url = `${process.env.VUE_APP_API_URL}/users/${user_id}/entries`
+    submit() {
+      const user_id = "self"
+      const url = `/users/${user_id}/entries`
       const body = {
         date: this.date,
         type: this.type,
       }
-      this.axios.post(url,body)
-      .then(response => { this.$router.push({name: 'entry', params: {id: response.data._id}}) })
-      .catch(error => {
-        if(!error.response) {
-          alert(`Error while creating 予定`)
-          console.error(error)
-          return
-        }
+      this.axios
+        .post(url, body)
+        .then((response) => {
+          this.$router.push({
+            name: "entry",
+            params: { id: response.data._id },
+          })
+        })
+        .catch((error) => {
+          if (!error.response) {
+            alert(`Error while creating 予定`)
+            console.error(error)
+            return
+          }
 
-        alert(error.response.data)
-
-      })
-    }
+          alert(error.response.data)
+        })
+    },
   },
   computed: {
-    submit_disabled(){
+    submit_disabled() {
       return !this.date
     },
-    types(){
+    types() {
       return [
-        {text: this.$t('All day'), value: '有休'},
-        {text: this.$t('Morning'), value: '前半休'},
-        {text: this.$t('Afternoon'), value: '後半休',}
+        { text: this.$t("All day"), value: "有休" },
+        { text: this.$t("Morning"), value: "前半休" },
+        { text: this.$t("Afternoon"), value: "後半休" },
       ]
-    }
-  }
+    },
+  },
 }
 </script>
 
@@ -101,18 +89,10 @@ export default {
   text-align: center;
 }
 
-h1 {
-
-}
-
 form {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-form > * {
-
 }
 
 input {
@@ -120,5 +100,4 @@ input {
   padding: 0.5em;
   margin: 0.5em;
 }
-
 </style>

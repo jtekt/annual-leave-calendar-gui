@@ -1,62 +1,54 @@
 <template>
-  <v-card
-    :loading="entries_loading">
-
-
+  <v-card :loading="entries_loading">
     <template v-if="!entries_loading">
-
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
-            <v-toolbar-title v-if="user">{{user.display_name}}</v-toolbar-title>
-            <v-toolbar-title v-else>{{user_id}}</v-toolbar-title>
+            <v-toolbar-title v-if="user">{{
+              user.display_name
+            }}</v-toolbar-title>
+            <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
           </v-col>
           <v-spacer />
-          <v-col
-            cols="auto">
+          <v-col cols="auto">
             <v-select
-              :items="Array.from(Array(50).keys()).map(x => x+2015)"
+              :items="Array.from(Array(50).keys()).map((x) => x + 2015)"
               v-model="year"
-              label="Year" />
+              label="Year"
+            />
           </v-col>
           <v-col
             cols="auto"
-            v-if=" current_user_id === user_id || user_id === 'self' ">
-            <v-btn
-              :to="{ name: 'new_entry' }">
+            v-if="current_user_id === user_id || user_id === 'self'"
+          >
+            <v-btn :to="{ name: 'new_entry' }">
               <v-icon>mdi-plus</v-icon>
-              <span class="ml-2">{{ $t('Create entry')}}</span>
+              <span class="ml-2">{{ $t("Create entry") }}</span>
             </v-btn>
           </v-col>
         </v-row>
-        
       </v-container>
-      <v-divider/>
+      <v-divider />
 
       <v-card-text>
         <p>
           <Total :entries="entries" />
         </p>
 
-        <Calendar :entries="entries"/>
+        <Calendar :entries="entries" />
       </v-card-text>
-
-
-      
     </template>
-
-
   </v-card>
 </template>
 
 <script>
 // @ is an alias to /src
-import Calendar from '@/components/Calendar.vue'
-import Total from '@/components/Total.vue'
-import IdUtils from '@/mixins/IdUtils.js'
+import Calendar from "@/components/Calendar.vue"
+import Total from "@/components/Total.vue"
+import IdUtils from "@/mixins/IdUtils.js"
 
 export default {
-  name: 'UserEntries',
+  name: "UserEntries",
   components: {
     Calendar,
     Total,
@@ -71,67 +63,77 @@ export default {
       user_loading: false,
     }
   },
-  mounted(){
+  mounted() {
     this.get_entries()
     this.get_user(this.user_id)
   },
   watch: {
-    user_id(){
+    user_id() {
       this.get_entries()
       this.get_user(this.user_id)
-    }
+    },
   },
   methods: {
-    get_entries(){
+    get_entries() {
       this.entries_loading = true
-      const url = `${process.env.VUE_APP_API_URL}/users/${this.user_id}/entries`
-      const params = {year: this.year}
-      this.axios.get(url, {params})
-      .then( ({data}) => {
-        this.entries = data
-      })
-      .catch(error => {
-        alert(`Failed to query items`)
-        console.error(error)
-       })
-      .finally(() => {this.entries_loading = false})
+      const url = `/users/${this.user_id}/entries`
+      const params = { year: this.year }
+      this.axios
+        .get(url, { params })
+        .then(({ data }) => {
+          this.entries = data
+        })
+        .catch((error) => {
+          alert(`Failed to query items`)
+          console.error(error)
+        })
+        .finally(() => {
+          this.entries_loading = false
+        })
     },
 
-    entries_of_month(month){
-      return this.entries.filter(entry => {
+    entries_of_month(month) {
+      return this.entries.filter((entry) => {
         // NOTE: month start at 0
         return new Date(entry.date).getMonth() + 1 === month
       })
     },
-    day_of_entry(entry){
+    day_of_entry(entry) {
       return new Date(entry.date).getDate()
     },
-    get_user(user_id){
+    get_user(user_id) {
       this.user_loading = true
       const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
-      this.axios.get(url)
-      .then( ({data}) => { this.user = data })
-      .catch(error => { console.error(error) })
-      .finally(() => {this.user_loading = false})
-    }
+      this.axios
+        .get(url)
+        .then(({ data }) => {
+          this.user = data
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+        .finally(() => {
+          this.user_loading = false
+        })
+    },
   },
   computed: {
-    user_id(){
+    user_id() {
       return this.$route.params.id
     },
-    total_yotei(){
-      return this.entries.reduce( (total, entry) => {
-        return  total + 0.5*entry.am + 0.5*entry.pm
+    total_yotei() {
+      return this.entries.reduce((total, entry) => {
+        return total + 0.5 * entry.am + 0.5 * entry.pm
       }, 0)
     },
-    total_taken(){
-      return this.entries.reduce( (total, entry) => {
-        return  total + (0.5*entry.am + 0.5*entry.pm)*entry.taken
+    total_taken() {
+      return this.entries.reduce((total, entry) => {
+        return total + (0.5 * entry.am + 0.5 * entry.pm) * entry.taken
       }, 0)
     },
-    current_month(){
+    current_month() {
       return new Date().getMonth() + 1
-    }
-  }
+    },
+  },
 }
 </script>
