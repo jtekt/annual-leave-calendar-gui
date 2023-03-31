@@ -30,6 +30,8 @@
 import AppTemplate from "@moreillon/vue_application_template_vuetify"
 import LocaleSelector from "./components/LocaleSelector.vue"
 
+const { VUE_APP_LOGIN_URL, VUE_APP_IDENTIFICATION_URL } = process.env
+
 export default {
   name: "App",
 
@@ -41,9 +43,8 @@ export default {
   data: () => ({
     options: {
       title: "年休カレンダー",
-      authenticate: true,
-      login_url: process.env.VUE_APP_LOGIN_URL,
-      identification_url: process.env.VUE_APP_IDENTIFICATION_URL,
+      login_url: VUE_APP_LOGIN_URL,
+      identification_url: VUE_APP_IDENTIFICATION_URL,
       header_logo: require("@/assets/jtekt_logo_negative.jpg"),
       authentication_logo: require("@/assets/jtekt_logo.jpg"),
       colors: { app_bar: "#000" },
