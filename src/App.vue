@@ -27,10 +27,15 @@
 </template>
 
 <script>
-import AppTemplate from "@moreillon/vue_application_template_vuetify"
-import LocaleSelector from "./components/LocaleSelector.vue"
+import AppTemplate from "@moreillon/vue_application_template_vuetify";
+import LocaleSelector from "./components/LocaleSelector.vue";
 
-const { VUE_APP_LOGIN_URL, VUE_APP_IDENTIFICATION_URL } = process.env
+const {
+  VUE_APP_LOGIN_URL,
+  VUE_APP_IDENTIFICATION_URL,
+  VUE_APP_LOGIN_HINT,
+  VUE_APP_HOMEPAGE_URL,
+} = process.env;
 
 export default {
   name: "App",
@@ -49,12 +54,14 @@ export default {
       authentication_logo: require("@/assets/jtekt_logo.jpg"),
       colors: { app_bar: "#000" },
       author: "JTEKT Corporation",
+      login_hint: VUE_APP_LOGIN_HINT,
+      homepage_url: VUE_APP_HOMEPAGE_URL,
     },
   }),
 
   methods: {
     get_user(user) {
-      this.$store.commit("set_current_user", user)
+      this.$store.commit("set_current_user", user);
     },
   },
   computed: {
@@ -80,10 +87,10 @@ export default {
           to: { name: "about" },
           icon: "mdi-information-outline",
         },
-      ]
+      ];
     },
   },
-}
+};
 </script>
 
 <style>
