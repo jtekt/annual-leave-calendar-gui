@@ -43,9 +43,9 @@
 
 <script>
 // @ is an alias to /src
-import Calendar from "@/components/Calendar.vue"
-import Total from "@/components/Total.vue"
-import IdUtils from "@/mixins/IdUtils.js"
+import Calendar from "@/components/Calendar.vue";
+import Total from "@/components/Total.vue";
+import IdUtils from "@/mixins/IdUtils.js";
 
 export default {
   name: "UserEntries",
@@ -61,79 +61,66 @@ export default {
       entries_loading: false,
       user: null,
       user_loading: false,
-    }
+    };
   },
   mounted() {
-    this.get_entries()
-    this.get_user(this.user_id)
+    this.get_entries();
+    this.get_user(this.user_id);
   },
   watch: {
     user_id() {
-      this.get_entries()
-      this.get_user(this.user_id)
+      this.get_entries();
+      this.get_user(this.user_id);
     },
   },
   methods: {
     get_entries() {
-      this.entries_loading = true
-      const url = `/users/${this.user_id}/entries`
-      const params = { year: this.year }
+      this.entries_loading = true;
+      const url = `/users/${this.user_id}/entries`;
+      const params = { year: this.year };
       this.axios
         .get(url, { params })
         .then(({ data }) => {
-          this.entries = data
+          this.entries = data;
         })
         .catch((error) => {
-          alert(`Failed to query items`)
-          console.error(error)
+          alert(`Failed to query items`);
+          console.error(error);
         })
         .finally(() => {
-          this.entries_loading = false
-        })
+          this.entries_loading = false;
+        });
     },
 
     entries_of_month(month) {
       return this.entries.filter((entry) => {
         // NOTE: month start at 0
-        return new Date(entry.date).getMonth() + 1 === month
-      })
+        return new Date(entry.date).getMonth() + 1 === month;
+      });
     },
     day_of_entry(entry) {
-      return new Date(entry.date).getDate()
+      return new Date(entry.date).getDate();
     },
     get_user(user_id) {
-      this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+      this.user_loading = true;
+      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`;
       this.axios
         .get(url)
         .then(({ data }) => {
-          this.user = data
+          this.user = data;
         })
         .catch((error) => {
-          console.error(error)
+          console.error(error);
         })
         .finally(() => {
-          this.user_loading = false
-        })
+          this.user_loading = false;
+        });
     },
   },
   computed: {
     user_id() {
-      return this.$route.params.id
-    },
-    total_yotei() {
-      return this.entries.reduce((total, entry) => {
-        return total + 0.5 * entry.am + 0.5 * entry.pm
-      }, 0)
-    },
-    total_taken() {
-      return this.entries.reduce((total, entry) => {
-        return total + (0.5 * entry.am + 0.5 * entry.pm) * entry.taken
-      }, 0)
-    },
-    current_month() {
-      return new Date().getMonth() + 1
+      return this.$route.params.id;
     },
   },
-}
+};
 </script>
