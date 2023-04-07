@@ -46,20 +46,23 @@ export default {
   },
   methods: {
     entries_of_month(month) {
-      return this.entries.filter((entry) => {
-        return new Date(entry.date).getMonth() + 1 === month
-      })
+      return this.entries.filter(({ date, type }) => {
+        return (
+          new Date(date).getMonth() + 1 === month &&
+          ["有休", "前半休", "後半休"].includes(type)
+        );
+      });
     },
     day_of_entry(entry) {
-      return new Date(entry.date).getDate()
+      return new Date(entry.date).getDate();
     },
   },
   computed: {
     current_month() {
-      return new Date().getMonth() + 1
+      return new Date().getMonth() + 1;
     },
   },
-}
+};
 </script>
 
 <style scoped>
