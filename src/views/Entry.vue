@@ -35,15 +35,6 @@
           </v-col>
         </v-row>
 
-        <p class="">
-          <v-checkbox
-            :label="$t('Taken')"
-            :disabled="!editable"
-            v-model="entry.taken"
-            @change="update_entry()"
-          />
-        </p>
-
         <p>
           <v-select
             :disabled="!editable"

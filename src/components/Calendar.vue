@@ -14,7 +14,7 @@
       <div class="entries_container">
         <router-link
           class="entry"
-          :class="{ taken: entry.taken, refresh: entry.refresh }"
+          :class="{ taken: passed_date(entry.date), refresh: entry.refresh }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
           :to="{ name: 'entry', params: { id: entry._id } }"
@@ -55,6 +55,9 @@ export default {
     },
     day_of_entry(entry) {
       return new Date(entry.date).getDate();
+    },
+    passed_date(date) {
+      return new Date(date) < new Date();
     },
   },
   computed: {

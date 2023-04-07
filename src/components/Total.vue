@@ -16,19 +16,20 @@ export default {
   },
   computed: {
     total_yotei() {
-      return this.entries.reduce((total, { type }) => {
-        if (type === "有休") return total + 1;
-        else if (type === "前半休" || type === "後半休") return total + 0.5;
-        else return total;
+      return this.entries.reduce((total, { type, date }) => {
+        if (new Date(date) > new Date()) {
+          if (type === "有休") return total + 1;
+          else if (type === "前半休" || type === "後半休") return total + 0.5;
+          else return total;
+        } else return total;
       }, 0);
     },
     total_taken() {
-      return this.entries.reduce((total, { taken, type }) => {
-        if (taken) {
+      return this.entries.reduce((total, { type, date }) => {
+        if (new Date(date) < new Date()) {
           if (type === "有休") return total + 1;
-          else if (type === "前半休" || type === "後半休") {
-            return total + 0.5;
-          } else return total;
+          else if (type === "前半休" || type === "後半休") return total + 0.5;
+          else return total;
         } else return total;
       }, 0);
     },
