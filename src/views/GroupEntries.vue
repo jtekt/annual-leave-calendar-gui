@@ -69,7 +69,7 @@ export default {
   },
   data() {
     return {
-      year: new Date().getYear() + 1900,
+      year: new Date().getFullYear(),
       items: [],
       items_loading: false,
       group: null,
@@ -80,6 +80,14 @@ export default {
   mounted() {
     this.get_entries()
     this.get_group()
+  },
+  watch: {
+    group_id() {
+      this.get_entries()
+    },
+    year() {
+      this.get_entries()
+    },
   },
   methods: {
     get_entries() {
