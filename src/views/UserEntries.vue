@@ -4,15 +4,19 @@
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
-            <v-toolbar-title v-if="user">{{
-              user.display_name
-            }}</v-toolbar-title>
+            <v-toolbar-title v-if="user">
+              {{ user.display_name }}
+            </v-toolbar-title>
             <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
           </v-col>
           <v-spacer />
           <v-col cols="auto">
             <v-select
-              :items="Array.from(Array(50).keys()).map((x) => x + 2015)"
+              :items="
+                Array.from(Array(10).keys()).map(
+                  (x) => new Date().getFullYear() + x - 5
+                )
+              "
               v-model="year"
               label="Year"
             />
@@ -21,9 +25,9 @@
             cols="auto"
             v-if="current_user_id === user_id || user_id === 'self'"
           >
-            <v-btn :to="{ name: 'new_entry' }">
-              <v-icon>mdi-plus</v-icon>
-              <span class="ml-2">{{ $t("Create entry") }}</span>
+            <v-btn :to="{ name: 'new_entry' }" color="primary">
+              <v-icon left>mdi-plus</v-icon>
+              <span>{{ $t("Create entry") }}</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -56,7 +60,7 @@ export default {
   mixins: [IdUtils],
   data() {
     return {
-      year: new Date().getFullYear(),
+      year: Number(this.$route.query.year) || new Date().getFullYear(),
       entries: [],
       entries_loading: false,
       user: null,
@@ -72,7 +76,8 @@ export default {
       this.get_entries()
       this.get_user(this.user_id)
     },
-    year() {
+    year(newVal) {
+      this.$router.replace({ query: { ...this.$route.query, year: newVal } })
       this.get_entries()
     },
   },
