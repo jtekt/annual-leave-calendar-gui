@@ -12,7 +12,11 @@
           <v-spacer />
           <v-col cols="auto">
             <v-select
-              :items="Array.from(Array(50).keys()).map((x) => x + 2015)"
+              :items="
+                Array.from(Array(10).keys()).map(
+                  (x) => new Date().getFullYear() + x - 5
+                )
+              "
               v-model="year"
               label="Year"
             />
@@ -69,7 +73,7 @@ export default {
   },
   data() {
     return {
-      year: new Date().getYear() + 1900,
+      year: Number(this.$route.query.year) || new Date().getFullYear(),
       items: [],
       items_loading: false,
       group: null,
@@ -80,6 +84,15 @@ export default {
   mounted() {
     this.get_entries()
     this.get_group()
+  },
+  watch: {
+    group_id() {
+      this.get_entries()
+    },
+    year(newVal) {
+      this.$router.replace({ query: { ...this.$route.query, year: newVal } })
+      this.get_entries()
+    },
   },
   methods: {
     get_entries() {

@@ -4,8 +4,8 @@
       class="month"
       v-for="month in 12"
       :class="{
-        ellapsed: current_month > month,
-        current: current_month === month,
+        ellapsed: current_month > month || current_year > year,
+        current: current_month === month && current_year === year,
       }"
       :key="`month_${month}`"
     >
@@ -14,7 +14,7 @@
       <div class="entries_container">
         <router-link
           class="entry"
-          :class="{ taken: entry.taken, refresh: entry.refresh }"
+          :class="{ taken: passed_date(entry), refresh: entry.refresh }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
           :to="{ name: 'entry', params: { id: entry._id } }"
@@ -46,17 +46,29 @@ export default {
   },
   methods: {
     entries_of_month(month) {
-      return this.entries.filter((entry) => {
-        return new Date(entry.date).getMonth() + 1 === month
+      return this.entries.filter(({ date, type }) => {
+        return (
+          new Date(date).getMonth() + 1 === month &&
+          ["有休", "前半休", "後半休"].includes(type)
+        )
       })
     },
     day_of_entry(entry) {
       return new Date(entry.date).getDate()
     },
+    passed_date(entry) {
+      return new Date(entry.date) < new Date()
+    },
   },
   computed: {
     current_month() {
       return new Date().getMonth() + 1
+    },
+    current_year() {
+      return new Date().getFullYear()
+    },
+    year() {
+      return Number(this.$route.query.year) || new Date().getFullYear()
     },
   },
 }
