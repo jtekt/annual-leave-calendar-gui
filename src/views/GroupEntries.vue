@@ -102,7 +102,7 @@ export default {
       this.axios
         .get(url, { params })
         .then(({ data }) => {
-          this.items = data
+          this.items = data.items || data
         })
         .catch((error) => {
           console.error(error)
