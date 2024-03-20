@@ -47,6 +47,10 @@
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
+        <infinite-loading @infinite="infiniteHandler">
+          <span slot="no-more"></span>
+          <span slot="no-results"></span>
+        </infinite-loading>
       </v-card-text>
 
       <ExcelExportTable :items="items" />
@@ -62,6 +66,7 @@ import Total from "@/components/Total.vue"
 import ExcelExportTable from "@/components/ExcelExportTable.vue"
 // import XLSX from 'xlsx'
 import { utils, writeFile } from "xlsx"
+import InfiniteLoading from "vue-infinite-loading"
 
 export default {
   name: "GroupEntries",
@@ -70,19 +75,23 @@ export default {
     User,
     Total,
     ExcelExportTable,
+    InfiniteLoading,
   },
   data() {
     return {
       year: Number(this.$route.query.year) || new Date().getFullYear(),
       items: [],
       items_loading: false,
+      total: 0,
       group: null,
       group_loading: false,
       loading: false,
     }
   },
-  mounted() {
-    this.get_entries()
+  async mounted() {
+    this.items_loading = true
+    await this.get_entries()
+    this.items_loading = false
     this.get_group()
   },
   watch: {
@@ -95,20 +104,17 @@ export default {
     },
   },
   methods: {
-    get_entries() {
-      this.items_loading = true
+    async get_entries(skip = 0) {
       const url = `/groups/${this.group_id}/entries`
-      const params = { year: this.year }
-      this.axios
+      const params = { year: this.year, limit: 10, skip }
+      await this.axios
         .get(url, { params })
         .then(({ data }) => {
-          this.items = data.items || data
+          this.items = this.items.concat(data.items)
+          if (!this.total) this.total = data.total
         })
         .catch((error) => {
           console.error(error)
-        })
-        .finally(() => {
-          this.items_loading = false
         })
     },
     get_group() {
@@ -122,6 +128,14 @@ export default {
           if (error.response) console.error(error.response.data)
           else console.error(error)
         })
+    },
+    async infiniteHandler($state) {
+      if (this.items.length < this.total) {
+        await this.get_entries(this.items.length)
+        $state.loaded()
+      } else {
+        $state.complete()
+      }
     },
     excel_export() {
       var workbook = utils.book_new()
