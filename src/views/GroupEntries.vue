@@ -120,13 +120,13 @@ export default {
         .get(url, { params })
         .then(({ data }) => {
           this.items = this.items.concat(data.items)
-          if (!this.total) this.total = data.total
+          this.total = data.total
         })
         .catch((error) => {
           console.error(error)
         })
     },
-    async infiniteHandler($state) {
+    infiniteHandler($state) {
       this.get_entries(this.items.length)
         .then(() => {
           if (this.items.length < this.total) {
