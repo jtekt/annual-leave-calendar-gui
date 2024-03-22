@@ -1,6 +1,6 @@
 <template>
-  <v-card :loading="items_loading">
-    <template v-if="!items_loading">
+  <v-card>
+    <template>
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
@@ -82,7 +82,6 @@ export default {
     return {
       year: Number(this.$route.query.year) || new Date().getFullYear(),
       items: [],
-      items_loading: false,
       total: 0,
       group: null,
       group_loading: false,
