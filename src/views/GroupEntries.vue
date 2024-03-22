@@ -47,10 +47,12 @@
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
-        <infinite-loading @infinite="infiniteHandler">
-          <span slot="no-more"></span>
-          <span slot="no-results"></span>
-        </infinite-loading>
+        <div v-if="total">
+          <infinite-loading @infinite="infiniteHandler">
+            <span slot="no-more"></span>
+            <span slot="no-results"></span>
+          </infinite-loading>
+        </div>
       </v-card-text>
 
       <ExcelExportTable :items="items" />
@@ -88,9 +90,9 @@ export default {
       loading: false,
     }
   },
-  async mounted() {
+  mounted() {
     this.items_loading = true
-    await this.get_entries()
+    this.get_entries()
     this.items_loading = false
     this.get_group()
   },
@@ -104,14 +106,14 @@ export default {
     },
   },
   methods: {
-    async get_entries(skip = 0) {
+    get_entries(skip = 0) {
       const url = `/groups/${this.group_id}/entries`
       const params = { year: this.year, limit: 10, skip }
-      await this.axios
+      this.axios
         .get(url, { params })
         .then(({ data }) => {
+          this.total = data.total
           this.items = this.items.concat(data.items)
-          if (!this.total) this.total = data.total
         })
         .catch((error) => {
           console.error(error)
@@ -129,10 +131,12 @@ export default {
           else console.error(error)
         })
     },
-    async infiniteHandler($state) {
+    infiniteHandler($state) {
       if (this.items.length < this.total) {
-        await this.get_entries(this.items.length)
-        $state.loaded()
+        this.get_entries(this.items.length)
+        setTimeout(() => {
+          $state.loaded()
+        }, 500)
       } else {
         $state.complete()
       }
