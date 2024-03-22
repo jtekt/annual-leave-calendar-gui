@@ -47,12 +47,10 @@
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
-        <div v-if="total">
-          <infinite-loading @infinite="infiniteHandler">
-            <span slot="no-more"></span>
-            <span slot="no-results"></span>
-          </infinite-loading>
-        </div>
+        <infinite-loading @infinite="infiniteHandler">
+          <span slot="no-more"></span>
+          <span slot="no-results"></span>
+        </infinite-loading>
       </v-card-text>
 
       <ExcelExportTable :items="items" />
@@ -91,9 +89,6 @@ export default {
     }
   },
   mounted() {
-    this.items_loading = true
-    this.get_entries()
-    this.items_loading = false
     this.get_group()
   },
   watch: {
@@ -106,19 +101,6 @@ export default {
     },
   },
   methods: {
-    get_entries(skip = 0) {
-      const url = `/groups/${this.group_id}/entries`
-      const params = { year: this.year, limit: 10, skip }
-      this.axios
-        .get(url, { params })
-        .then(({ data }) => {
-          this.total = data.total
-          this.items = this.items.concat(data.items)
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
     get_group() {
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
       this.axios
@@ -131,15 +113,31 @@ export default {
           else console.error(error)
         })
     },
-    infiniteHandler($state) {
-      if (this.items.length < this.total) {
-        this.get_entries(this.items.length)
-        setTimeout(() => {
-          $state.loaded()
-        }, 500)
-      } else {
-        $state.complete()
-      }
+    get_entries(skip = 0) {
+      const url = `/groups/${this.group_id}/entries`
+      const params = { year: this.year, limit: 10, skip }
+      return this.axios
+        .get(url, { params })
+        .then(({ data }) => {
+          this.items = this.items.concat(data.items)
+          if (!this.total) this.total = data.total
+        })
+        .catch((error) => {
+          console.error(error)
+        })
+    },
+    async infiniteHandler($state) {
+      this.get_entries(this.items.length)
+        .then(() => {
+          if (this.items.length < this.total) {
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+        })
     },
     excel_export() {
       var workbook = utils.book_new()
