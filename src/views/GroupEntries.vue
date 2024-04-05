@@ -1,6 +1,6 @@
 <template>
-  <v-card :loading="items_loading">
-    <template v-if="!items_loading">
+  <v-card>
+    <template>
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
@@ -9,6 +9,7 @@
             }}</v-toolbar-title>
             <v-toolbar-title v-else>{{ group_id }}</v-toolbar-title>
           </v-col>
+          <v-col cols="auto"> ({{ total }}人) </v-col>
           <v-spacer />
           <v-col cols="auto">
             <v-select
@@ -47,6 +48,10 @@
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
+        <infinite-loading :identifier="year" @infinite="get_entries">
+          <span slot="no-more"></span>
+          <span slot="no-results"></span>
+        </infinite-loading>
       </v-card-text>
 
       <ExcelExportTable :items="items" />
@@ -62,6 +67,7 @@ import Total from "@/components/Total.vue"
 import ExcelExportTable from "@/components/ExcelExportTable.vue"
 // import XLSX from 'xlsx'
 import { utils, writeFile } from "xlsx"
+import InfiniteLoading from "vue-infinite-loading"
 
 export default {
   name: "GroupEntries",
@@ -70,46 +76,34 @@ export default {
     User,
     Total,
     ExcelExportTable,
+    InfiniteLoading,
   },
   data() {
     return {
       year: Number(this.$route.query.year) || new Date().getFullYear(),
       items: [],
-      items_loading: false,
+      total: 0,
       group: null,
       group_loading: false,
       loading: false,
     }
   },
   mounted() {
-    this.get_entries()
     this.get_group()
   },
   watch: {
     group_id() {
-      this.get_entries()
+      this.reset()
     },
     year(newVal) {
       this.$router.replace({ query: { ...this.$route.query, year: newVal } })
-      this.get_entries()
+      this.reset()
     },
   },
   methods: {
-    get_entries() {
-      this.items_loading = true
-      const url = `/groups/${this.group_id}/entries`
-      const params = { year: this.year }
-      this.axios
-        .get(url, { params })
-        .then(({ data }) => {
-          this.items = data.items || data
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.items_loading = false
-        })
+    reset() {
+      this.items = []
+      this.total = 0
     },
     get_group() {
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
@@ -121,6 +115,27 @@ export default {
         .catch((error) => {
           if (error.response) console.error(error.response.data)
           else console.error(error)
+        })
+    },
+    get_entries($state) {
+      const url = `/groups/${this.group_id}/entries`
+      const params = { year: this.year, limit: 10, skip: this.items.length }
+
+      this.axios
+        .get(url, { params })
+        .then(({ data }) => {
+          this.items = this.items.concat(data.items)
+          this.total = data.total
+
+          if (this.items.length < this.total) {
+            $state.loaded()
+          } else {
+            $state.complete()
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          $state.complete()
         })
     },
     excel_export() {
