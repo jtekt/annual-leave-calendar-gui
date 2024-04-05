@@ -48,7 +48,7 @@
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
-        <infinite-loading @infinite="infiniteHandler">
+        <infinite-loading :identifier="year" @infinite="get_entries">
           <span slot="no-more"></span>
           <span slot="no-results"></span>
         </infinite-loading>
@@ -93,14 +93,18 @@ export default {
   },
   watch: {
     group_id() {
-      this.get_entries()
+      this.reset()
     },
     year(newVal) {
       this.$router.replace({ query: { ...this.$route.query, year: newVal } })
-      this.get_entries()
+      this.reset()
     },
   },
   methods: {
+    reset() {
+      this.items = []
+      this.total = 0
+    },
     get_group() {
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
       this.axios
@@ -113,22 +117,16 @@ export default {
           else console.error(error)
         })
     },
-    get_entries(skip = 0) {
+    get_entries($state) {
       const url = `/groups/${this.group_id}/entries`
-      const params = { year: this.year, limit: 10, skip }
-      return this.axios
+      const params = { year: this.year, limit: 10, skip: this.items.length }
+
+      this.axios
         .get(url, { params })
         .then(({ data }) => {
           this.items = this.items.concat(data.items)
           this.total = data.total
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-    },
-    infiniteHandler($state) {
-      this.get_entries(this.items.length)
-        .then(() => {
+
           if (this.items.length < this.total) {
             $state.loaded()
           } else {
@@ -137,6 +135,7 @@ export default {
         })
         .catch((error) => {
           console.error(error)
+          $state.complete()
         })
     },
     excel_export() {
