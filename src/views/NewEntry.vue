@@ -9,7 +9,13 @@
       <v-form @submit.prevent="submit()">
         <v-row>
           <v-col>
-            <v-date-picker color="black" elevation="1" v-model="date" />
+            <v-date-picker
+              color="black"
+              elevation="1"
+              v-model="date"
+              :events="entries"
+              event-color="primary"
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -38,12 +44,34 @@ export default {
     return {
       date: null,
       type: "有休",
+      entries: [],
     }
   },
+  mounted() {
+    this.get_entries()
+  },
   methods: {
+    get_entries() {
+      this.entries_loading = true
+      const url = `/users/self/entries`
+      const params = { year: this.year }
+      this.axios
+        .get(url, { params })
+        .then(({ data }) => {
+          this.entries = data.map((e) =>
+            new Date(e.date).toISOString().substr(0, 10)
+          )
+        })
+        .catch((error) => {
+          alert(`Failed to query items`)
+          console.error(error)
+        })
+        .finally(() => {
+          this.entries_loading = false
+        })
+    },
     submit() {
-      const user_id = "self"
-      const url = `/users/${user_id}/entries`
+      const url = `/users/self/entries`
       const body = {
         date: this.date,
         type: this.type,
