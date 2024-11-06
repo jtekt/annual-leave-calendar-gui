@@ -23,10 +23,7 @@
             />
           </v-col>
           <v-col cols="auto">
-            <v-btn @click="excel_export()">
-              <v-icon>mdi-download</v-icon>
-              <span class="ml-2">{{ $t("Export") }}</span>
-            </v-btn>
+            <ExcelExportButton :group_id="this.group_id" :year="this.year" />
           </v-col>
         </v-row>
       </v-container>
@@ -53,8 +50,6 @@
           <span slot="no-results"></span>
         </infinite-loading>
       </v-card-text>
-
-      <ExcelExportTable :items="items" />
     </template>
   </v-card>
 </template>
@@ -64,9 +59,7 @@
 import Calendar from "@/components/Calendar.vue"
 import User from "@/components/User.vue"
 import Total from "@/components/Total.vue"
-import ExcelExportTable from "@/components/ExcelExportTable.vue"
-// import XLSX from 'xlsx'
-import { utils, writeFile } from "xlsx"
+import ExcelExportButton from "@/components/ExcelExportButton.vue"
 import InfiniteLoading from "vue-infinite-loading"
 
 export default {
@@ -75,7 +68,7 @@ export default {
     Calendar,
     User,
     Total,
-    ExcelExportTable,
+    ExcelExportButton,
     InfiniteLoading,
   },
   data() {
@@ -137,14 +130,6 @@ export default {
           console.error(error)
           $state.complete()
         })
-    },
-    excel_export() {
-      var workbook = utils.book_new()
-      var ws1 = utils.table_to_sheet(document.getElementById("export_table"))
-      utils.book_append_sheet(workbook, ws1, "Sheet1")
-      writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export.xlsx`)
-
-      //alert(`エクセルはそのためではありません。正しいツール使わない人たちが他の社員に迷惑かけます。ITリテラシーを直してください。`)
     },
   },
   computed: {
