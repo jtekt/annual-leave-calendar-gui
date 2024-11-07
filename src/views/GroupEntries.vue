@@ -23,7 +23,11 @@
             />
           </v-col>
           <v-col cols="auto">
-            <ExcelExportButton :group_id="this.group_id" :year="this.year" />
+            <ExcelExportButton
+              :total="total"
+              :year="year"
+              :group_id="this.group_id"
+            />
           </v-col>
         </v-row>
       </v-container>

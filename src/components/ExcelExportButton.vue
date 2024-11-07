@@ -1,9 +1,21 @@
 <template>
   <div>
-    <v-btn :loading="excel_exporting" @click="excel_export()">
-      <v-icon>mdi-download</v-icon>
-      <span class="ml-2">{{ $t("Export") }}</span>
-    </v-btn>
+    <v-tooltip bottom :disabled="!export_disabled">
+      <template v-slot:activator="{ on }">
+        <span v-on="on">
+          <v-btn
+            :disabled="export_disabled"
+            :loading="excel_exporting"
+            @click="excel_export()"
+          >
+            <v-icon>mdi-download</v-icon>
+            <span class="ml-2">{{ $t("Export") }}</span>
+          </v-btn>
+        </span>
+      </template>
+      <span>max: 500 people</span>
+    </v-tooltip>
+
     <table id="export_table">
       <tr>
         <th>No</th>
@@ -124,6 +136,7 @@ import { utils, writeFile } from "xlsx"
 export default {
   name: "ExcelExportTable",
   props: {
+    total: Number,
     group_id: String,
     year: Number,
   },
@@ -208,6 +221,11 @@ export default {
           alert(error)
           this.excel_exporting = false
         })
+    },
+  },
+  computed: {
+    export_disabled() {
+      return this.total === 0 || 500 < this.total
     },
   },
 }
