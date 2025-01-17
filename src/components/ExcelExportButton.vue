@@ -24,8 +24,6 @@
         <th>Previous year</th>
         <th>1-6月r</th>
         <th>7-12月r</th>
-        <th>1-6月r</th>
-        <th>7-12月r</th>
 
         <template v-for="month in 12">
           <th :key="`table_month_header_${month}`">{{ month }}月</th>
@@ -73,22 +71,9 @@
             }}
           </td>
 
-          <!-- Consecutive 1-6 -->
-          <td rowspan="3"></td>
-
-          <!-- Consecutive 1-6 -->
-          <td rowspan="3"></td>
-
           <template v-for="month in 12">
             <td v-bind:key="`user_${index}_yotei_${month}`">
-              {{
-                entries_of_month(item, month)
-                  .filter((entry) => {
-                    return entry.taken
-                  })
-                  .map(day_of_entry)
-                  .join(", ")
-              }}
+              {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
             </td>
             <td
               v-if="month === 5"
@@ -148,14 +133,17 @@ export default {
   },
   methods: {
     entries_of_month(item, month) {
-      return item.entries.filter((entry) => {
-        return new Date(entry.date).getMonth() + 1 === month
+      return item.entries.filter(({ date, type }) => {
+        return (
+          new Date(date).getMonth() + 1 === month &&
+          ["有休", "前半休", "後半休"].includes(type)
+        )
       })
     },
     day_of_entry(entry) {
       let output = new Date(entry.date).getDate()
-      if (entry.am && !entry.pm) output = `${output}AM`
-      else if (!entry.am && entry.pm) output = `${output}PM`
+      if (entry.type === "前半休") output = `${output}am`
+      else if (entry.type === "後半休") output = `${output}pm`
       return output
     },
     month_of_entry(entry) {
@@ -182,11 +170,18 @@ export default {
     five_days_taken(item, month) {
       let count = item.entries
         .filter((entry) => this.month_of_entry(entry) <= month)
-        .reduce(
-          (total, entry) =>
-            total + (0.5 * entry.am + 0.5 * entry.pm) * entry.taken,
-          0
-        )
+        .reduce((total, entry) => {
+          switch (entry.type) {
+            case "有休":
+              return (total += 1)
+            case "前半休":
+              return (total += 0.5)
+            case "後半休":
+              return (total += 0.5)
+            default:
+              return total
+          }
+        }, 0)
 
       if (count > 5) return "〇"
       else return "✖"
@@ -209,7 +204,8 @@ export default {
           setTimeout(() => {
             var workbook = utils.book_new()
             var ws1 = utils.table_to_sheet(
-              document.getElementById("export_table")
+              document.getElementById("export_table"),
+              { raw: true }
             )
             utils.book_append_sheet(workbook, ws1, "Sheet1")
             writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export.xlsx`)
