@@ -134,7 +134,6 @@ export default {
   methods: {
     entries_of_month(item, month) {
       return item.entries.filter(({ date, type }) => {
-        // return new Date(entry.date).getMonth() + 1 === month
         return (
           new Date(date).getMonth() + 1 === month &&
           ["有休", "前半休", "後半休"].includes(type)
