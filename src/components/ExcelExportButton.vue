@@ -195,7 +195,7 @@ export default {
 
 <style scoped>
 table {
-  /* display: none; */
+  display: none;
   border-collapse: collapse;
   table-layout: fixed;
 }
