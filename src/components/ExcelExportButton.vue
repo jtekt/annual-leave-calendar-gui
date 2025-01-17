@@ -20,8 +20,6 @@
       <tr>
         <th>No</th>
         <th>名前</th>
-        <th>Type</th>
-        <th>Previous year</th>
         <th>1-6月r</th>
         <th>7-12月r</th>
 
@@ -39,18 +37,12 @@
       <template v-for="(item, index) in items">
         <tr :key="`user_${index}_yotei`">
           <!-- INDEX -->
-          <td rowspan="3">{{ index + 1 }}</td>
+          <td>{{ index + 1 }}</td>
           <!-- User name -->
-          <td rowspan="3">{{ item.user.display_name }}</td>
-
-          <!-- User rank -->
-          <td rowspan="3"></td>
-
-          <!-- Previous year -->
-          <td rowspan="3"></td>
+          <td>{{ item.user.display_name }}</td>
 
           <!-- Refresh 1-6 -->
-          <td rowspan="3">
+          <td>
             {{
               refresh_entries_first_semester(item.user)
                 .map((entry) => {
@@ -61,7 +53,7 @@
           </td>
 
           <!-- Refresh 1-6 -->
-          <td rowspan="3">
+          <td>
             {{
               refresh_entries_second_semester(item.user)
                 .map((entry) => {
@@ -72,40 +64,14 @@
           </td>
 
           <template v-for="month in 12">
-            <td v-bind:key="`user_${index}_yotei_${month}`">
-              {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
-            </td>
-            <td
-              v-if="month === 5"
-              rowspan="3"
-              :key="`user_${index}_5_days_taken_${month}`"
-            >
-              {{ five_days_taken(item, month) }}
-            </td>
-            <td
-              v-if="month === 8"
-              rowspan="3"
-              :key="`user_${index}_5_days_taken_${month}`"
-            >
-              {{ five_days_taken(item, month) }}
-            </td>
-          </template>
-        </tr>
-
-        <tr :key="`user_${index}_taken`">
-          <!-- First item: user name -->
-
-          <template v-for="month in 12">
             <td :key="`user_${index}_taken_${month}`">
               {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
             </td>
-          </template>
-        </tr>
-
-        <tr :key="`user_${index}_bottom`">
-          <template v-for="month in 12">
-            <td :key="`user_${index}_bottom_${month}`">
-              <!-- The originaql calendar has a progress bar here -->
+            <td v-if="month === 5" :key="`user_${index}_5_days_taken_${month}`">
+              {{ five_days_taken(item, month) }}
+            </td>
+            <td v-if="month === 8" :key="`user_${index}_5_days_taken_${month}`">
+              {{ five_days_taken(item, month) }}
             </td>
           </template>
         </tr>
@@ -184,7 +150,7 @@ export default {
         }, 0)
 
       if (count > 5) return "〇"
-      else return "✖"
+      else return "×"
     },
     excel_export() {
       this.excel_exporting = true
@@ -229,7 +195,7 @@ export default {
 
 <style scoped>
 table {
-  display: none;
+  /* display: none; */
   border-collapse: collapse;
   table-layout: fixed;
 }
