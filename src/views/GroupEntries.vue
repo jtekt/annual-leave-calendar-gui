@@ -106,8 +106,8 @@ export default {
       const url = `${process.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${this.group_id}`
       this.axios
         .get(url)
-        .then((response) => {
-          this.group = response.data
+        .then(({ data }) => {
+          this.group = data
         })
         .catch((error) => {
           if (error.response) console.error(error.response.data)

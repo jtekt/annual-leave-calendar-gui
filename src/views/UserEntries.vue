@@ -36,7 +36,7 @@
 
       <v-card-text>
         <p>
-          <Total :entries="entries" />
+          <Total :entries="entries" :allocations="allocations" />
         </p>
 
         <Calendar :entries="entries" />
@@ -65,6 +65,7 @@ export default {
       entries_loading: false,
       user: null,
       user_loading: false,
+      allocations: null,
     }
   },
   mounted() {
@@ -84,12 +85,13 @@ export default {
   methods: {
     get_entries() {
       this.entries_loading = true
-      const url = `/users/${this.user_id}/entries`
+      const url = `/v2/users/${this.user_id}/entries`
       const params = { year: this.year }
       this.axios
         .get(url, { params })
         .then(({ data }) => {
-          this.entries = data
+          this.allocations = data.allocations
+          this.entries = data.entries
         })
         .catch((error) => {
           alert(`Failed to query items`)
