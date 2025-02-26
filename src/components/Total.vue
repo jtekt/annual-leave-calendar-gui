@@ -1,6 +1,6 @@
 <template>
   <div class="totalBar">
-    <template v-if="allocations">
+    <template v-if="allocations?.leaves?.current_year_grants">
       <v-tooltip top color="rgba(79, 195, 247)">
         <template v-slot:activator="{ on, attrs }">
           <div
@@ -30,36 +30,60 @@
       </v-tooltip>
     </template>
 
-    <v-tooltip bottom color="#00c000">
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          v-bind="attrs"
-          v-on="on"
-          class="taken leavesBar"
-          :style="{ width: `${takenPercent}%` }"
-        >
-          {{ total_taken }}
-        </div>
-      </template>
-      <span> 当年度取得日数 </span>
-    </v-tooltip>
+    <template v-if="total_taken + total_yotei">
+      <v-tooltip bottom color="#00c000">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+            class="taken leavesBar"
+            :style="{ width: `${takenPercent}%` }"
+          >
+            {{ total_taken }}
+          </div>
+        </template>
+        <span> 当年度取得日数 </span>
+      </v-tooltip>
 
-    <v-tooltip bottom color="#91b691">
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          v-bind="attrs"
-          v-on="on"
-          class="yotei leavesBar"
-          :style="{
-            width: `${yoteiPercent}%`,
-            left: `${takenPercent}%`,
-          }"
-        >
-          {{ total_yotei }}
-        </div>
-      </template>
-      <span> 当年度予定日数 </span>
-    </v-tooltip>
+      <v-tooltip bottom color="#91b691">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+            class="yotei leavesBar"
+            :style="{
+              width: `${yoteiPercent}%`,
+              left: `${takenPercent}%`,
+            }"
+          >
+            {{ total_yotei }}
+          </div>
+        </template>
+        <span> 当年度予定日数 </span>
+      </v-tooltip>
+
+      <!-- Remaining -->
+      <!-- <v-tooltip bottom color="#777777">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+            class="remaining leavesBar"
+            :style="{
+              width: `${100 - takenPercent - yoteiPercent}%`,
+            }"
+          >
+            {{
+              allocations.leaves.current_year_grants +
+              allocations.leaves.current_year_grants -
+              total_yotei -
+              total_taken
+            }}
+          </div>
+        </template>
+        <span> 残り </span>
+      </v-tooltip>-->
+    </template>
   </div>
 </template>
 
@@ -77,8 +101,8 @@ export default {
         if (new Date(date) > new Date()) {
           if (type === "有休") return total + 1
           else if (type === "前半休" || type === "後半休") return total + 0.5
-          else return total
-        } else return total
+        }
+        return total
       }, 0)
     },
     total_taken() {
@@ -86,8 +110,8 @@ export default {
         if (new Date(date) < new Date()) {
           if (type === "有休") return total + 1
           else if (type === "前半休" || type === "後半休") return total + 0.5
-          else return total
-        } else return total
+        }
+        return total
       }, 0)
     },
     carriedOverPercent() {
@@ -99,7 +123,7 @@ export default {
       )
     },
     takenPercent() {
-      if (this.allocations)
+      if (this.allocations?.leaves?.current_year_grants)
         return (
           (this.total_taken /
             (this.allocations.leaves.carried_over +
@@ -110,7 +134,7 @@ export default {
         return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
     },
     yoteiPercent() {
-      if (this.allocations)
+      if (this.allocations?.leaves?.current_year_grants)
         return (
           (this.total_yotei /
             (this.allocations.leaves.carried_over +
@@ -159,10 +183,16 @@ export default {
 }
 .taken {
   left: 0;
-  background-color: #00c000dd;
+  background-color: #00c000bb;
 }
 
 .yotei {
-  background-color: #91b691dd;
+  background-color: #6c856cbb;
+}
+
+.remaining {
+  right: 0;
+  color: white;
+  background-color: #ffffff66;
 }
 </style>
