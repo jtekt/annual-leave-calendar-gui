@@ -128,7 +128,7 @@ export default {
 .totalBar {
   display: flex;
   position: relative;
-  height: auto;
+  height: 3em;
   color: white;
 }
 
