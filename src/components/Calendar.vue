@@ -108,7 +108,7 @@ export default {
 
 .entry {
   text-decoration: none;
-  color: #6c856cdd;
+  color: #3f663f;
   font-weight: bold;
   padding: 0.25em;
   display: inline-flex;
