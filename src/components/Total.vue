@@ -45,7 +45,8 @@
         <span> 当年度取得日数 </span>
       </v-tooltip>
 
-      <v-tooltip bottom color="#91b691">
+      <!-- Yotei -->
+      <v-tooltip bottom color="#3f663f">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -63,7 +64,11 @@
       </v-tooltip>
 
       <!-- Remaining -->
-      <!-- <v-tooltip bottom color="#777777">
+      <v-tooltip
+        bottom
+        color="#777777"
+        v-if="allocations?.leaves?.current_year_grants"
+      >
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -82,7 +87,7 @@
           </div>
         </template>
         <span> 残り </span>
-      </v-tooltip>-->
+      </v-tooltip>
     </template>
   </div>
 </template>
@@ -114,35 +119,32 @@ export default {
         return total
       }, 0)
     },
+    total_allocations() {
+      return (
+        this.allocations.leaves.current_year_grants +
+        this.allocations.leaves.current_year_grants
+      )
+    },
     carriedOverPercent() {
       return (
-        (this.allocations.leaves.carried_over /
-          (this.allocations.leaves.current_year_grants +
+        (this.allocations.leaves.carried_over / this.total_allocations) * 100
+      )
+    },
+
+    takenPercent() {
+      if (!this.allocations?.leaves?.current_year_grants)
+        return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
+      return (this.total_taken / this.total_allocations) * 100
+    },
+    yoteiPercent() {
+      if (!this.allocations?.leaves?.current_year_grants)
+        return (this.total_yotei / (this.total_yotei + this.total_taken)) * 100
+      return (
+        (this.total_yotei /
+          (this.allocations.leaves.carried_over +
             this.allocations.leaves.current_year_grants)) *
         100
       )
-    },
-    takenPercent() {
-      if (this.allocations?.leaves?.current_year_grants)
-        return (
-          (this.total_taken /
-            (this.allocations.leaves.carried_over +
-              this.allocations.leaves.current_year_grants)) *
-          100
-        )
-      else
-        return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
-    },
-    yoteiPercent() {
-      if (this.allocations?.leaves?.current_year_grants)
-        return (
-          (this.total_yotei /
-            (this.allocations.leaves.carried_over +
-              this.allocations.leaves.current_year_grants)) *
-          100
-        )
-      else
-        return (this.total_yotei / (this.total_yotei + this.total_taken)) * 100
     },
   },
 }
@@ -187,12 +189,12 @@ export default {
 }
 
 .yotei {
-  background-color: #6c856cbb;
+  background-color: #3f663fbb;
 }
 
 .remaining {
   right: 0;
   color: white;
-  background-color: #ffffff66;
+  background-color: #44444444;
 }
 </style>
