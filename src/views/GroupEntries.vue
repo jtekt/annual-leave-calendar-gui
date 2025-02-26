@@ -39,16 +39,19 @@
           v-for="(item, index) in items"
           :key="`user_${index}`"
         >
-          <!-- top: user and total -->
-          <div class="user_wrapper">
-            <User :user="item.user" />
-            <span class="spacer" />
-            <Total :entries="item.entries" />
-          </div>
+          <v-row>
+            <v-col>
+              <User :user="item.user" />
+            </v-col>
+            <v-col>
+              <Total :entries="item.entries" :allocations="item.allocations" />
+            </v-col>
+          </v-row>
 
           <!-- bottom: calendar view -->
           <Calendar :entries="item.entries" />
         </div>
+
         <infinite-loading :identifier="year" @infinite="get_entries">
           <span slot="no-more"></span>
           <span slot="no-results"></span>
