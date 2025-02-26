@@ -1,6 +1,5 @@
 <template>
   <div class="totalBar">
-    {{ allocations }}
     <template v-if="allocations">
       <v-tooltip top color="rgba(79, 195, 247)">
         <template v-slot:activator="{ on, attrs }">
@@ -65,8 +64,6 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
 export default {
   name: "Total",
   components: {},
