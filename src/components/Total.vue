@@ -1,150 +1,44 @@
 <template>
-  <div class="totalBar">
-    <template v-if="allocations?.leaves?.current_year_grants">
-      <v-tooltip top color="rgba(79, 195, 247)">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="carriedOver allocationBar"
-            :style="{ width: `${carriedOverPercent}%` }"
-          >
-            {{ allocations.leaves.carried_over }}
-          </div>
-        </template>
-        <span> 繰越日数 </span>
-      </v-tooltip>
+  <div>
+    <v-row align="center" dense justify="space-around">
+      <v-col cols="auto"> 年休 </v-col>
 
-      <v-tooltip top color="rgba(3, 155, 229)">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="currentYear allocationBar"
-            :style="{ width: `${100 - carriedOverPercent}%` }"
-          >
-            {{ allocations.leaves.current_year_grants }}
-          </div>
-        </template>
-        <span> 当年度付与日数 </span>
-      </v-tooltip>
-    </template>
-
-    <template v-if="total_taken + total_yotei">
-      <v-tooltip bottom color="#00c000">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="taken leavesBar"
-            :style="{ width: `${takenPercent}%` }"
-          >
-            {{ total_taken }}
-          </div>
-        </template>
-        <span> 当年度取得日数 </span>
-      </v-tooltip>
-
-      <!-- Yotei -->
-      <v-tooltip bottom color="#3f663f">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="yotei leavesBar"
-            :style="{
-              width: `${yoteiPercent}%`,
-              left: `${takenPercent}%`,
-            }"
-          >
-            {{ total_yotei }}
-          </div>
-        </template>
-        <span> 当年度予定日数 </span>
-      </v-tooltip>
-
-      <!-- Remaining -->
-      <v-tooltip
-        bottom
-        color="#777777"
-        v-if="allocations?.leaves?.current_year_grants"
-      >
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="remaining leavesBar"
-            :style="{
-              width: `${100 - takenPercent - yoteiPercent}%`,
-            }"
-          >
-            {{
-              allocations.leaves.current_year_grants +
-              allocations.leaves.current_year_grants -
-              total_yotei -
-              total_taken
-            }}
-          </div>
-        </template>
-        <span> 残り </span>
-      </v-tooltip>
-    </template>
+      <v-col cols="auto"> 積休 </v-col>
+    </v-row>
+    <v-row dense align="center">
+      <!-- <v-col cols="auto"> 年休 </v-col> -->
+      <v-col>
+        <EntriesAllocationsIndicator
+          :entries="leaves"
+          :allocations="allocations?.leaves"
+        />
+      </v-col>
+      <!-- <v-col cols="auto"> 積休 </v-col> -->
+      <v-col>
+        <EntriesAllocationsIndicator
+          :entries="reserve"
+          :allocations="allocations?.reserve"
+        />
+      </v-col>
+    </v-row>
   </div>
 </template>
 
 <script>
+import EntriesAllocationsIndicator from "@/components/EntriesAllocationsIndicator.vue"
 export default {
   name: "Total",
-  components: {},
+  components: { EntriesAllocationsIndicator },
   props: {
     entries: Array,
     allocations: Object,
   },
   computed: {
-    total_yotei() {
-      return this.entries.reduce((total, { type, date }) => {
-        if (new Date(date) > new Date()) {
-          if (type === "有休") return total + 1
-          else if (type === "前半休" || type === "後半休") return total + 0.5
-        }
-        return total
-      }, 0)
+    leaves() {
+      return this.entries.filter((l) => !l.reserve)
     },
-    total_taken() {
-      return this.entries.reduce((total, { type, date }) => {
-        if (new Date(date) < new Date()) {
-          if (type === "有休") return total + 1
-          else if (type === "前半休" || type === "後半休") return total + 0.5
-        }
-        return total
-      }, 0)
-    },
-    total_allocations() {
-      return (
-        this.allocations.leaves.current_year_grants +
-        this.allocations.leaves.current_year_grants
-      )
-    },
-    carriedOverPercent() {
-      return (
-        (this.allocations.leaves.carried_over / this.total_allocations) * 100
-      )
-    },
-
-    takenPercent() {
-      if (!this.allocations?.leaves?.current_year_grants)
-        return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
-      return (this.total_taken / this.total_allocations) * 100
-    },
-    yoteiPercent() {
-      if (!this.allocations?.leaves?.current_year_grants)
-        return (this.total_yotei / (this.total_yotei + this.total_taken)) * 100
-      return (
-        (this.total_yotei /
-          (this.allocations.leaves.carried_over +
-            this.allocations.leaves.current_year_grants)) *
-        100
-      )
+    reserve() {
+      return this.entries.filter((l) => l.reserve)
     },
   },
 }
