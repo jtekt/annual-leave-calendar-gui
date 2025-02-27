@@ -4,12 +4,11 @@
       <v-container fluid>
         <v-row align="baseline">
           <v-col>
-            <v-toolbar-title v-if="group">{{
-              group.properties.name
-            }}</v-toolbar-title>
+            <v-toolbar-title v-if="group"
+              >{{ group.properties.name }} ({{ total }}人)</v-toolbar-title
+            >
             <v-toolbar-title v-else>{{ group_id }}</v-toolbar-title>
           </v-col>
-          <v-col cols="auto"> ({{ total }}人) </v-col>
           <v-spacer />
           <v-col cols="auto">
             <v-select
