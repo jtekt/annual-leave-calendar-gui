@@ -88,7 +88,13 @@
       </v-tooltip>
     </template>
 
-    <div v-if="!allocations?.current_year_grants && !entries.length">
+    <div
+      v-if="
+        !allocations?.current_year_grants &&
+        !allocations?.carried_over &&
+        !entries.length
+      "
+    >
       データなし
     </div>
   </div>
