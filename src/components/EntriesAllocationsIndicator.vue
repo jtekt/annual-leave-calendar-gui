@@ -85,12 +85,7 @@
       <span> 残り </span>
     </v-tooltip>
 
-    <div
-      v-if="
-        !allocations?.current_year_grants && total_yotei + total_taken === 0
-      "
-      style="text-align: center"
-    >
+    <div v-if="!allocations?.current_year_grants && !entries.length">
       データなし
     </div>
   </div>
@@ -155,6 +150,7 @@ export default {
 .total {
   position: relative;
   height: 3em;
+  text-align: center;
 }
 
 .bar {
@@ -165,7 +161,6 @@ export default {
   position: absolute;
   top: 0;
   bottom: 0;
-  text-align: center;
   overflow: hidden;
 }
 
@@ -183,7 +178,7 @@ export default {
   position: absolute;
   top: 50%;
   bottom: 0;
-  text-align: center;
+
   overflow: hidden;
 }
 .taken {
