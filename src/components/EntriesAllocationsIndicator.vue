@@ -1,6 +1,8 @@
 <template>
   <div class="total">
-    <template v-if="allocations?.current_year_grants">
+    <template
+      v-if="allocations?.current_year_grants || allocations?.carried_over"
+    >
       <v-tooltip top color="rgba(79, 195, 247)">
         <template v-slot:activator="{ on, attrs }">
           <div
@@ -27,6 +29,28 @@
           </div>
         </template>
         <span> 当年度付与日数 </span>
+      </v-tooltip>
+
+      <!-- Remaining -->
+      <v-tooltip bottom color="#777777">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+            class="remaining leaves bar"
+            :style="{
+              width: `${100 - takenPercent - yoteiPercent}%`,
+            }"
+          >
+            {{
+              allocations.current_year_grants +
+              allocations.carried_over -
+              total_yotei -
+              total_taken
+            }}
+          </div>
+        </template>
+        <span> 残り </span>
       </v-tooltip>
     </template>
 
@@ -63,27 +87,6 @@
         <span> 当年度予定日数 </span>
       </v-tooltip>
     </template>
-    <!-- Remaining -->
-    <v-tooltip bottom color="#777777" v-if="allocations?.current_year_grants">
-      <template v-slot:activator="{ on, attrs }">
-        <div
-          v-bind="attrs"
-          v-on="on"
-          class="remaining leaves bar"
-          :style="{
-            width: `${100 - takenPercent - yoteiPercent}%`,
-          }"
-        >
-          {{
-            allocations.current_year_grants +
-            allocations.carried_over -
-            total_yotei -
-            total_taken
-          }}
-        </div>
-      </template>
-      <span> 残り </span>
-    </v-tooltip>
 
     <div v-if="!allocations?.current_year_grants && !entries.length">
       データなし
@@ -128,12 +131,18 @@ export default {
     },
 
     takenPercent() {
-      if (!this.allocations?.current_year_grants)
+      if (
+        !this.allocations?.current_year_grants &&
+        !this.allocations?.carried_over
+      )
         return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
       return (this.total_taken / this.total_allocations) * 100
     },
     yoteiPercent() {
-      if (!this.allocations?.current_year_grants)
+      if (
+        !this.allocations?.current_year_grants &&
+        !this.allocations?.carried_over
+      )
         return (this.total_yotei / (this.total_yotei + this.total_taken)) * 100
       return (
         (this.total_yotei /
