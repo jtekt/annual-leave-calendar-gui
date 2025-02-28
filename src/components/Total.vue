@@ -16,6 +16,7 @@
       <!-- <v-col cols="auto"> 積休 </v-col> -->
       <v-col>
         <EntriesAllocationsIndicator
+          reserve
           :entries="reserve"
           :allocations="allocations?.reserve"
         />

@@ -15,6 +15,12 @@
         <router-link
           class="entry"
           :class="{ taken: passed_date(entry), refresh: entry.refresh }"
+          :style="{
+            color: passed_date(entry)
+              ? colors.leaves.taken
+              : colors.leaves.yotei,
+            opacity: passed_date(entry) ? 1 : 1,
+          }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
           :to="{ name: 'entry', params: { id: entry._id } }"
@@ -37,12 +43,18 @@
 </template>
 
 <script>
-// @ is an alias to /src
+import { colors, notTakenOpacity } from "../config"
 
 export default {
   name: "Calendar",
   props: {
     entries: Array,
+  },
+  data() {
+    return {
+      colors,
+      notTakenOpacity,
+    }
   },
   methods: {
     entries_of_month(month) {
@@ -108,7 +120,6 @@ export default {
 
 .entry {
   text-decoration: none;
-  color: #3f663f;
   font-weight: bold;
   padding: 0.25em;
   display: inline-flex;
@@ -123,12 +134,8 @@ export default {
   font-size: 80%;
 }
 
-.entry.taken {
-  color: #00c000;
-}
-
 .entry.refresh {
-  border: 2px solid red;
+  border: 2px solid rgb(0, 119, 255);
 }
 
 .total {

@@ -1,9 +1,12 @@
 <template>
-  <div class="total">
+  <!-- TODO: use one big tooltip for all? -->
+  <!-- <v-tooltip top>
+    <template v-slot:activator="{ on, attrs }"> -->
+  <div class="total" v-bind="attrs" v-on="on">
     <template
       v-if="allocations?.current_year_grants || allocations?.carried_over"
     >
-      <v-tooltip top color="rgba(79, 195, 247)">
+      <v-tooltip top :color="colors.allocations.carried_over">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -17,7 +20,7 @@
         <span> 繰越日数 </span>
       </v-tooltip>
 
-      <v-tooltip top color="rgba(3, 155, 229)">
+      <v-tooltip top :color="colors.allocations.current_year_grants">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -32,7 +35,7 @@
       </v-tooltip>
 
       <!-- Remaining -->
-      <v-tooltip bottom color="#777777">
+      <!-- <v-tooltip bottom color="#777777">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -51,17 +54,37 @@
           </div>
         </template>
         <span> 残り </span>
+      </v-tooltip> -->
+
+      <!-- Minimum -->
+      <v-tooltip bottom :color="colors.leaves.insufficient" v-if="!reserve">
+        <template v-slot:activator="{ on, attrs }">
+          <div
+            v-bind="attrs"
+            v-on="on"
+            class="min leaves bar"
+            :style="{
+              width: `${minPercent}%`,
+            }"
+          ></div>
+        </template>
+        <span>
+          今年取らないといけない分: {{ min - total_taken + total_yotei }}</span
+        >
       </v-tooltip>
     </template>
-
+    <!-- Taken -->
     <template v-if="total_taken + total_yotei">
-      <v-tooltip bottom color="#00c000">
+      <v-tooltip bottom :color="colors.leaves.taken">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
             v-on="on"
             class="taken leaves bar"
-            :style="{ width: `${takenPercent}%` }"
+            :style="{
+              width: `${takenPercent}%`,
+              'background-color': colors.leaves.taken,
+            }"
           >
             {{ total_taken }}
           </div>
@@ -70,7 +93,7 @@
       </v-tooltip>
 
       <!-- Yotei -->
-      <v-tooltip bottom color="#3f663f">
+      <v-tooltip bottom :color="colors.leaves.taken">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
@@ -79,6 +102,7 @@
             :style="{
               width: `${yoteiPercent}%`,
               left: `${takenPercent}%`,
+              'background-color': colors.leaves.yotei,
             }"
           >
             {{ total_yotei }}
@@ -98,15 +122,49 @@
       データなし
     </div>
   </div>
+  <!-- </template>
+    <div class="tooltip">
+      <div>
+        <div class="colorLegend" style="background-color: rgba(79, 195, 247)" />
+        <div>繰越日数</div>
+      </div>
+      <div>
+        <div class="colorLegend" style="background-color: rgba(3, 155, 229)" />
+        <div>当年度付与日数</div>
+      </div>
+      <div>
+        <div
+          class="colorLegend"
+          :style="{ 'background-color': colors.leave.taken }"
+        />
+        <div>当年度取得日数</div>
+      </div>
+      <div>
+        <div
+          class="colorLegend"
+          :style="{ 'background-color': colors.leave.yotei }"
+        />
+        <div>当年度予定日数</div>
+      </div>
+    </div>
+  </v-tooltip> -->
 </template>
 
 <script>
+import { colors, notTakenOpacity } from "../config"
 export default {
-  name: "Total",
-  components: {},
+  name: "EntriesAllocationsIndicator",
   props: {
     entries: Array,
     allocations: Object,
+    reserve: Boolean,
+  },
+  data() {
+    return {
+      min: 5,
+      colors,
+      notTakenOpacity,
+    }
   },
   computed: {
     total_yotei() {
@@ -157,6 +215,14 @@ export default {
         100
       )
     },
+    minPercent() {
+      return (
+        (this.min /
+          (this.allocations.carried_over +
+            this.allocations.current_year_grants)) *
+        100
+      )
+    },
   },
 }
 </script>
@@ -193,7 +259,6 @@ export default {
   position: absolute;
   top: 50%;
   bottom: 0;
-
   overflow: hidden;
 }
 .taken {
@@ -201,13 +266,26 @@ export default {
   background-color: #00c000bb;
 }
 
-.yotei {
-  background-color: #3f663fbb;
-}
-
 .remaining {
   right: 0;
   color: white;
   background-color: #44444444;
+}
+
+.min {
+  background-color: #ff000099;
+  border-right: 2px solid red;
+}
+
+.tooltip {
+  width: 200px;
+}
+.tooltip > div {
+  display: flex;
+  align-items: stretch;
+  gap: 0.5em;
+}
+.colorLegend {
+  flex-basis: 20px;
 }
 </style>
