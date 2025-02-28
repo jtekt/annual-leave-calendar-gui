@@ -69,7 +69,7 @@
           ></div>
         </template>
         <span>
-          今年取らないといけない分: {{ min - total_taken + total_yotei }}</span
+          今年取らないといけない分: {{ min - total_taken - total_yotei }}</span
         >
       </v-tooltip>
     </template>
