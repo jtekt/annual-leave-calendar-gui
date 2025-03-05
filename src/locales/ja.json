@@ -9,5 +9,9 @@
   "Taken": "取得した",
   "Afternoon": "後半休",
   "Morning": "前半休",
-  "All day": "有休"
+  "All day": "有休",
+  "Schedule delete": "予定削除",
+  "User": "ユーザー",
+  "Refresh": "リフレッシュ休暇",
+  "Reserve": "積立休暇"
 }

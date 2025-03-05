@@ -11,7 +11,7 @@
           <v-col cols="auto" v-if="editable">
             <v-btn color="#c00000" dark @click="delete_entry()">
               <v-icon>mdi-delete</v-icon>
-              <span class="ml-2">予定削除</span>
+              <span class="ml-2">{{ $t("Schedule delete") }}</span>
             </v-btn>
           </v-col>
         </v-row>
@@ -22,7 +22,7 @@
         <!-- user info -->
 
         <v-row align="baseline">
-          <v-col cols="auto"> User: </v-col>
+          <v-col cols="auto"> {{ $t("User") }}: </v-col>
           <v-col>
             <v-progress-circular v-if="user_loading" indeterminate />
             <User v-else-if="user" :user="user" />
@@ -46,7 +46,7 @@
         <v-row>
           <v-col>
             <v-checkbox
-              label="Refresh"
+              :label="$t('Refresh')"
               :disabled="!editable"
               v-model="entry.refresh"
               @change="update_entry()"
@@ -54,7 +54,7 @@
           </v-col>
           <v-col>
             <v-checkbox
-              label="Reserve"
+              :label="$t('Reserve')"
               :disabled="!editable"
               v-model="entry.reserve"
               @change="update_entry()"

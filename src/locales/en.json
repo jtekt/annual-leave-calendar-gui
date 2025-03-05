@@ -10,5 +10,9 @@
   "Taken": "Taken",
   "All day": "All day",
   "Morning": "Morning",
-  "Afternoon": "Afternoon"
+  "Afternoon": "Afternoon",
+  "Schedule delete": "Schedule delete",
+  "User": "User",
+  "Refresh": "Refresh",
+  "Reserve": "Reserve"
 }
