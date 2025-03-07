@@ -27,7 +27,6 @@
           <v-col>
             <v-checkbox :label="$t('Reserve')" v-model="reserve" />
           </v-col>
-          <v-col><v-btn @click="create_allocations">test</v-btn></v-col>
         </v-row>
         <v-row>
           <v-col>
