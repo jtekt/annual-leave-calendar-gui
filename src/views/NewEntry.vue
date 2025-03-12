@@ -25,11 +25,7 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-btn
-              :disabled="submit_disabled"
-              type="submit"
-              :loading="allocations_loading"
-            >
+            <v-btn :disabled="submit_disabled" type="submit">
               <v-icon>mdi-plus</v-icon>
               <span class="ml-2">{{ $t("Create entry") }}</span>
             </v-btn>
