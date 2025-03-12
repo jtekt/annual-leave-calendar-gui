@@ -1,5 +1,5 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" :loading="entries_loading">
+  <v-card max-width="30rem" class="mx-auto">
     <v-card-title>
       {{ $t("Create entry") }}
     </v-card-title>
@@ -21,11 +21,6 @@
         <v-row>
           <v-col>
             <v-select :items="types" v-model="type" :label="$t('Type')" />
-          </v-col>
-        </v-row>
-        <v-row>
-          <v-col>
-            <v-checkbox :label="$t('Reserve')" v-model="reserve" />
           </v-col>
         </v-row>
         <v-row>
@@ -54,10 +49,6 @@ export default {
       date: null,
       type: "有休",
       entries: [],
-      entries_loading: false,
-      reserve: false,
-      allocations_loading: false,
-      allocations: null,
     }
   },
   mounted() {
@@ -89,7 +80,6 @@ export default {
         date: this.date,
         type: this.type,
       }
-      this.create_allocations()
       this.axios
         .post(url, body)
         .then((response) => {
@@ -106,26 +96,6 @@ export default {
           }
 
           alert(error.response.data)
-        })
-    },
-    create_allocations() {
-      this.allocations_loading = true
-      const entries_url = `/v2/users/${this.user_id}/entries`
-      this.axios
-        .get(entries_url)
-        .then(({ data }) => (this.allocations = data.allocations))
-        .catch((error) => console.error(error))
-        .finally(() => (this.loading = false))
-      console.log(this.allocations)
-      if (!this.allocations) return
-      const allocations_url = `/v1/users/${this.user_id}/allocations`
-      this.axios
-        .post(allocations_url, this.allocations)
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.allocations_loading = false
         })
     },
   },

@@ -14,5 +14,12 @@
   "Schedule delete": "Schedule delete",
   "User": "User",
   "Refresh": "Refresh",
-  "Reserve": "Reserve"
+  "Reserve": "Reserve",
+  "Leaves": "Leaves",
+  "Allocations": "Allocations",
+  "Create allocation": "Create allocation",
+  "Cancel": "Cancel",
+  "Carried over": "Carried over",
+  "Current year grants": "Current year grants",
+  "Year": "Year"
 }

@@ -13,5 +13,12 @@
   "Schedule delete": "予定削除",
   "User": "ユーザー",
   "Refresh": "リフレッシュ休暇",
-  "Reserve": "積立休暇"
+  "Reserve": "積立休暇",
+  "Leaves": "年休",
+  "Allocations": "割り当て",
+  "Create allocation": "割り当て作成",
+  "Cancel": "キャンセル",
+  "Carried over": "繰り越し日数",
+  "Current year grants": "当年度付与日数",
+  "Year": "年"
 }

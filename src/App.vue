@@ -27,15 +27,15 @@
 </template>
 
 <script>
-import AppTemplate from "@moreillon/vue_application_template_vuetify";
-import LocaleSelector from "./components/LocaleSelector.vue";
+import AppTemplate from "@moreillon/vue_application_template_vuetify"
+import LocaleSelector from "./components/LocaleSelector.vue"
 
 const {
   VUE_APP_LOGIN_URL,
   VUE_APP_IDENTIFICATION_URL,
   VUE_APP_LOGIN_HINT,
   VUE_APP_HOMEPAGE_URL,
-} = process.env;
+} = process.env
 
 export default {
   name: "App",
@@ -61,7 +61,7 @@ export default {
 
   methods: {
     get_user(user) {
-      this.$store.commit("set_current_user", user);
+      this.$store.commit("set_current_user", user)
     },
   },
   computed: {
@@ -78,6 +78,11 @@ export default {
           icon: "mdi-account",
         },
         {
+          title: this.$t("Allocations"),
+          to: { name: "user_allocations", params: { id: "self" } },
+          icon: "mdi-account-multiple",
+        },
+        {
           title: this.$t("Groups"),
           to: { name: "groups" },
           icon: "mdi-account-multiple",
@@ -87,10 +92,10 @@ export default {
           to: { name: "about" },
           icon: "mdi-information-outline",
         },
-      ];
+      ]
     },
   },
-};
+}
 </script>
 
 <style>
