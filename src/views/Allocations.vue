@@ -30,7 +30,7 @@
             <CreateAllocation
               :user_id="user_id"
               :year="year"
-              @createAllocation="get_entries(year)"
+              @createAllocation="get_allocations()"
             />
           </v-col>
         </v-row>
@@ -89,17 +89,17 @@ export default {
     }
   },
   mounted() {
-    this.get_entries()
+    this.get_allocations()
     this.get_user(this.user_id)
   },
   watch: {
     user_id() {
-      this.get_entries()
+      this.get_allocations()
       this.get_user(this.user_id)
     },
     year(newVal) {
       this.$router.replace({ query: { ...this.$route.query, year: newVal } })
-      this.get_entries()
+      this.get_allocations()
     },
   },
   methods: {
@@ -118,14 +118,17 @@ export default {
           this.user_loading = false
         })
     },
-    get_entries() {
+    get_allocations() {
       this.entries_loading = true
-      const url = `/v2/users/${this.user_id}/entries`
-      const params = { year: this.year }
+      const url = `/v1/users/${this.user_id}/allocations`
+      const params = { year: this.year, user_ids: { user_id: this.user_id } }
       this.axios
         .get(url, { params })
         .then(({ data }) => {
-          this.allocations = data.allocations
+          this.allocations = {
+            leaves: data[0].leaves,
+            reserve: data[0].reserve,
+          }
         })
         .catch((error) => console.error(error))
         .finally(() => (this.entries_loading = false))
