@@ -78,9 +78,9 @@ export default {
           icon: "mdi-account",
         },
         {
-          title: this.$t("Allocations"),
+          title: this.$t("My allocations"),
           to: { name: "user_allocations", params: { id: "self" } },
-          icon: "mdi-account-multiple",
+          icon: "mdi-account",
         },
         {
           title: this.$t("Groups"),

@@ -26,8 +26,12 @@
             v-if="current_user_id === user_id || user_id === 'self'"
           >
           </v-col>
-          <v-col>
-            <CreateAllocation :user_id="user_id" />
+          <v-col cols="auto">
+            <CreateAllocation
+              :user_id="user_id"
+              :year="year"
+              @createAllocation="get_entries(year)"
+            />
           </v-col>
         </v-row>
       </v-container>
@@ -46,13 +50,17 @@
             <tbody>
               <tr>
                 <td>{{ $t("Leaves") }}</td>
-                <td>{{ allocations?.leaves.carried_over || 0 }}</td>
-                <td>{{ allocations?.leaves.current_year_grants || 0 }}</td>
+                <td>{{ allocations?.leaves?.carried_over }}</td>
+                <td>
+                  {{ allocations?.leaves?.current_year_grants }}
+                </td>
               </tr>
               <tr>
                 <td>{{ $t("Reserve") }}</td>
-                <td>{{ allocations?.reserve.carried_over || 0 }}</td>
-                <td>{{ allocations?.reserve.current_year_grants || 0 }}</td>
+                <td>{{ allocations?.reserve?.carried_over }}</td>
+                <td>
+                  {{ allocations?.reserve?.current_year_grants }}
+                </td>
               </tr>
             </tbody>
           </template>
@@ -77,16 +85,7 @@ export default {
       entries_loading: false,
       user: null,
       user_loading: false,
-      allocations: {
-        leaves: {
-          current_year_grants: 0,
-          carried_over: 0,
-        },
-        reserve: {
-          current_year_grants: 0,
-          carried_over: 0,
-        },
-      },
+      allocations: null,
     }
   },
   mounted() {
@@ -128,13 +127,8 @@ export default {
         .then(({ data }) => {
           this.allocations = data.allocations
         })
-        .catch((error) => {
-          alert(`Failed to query items`)
-          console.error(error)
-        })
-        .finally(() => {
-          this.entries_loading = false
-        })
+        .catch((error) => console.error(error))
+        .finally(() => (this.entries_loading = false))
     },
   },
   computed: {

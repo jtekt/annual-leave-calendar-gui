@@ -16,7 +16,8 @@
                 :label="$t('Leaves')"
                 type="number"
                 min="0"
-                v-model="carried_over_leaves"
+                step="0.5"
+                v-model.number="leaves.carried_over"
                 :hint="$t('Carried over')"
                 persistent-hint
               />
@@ -26,7 +27,8 @@
                 :label="$t('Leaves')"
                 type="number"
                 min="0"
-                v-model="current_year_leaves"
+                step="0.5"
+                v-model.number="leaves.current_year_grants"
                 :hint="$t('Current year grants')"
                 persistent-hint
               />
@@ -38,7 +40,8 @@
                 :label="$t('Reserve')"
                 type="number"
                 min="0"
-                v-model="carried_over_reserve"
+                step="0.5"
+                v-model.number="reserve.carried_over"
                 :hint="$t('Carried over')"
                 persistent-hint
               />
@@ -48,7 +51,8 @@
                 :label="$t('Reserve')"
                 type="number"
                 min="0"
-                v-model="current_year_reserve"
+                step="0.5"
+                v-model.number="reserve.current_year_grants"
                 :hint="$t('Current year grants')"
                 persistent-hint
               />
@@ -66,43 +70,57 @@
     </v-form>
   </v-dialog>
 </template>
+
 <script>
 export default {
   name: "CreateAllocation",
   props: {
     user_id: String,
+    year: Number,
   },
   data() {
     return {
       loading: false,
       dialog: false,
-      current_year_leaves: null,
-      carried_over_leaves: null,
-      current_year_reserve: null,
-      carried_over_reserve: null,
+      leaves: {
+        carried_over: 0,
+        current_year_grants: 0,
+      },
+      reserve: {
+        carried_over: 0,
+        current_year_grants: 0,
+      },
     }
   },
   methods: {
     submit() {
       this.loading = true
       const url = `/v1/users/${this.user_id}/allocations`
-      const allocations = {
+      const body = {
+        year: this.year,
         leaves: {
-          current_year_grants: this.current_year_leaves,
-          carried_over: this.carried_over_leaves,
+          carried_over: this.leaves.carried_over,
+          current_year_grants: this.leaves.current_year_grants,
         },
         reserve: {
-          current_year_grants: this.current_year_reserve,
-          carried_over: this.carried_over_reserve,
+          carried_over: this.reserve.carried_over,
+          current_year_grants: this.reserve.current_year_grants,
         },
       }
       this.axios
-        .put(url, allocations)
+        .post(url, body)
+        .then(() => this.$emit("createAllocation"))
         .catch((error) => {
           console.error(error)
+          alert(`Error while creating`)
         })
         .finally(() => {
           this.loading = false
+          this.leaves.carried_over = null
+          this.leaves.current_year_grants = null
+          this.reserve.carried_over = null
+          this.reserve.current_year_grants = null
+          this.dialog = false
         })
     },
   },
