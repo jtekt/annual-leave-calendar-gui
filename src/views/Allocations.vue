@@ -121,7 +121,7 @@ export default {
     get_allocations() {
       this.entries_loading = true
       const url = `/v1/users/${this.user_id}/allocations`
-      const params = { year: this.year, user_ids: { user_id: this.user_id } }
+      const params = { year: this.year }
       this.axios
         .get(url, { params })
         .then(({ data }) => {
