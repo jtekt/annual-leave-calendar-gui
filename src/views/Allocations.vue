@@ -136,9 +136,8 @@ export default {
   },
   computed: {
     user_id() {
-      return (
-        this.$store.state.current_user.properties._id || this.$route.params.id
-      )
+      return this.$route.params.id
+      
     },
   },
 }
