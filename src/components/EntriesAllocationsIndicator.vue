@@ -9,7 +9,7 @@
           <div
             v-bind="attrs"
             v-on="on"
-            :class="'carriedOver allocation bar'"
+            class="carriedOver allocation bar"
             :style="{ width: `${carriedOverPercent}%` }"
           >
             {{ allocations?.carried_over }}
@@ -23,7 +23,7 @@
           <div
             v-bind="attrs"
             v-on="on"
-            :class="'currentYear allocation bar'"
+            class="currentYear allocation bar"
             :style="{ width: `${100 - carriedOverPercent}%` }"
           >
             {{ allocations?.current_year_grants }}
