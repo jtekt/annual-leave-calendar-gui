@@ -2,19 +2,17 @@
   <!-- TODO: use one big tooltip for all? -->
   <!-- <v-tooltip top>
     <template v-slot:activator="{ on, attrs }"> -->
-  <div class="total" v-bind="attrs" v-on="on">
-    <template
-      v-if="allocations?.current_year_grants || allocations?.carried_over"
-    >
+  <div class="total">
+    <template v-if="allocations">
       <v-tooltip top :color="colors.allocations.carried_over">
         <template v-slot:activator="{ on, attrs }">
           <div
             v-bind="attrs"
             v-on="on"
-            class="carriedOver allocation bar"
+            :class="'carriedOver allocation bar'"
             :style="{ width: `${carriedOverPercent}%` }"
           >
-            {{ allocations.carried_over }}
+            {{ allocations?.carried_over }}
           </div>
         </template>
         <span> 繰越日数 </span>
@@ -25,10 +23,10 @@
           <div
             v-bind="attrs"
             v-on="on"
-            class="currentYear allocation bar"
+            :class="'currentYear allocation bar'"
             :style="{ width: `${100 - carriedOverPercent}%` }"
           >
-            {{ allocations.current_year_grants }}
+            {{ allocations?.current_year_grants }}
           </div>
         </template>
         <span> 当年度付与日数 </span>
@@ -111,10 +109,9 @@
         <span> 当年度予定日数 </span>
       </v-tooltip>
     </template>
-
     <div
       v-if="
-        !allocations?.current_year_grants &&
+        (allocations?.current_year_grants === undefined || null) &&
         !allocations?.carried_over &&
         !entries.length
       "
