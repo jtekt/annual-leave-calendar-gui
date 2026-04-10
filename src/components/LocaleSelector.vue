@@ -2,35 +2,25 @@
   <v-select
     prepend-icon="mdi-translate"
     :items="locales"
-    v-model="$i18n.locale"
-    @change="save_locale()"/>
+    v-model="locale"
+  />
 </template>
 
-<script>
-export default {
-  name: 'LocaleSelector',
-  data(){
-      return {
-        locales: [
-            {text: 'English', value: 'en'},
-            {text: '日本語', value: 'ja'},
-        ],
-      }
-  },
-  mounted(){
-      this.restore_locale()
-  },
-  methods: {
-      save_locale(){
-        localStorage.locale = this.$i18n.locale
-      },
-      restore_locale(){
-        if(localStorage.locale)
-        this.$i18n.locale = localStorage.locale
-      }
-  }
-  
-}
+<script setup lang="ts">
+import { watch } from "vue"
+import { useI18n } from "vue-i18n"
+
+const { locale } = useI18n({ useScope: "global" })
+
+const locales = [
+  { title: "English", value: "en" },
+  { title: "日本語", value: "ja" },
+]
+
+const savedLocale = localStorage.getItem("locale")
+if (savedLocale) locale.value = savedLocale
+
+watch(locale, (newLocale) => {
+  localStorage.setItem("locale", newLocale)
+})
 </script>
-
-

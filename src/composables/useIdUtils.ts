@@ -1,0 +1,33 @@
+import { computed } from "vue"
+import { useStore } from "@/store"
+import type { User } from "@/types"
+
+type IdentifiableItem = Pick<User, "_id" | "properties" | "identity">
+
+export function useIdUtils() {
+  const store = useStore()
+
+  function get_id_of_item(item: IdentifiableItem): string {
+    let id: string | undefined = item._id ?? item.properties?._id
+
+    if (!id) {
+      console.warn("Item does not have an _id:", item)
+      const identity = item.identity
+      if (typeof identity === "object" && identity !== null && "low" in identity) {
+        id = String(identity.low)
+      } else {
+        id = String(identity)
+      }
+    }
+
+    return id as string
+  }
+
+  const current_user_id = computed<string | undefined>(() => {
+    const current_user = store.state.current_user
+    if (!current_user) return undefined
+    return get_id_of_item(current_user)
+  })
+
+  return { get_id_of_item, current_user_id }
+}

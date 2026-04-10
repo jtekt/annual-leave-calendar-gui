@@ -1,40 +1,23 @@
 <template>
-
   <router-link
     class="user"
-    :to="{ name: 'user_entries', params: {id: get_id_of_item(user)} }">
-
-    <img
-      class="avatar"
-      v-if="user.avatar_src"
-      :src="user.avatar_src">
-    
+    :to="{ name: 'user_entries', params: { id: get_id_of_item(user) } }"
+  >
+    <img class="avatar" v-if="user.avatar_src" :src="user.avatar_src" />
     <v-icon v-else>mdi-account</v-icon>
-
-    <!-- <account-icon
-      class="avatar"
-      v-else /> -->
-
-    <span class="name">
-      {{user.display_name ||
-        user.name_kanji}}
-    </span>
-
+    <span class="name">{{ user.display_name || user.name_kanji }}</span>
   </router-link>
-
 </template>
 
-<script>
-// @ is an alias to /src
-import IdUtils from '@/mixins/IdUtils.js'
+<script setup lang="ts">
+import { useIdUtils } from "@/composables/useIdUtils"
+import type { User } from "@/types"
 
-export default {
-  name: 'User',
-  mixins: [IdUtils],
-  props: {
-    user: Object,
-  }
-}
+defineProps<{
+  user: User
+}>()
+
+const { get_id_of_item } = useIdUtils()
 </script>
 
 <style scoped>

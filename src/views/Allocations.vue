@@ -4,33 +4,18 @@
       <v-container fluid>
         <v-row align="center">
           <v-col>
-            <v-toolbar-title v-if="user">
-              {{ user.display_name }}
-            </v-toolbar-title>
+            <v-toolbar-title v-if="user">{{ user.display_name }}</v-toolbar-title>
             <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
           </v-col>
           <v-spacer />
           <v-col>
-            <v-select
-              :items="
-                Array.from(Array(10).keys()).map(
-                  (x) => new Date().getFullYear() + x - 5
-                )
-              "
-              v-model="year"
-              :label="$t('Year')"
-            />
-          </v-col>
-          <v-col
-            cols="auto"
-            v-if="current_user_id === user_id || user_id === 'self'"
-          >
+            <v-select :items="yearItems" v-model="year" :label="t('Year')" />
           </v-col>
           <v-col cols="auto">
             <CreateAllocation
               :user_id="user_id"
               :year="year"
-              @createAllocation="get_allocations()"
+              @createAllocation="get_allocations"
             />
           </v-col>
         </v-row>
@@ -38,107 +23,91 @@
       <v-divider />
 
       <v-card-text>
-        <v-simple-table>
-          <template>
-            <thead>
-              <tr>
-                <th>{{ $t("Type") }}</th>
-                <th>{{ $t("Carried over") }}</th>
-                <th>{{ $t("Current year grants") }}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>{{ $t("Leaves") }}</td>
-                <td>{{ allocations?.leaves?.carried_over }}</td>
-                <td>
-                  {{ allocations?.leaves?.current_year_grants }}
-                </td>
-              </tr>
-              <tr>
-                <td>{{ $t("Reserve") }}</td>
-                <td>{{ allocations?.reserve?.carried_over }}</td>
-                <td>
-                  {{ allocations?.reserve?.current_year_grants }}
-                </td>
-              </tr>
-            </tbody>
-          </template>
-        </v-simple-table>
+        <v-table>
+          <thead>
+            <tr>
+              <th>{{ t("Type") }}</th>
+              <th>{{ t("Carried over") }}</th>
+              <th>{{ t("Current year grants") }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{{ t("Leaves") }}</td>
+              <td>{{ allocations?.leaves?.carried_over }}</td>
+              <td>{{ allocations?.leaves?.current_year_grants }}</td>
+            </tr>
+            <tr>
+              <td>{{ t("Reserve") }}</td>
+              <td>{{ allocations?.reserve?.carried_over }}</td>
+              <td>{{ allocations?.reserve?.current_year_grants }}</td>
+            </tr>
+          </tbody>
+        </v-table>
       </v-card-text>
     </template>
   </v-card>
 </template>
 
-<script>
-import IdUtils from "@/mixins/IdUtils.js"
-import CreateAllocation from "../components/CreateAllocation.vue"
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
+import axios from "axios"
+import CreateAllocation from "@/components/CreateAllocation.vue"
+import type { User, Allocations } from "@/types"
 
-export default {
-  name: "Allocations",
-  mixins: [IdUtils],
-  components: { CreateAllocation },
-  data() {
-    return {
-      year: Number(this.$route.query.year) || new Date().getFullYear(),
-      allocations_loading: false,
-      entries_loading: false,
-      user: null,
-      user_loading: false,
-      allocations: null,
-    }
-  },
-  mounted() {
-    this.get_allocations()
-    this.get_user(this.user_id)
-  },
-  watch: {
-    user_id() {
-      this.get_allocations()
-      this.get_user(this.user_id)
-    },
-    year(newVal) {
-      this.$router.replace({ query: { ...this.$route.query, year: newVal } })
-      this.get_allocations()
-    },
-  },
-  methods: {
-    get_user(user_id) {
-      this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
-      this.axios
-        .get(url)
-        .then(({ data }) => {
-          this.user = data
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.user_loading = false
-        })
-    },
-    get_allocations() {
-      this.entries_loading = true
-      const url = `/v1/users/${this.user_id}/allocations`
-      const params = { year: this.year }
-      this.axios
-        .get(url, { params })
-        .then(({ data }) => {
-          this.allocations = {
-            leaves: data[0].leaves,
-            reserve: data[0].reserve,
-          }
-        })
-        .catch((error) => console.error(error))
-        .finally(() => (this.entries_loading = false))
-    },
-  },
-  computed: {
-    user_id() {
-      return this.$route.params.id
-      
-    },
-  },
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+
+const user_id = computed(() => String(route.params.id))
+const year = ref(Number(route.query.year) || new Date().getFullYear())
+const yearItems = Array.from(Array(10).keys()).map(
+  (x) => new Date().getFullYear() + x - 5
+)
+
+const allocations_loading = ref(false)
+const user = ref<User | null>(null)
+const allocations = ref<Allocations | null>(null)
+
+function get_user(id: string) {
+  const url = `${import.meta.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${id}`
+  axios
+    .get<User>(url)
+    .then(({ data }) => {
+      user.value = data
+    })
+    .catch((error) => console.error(error))
 }
+
+function get_allocations() {
+  allocations_loading.value = true
+  const params = { year: year.value }
+  axios
+    .get<Array<Allocations>>(`/v1/users/${user_id.value}/allocations`, { params })
+    .then(({ data }) => {
+      allocations.value = {
+        leaves: data[0].leaves,
+        reserve: data[0].reserve,
+      }
+    })
+    .catch((error) => console.error(error))
+    .finally(() => (allocations_loading.value = false))
+}
+
+watch(user_id, (id) => {
+  get_allocations()
+  get_user(id)
+})
+
+watch(year, (newVal) => {
+  router.replace({ query: { ...route.query, year: newVal } })
+  get_allocations()
+})
+
+onMounted(() => {
+  get_allocations()
+  get_user(user_id.value)
+})
 </script>
