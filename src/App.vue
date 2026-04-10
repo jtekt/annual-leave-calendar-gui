@@ -3,7 +3,7 @@
     <template v-if="!isLoginRoute">
       <v-app-bar :color="colors.app_bar">
         <v-app-bar-nav-icon @click="drawer = !drawer" />
-        <v-app-bar-title class="text-white">年休カレンダー</v-app-bar-title>
+        <v-app-bar-title class="text-white">有休カレンダー</v-app-bar-title>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer">
@@ -50,14 +50,12 @@
 import { ref, computed } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
-import { useStore } from "@/store"
 import { useAuth } from "@/composables/useAuth"
 import LocaleSelector from "./components/LocaleSelector.vue"
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const store = useStore()
 const { logout } = useAuth()
 
 const drawer = ref(true)
@@ -65,7 +63,6 @@ const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
 const isAuthEnabled = computed(() => !!import.meta.env.VITE_IDENTIFICATION_URL)
-const current_user = computed(() => store.state.current_user)
 
 function handleLogout() {
   logout()
