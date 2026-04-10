@@ -7,6 +7,11 @@ import "@mdi/font/css/materialdesignicons.css"
 export default createVuetify({
   components,
   directives,
+  defaults: {
+    VTextField: { variant: "outlined" },
+    VSelect: { variant: "outlined" },
+  },
+
   theme: {
     themes: {
       light: {
