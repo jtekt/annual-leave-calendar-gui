@@ -53,8 +53,10 @@ export function useAuth() {
 
     const { data } = await axios.post(url, { username, password })
 
-    // Support token-based auth; fall back to cookie-based if no token returned
-    if (data?.token) setToken(data.token)
+    // Handle common JWT response shapes; fall back to cookie-based if none match
+    const token =
+      data?.token ?? data?.jwt ?? data?.access_token ?? data?.Bearer
+    if (token) setToken(token)
 
     await identify()
   }
