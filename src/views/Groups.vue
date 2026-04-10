@@ -1,6 +1,7 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto">
-    <v-card-title>Groups</v-card-title>
+  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-account-group">
+    <template #title>{{ t("Groups") }}</template>
+    <v-divider />
 
     <v-card-text>
       <GroupPicker class="group_picker" @selection="select_group($event)" />
@@ -10,8 +11,11 @@
 
 <script setup lang="ts">
 import { useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
 import { useIdUtils } from "@/composables/useIdUtils"
 import { GroupPicker } from "@moreillon/group-manager-vue-picker"
+
+const { t } = useI18n()
 
 const router = useRouter()
 const { get_id_of_item } = useIdUtils()

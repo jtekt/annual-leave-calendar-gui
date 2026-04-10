@@ -1,6 +1,6 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto">
-    <v-card-title>{{ t("Create entry") }}</v-card-title>
+  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-calendar-plus">
+    <template #title>{{ t("Create entry") }}</template>
     <v-divider />
 
     <v-card-text>

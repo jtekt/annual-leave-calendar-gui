@@ -1,26 +1,12 @@
 <template>
-  <v-card>
-    <v-container fluid>
-      <v-row align="baseline">
-        <v-col>
-          <v-toolbar-title v-if="group">
-            {{ group.properties.name }} ({{ total }}人)
-          </v-toolbar-title>
-          <v-toolbar-title v-else>{{ group_id }}</v-toolbar-title>
-        </v-col>
-        <v-spacer />
-        <v-col cols="auto">
-          <v-select
-            :items="yearItems"
-            v-model="year"
-            label="Year"
-          />
-        </v-col>
-        <v-col cols="auto">
-          <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
-        </v-col>
-      </v-row>
-    </v-container>
+  <v-card prepend-icon="mdi-account-multiple">
+    <template #title>
+      {{ group ? `${group.properties.name} (${total}人)` : group_id }}
+    </template>
+    <template #append>
+      <v-select :items="yearItems" v-model="year" label="Year" hide-details variant="outlined" />
+      <ExcelExportButton :total="total" :year="year" :group_id="group_id" class="ml-2" />
+    </template>
     <v-divider />
 
     <v-card-text>

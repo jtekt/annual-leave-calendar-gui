@@ -1,6 +1,7 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto">
-    <v-card-title>年休カレンダー</v-card-title>
+  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-information">
+    <template #title>年休カレンダー</template>
+    <v-divider />
     <v-card-text>
       <p>Developped by Maxime MOREILLON</p>
       <p>Version {{ version }}</p>

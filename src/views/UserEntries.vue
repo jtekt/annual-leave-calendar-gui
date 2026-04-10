@@ -1,39 +1,50 @@
 <template>
-  <v-card :loading="entries_loading">
-    <template v-if="!entries_loading">
-      <v-container fluid>
-        <v-row align="baseline">
-          <v-col>
-            <v-toolbar-title v-if="user">{{ user.display_name }}</v-toolbar-title>
-            <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
-          </v-col>
-          <v-spacer />
-          <v-col cols="auto">
-            <v-select :items="yearItems" v-model="year" label="Year" />
-          </v-col>
-          <v-col
-            cols="auto"
-            v-if="current_user_id === user_id || user_id === 'self'"
-          >
-            <v-btn
-              :to="{ name: 'new_entry' }"
-              color="primary"
-              prepend-icon="mdi-plus"
-            >
-              {{ t("Create entry") }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-divider />
+  <v-row justify="center" v-if="entries_loading">
+    <v-col cols="auto">
+      <v-progress-circular indeterminate></v-progress-circular>
+    </v-col>
+  </v-row>
+  <v-card v-else prepend-icon="mdi-account">
+    <template v-slot:title> {{ user?.display_name || user_id }} </template>
 
-      <v-card-text>
-        <p>
-          <Total :entries="entries" :allocations="allocations" />
-        </p>
-        <Calendar :entries="entries" />
-      </v-card-text>
+    <template v-slot:append>
+      <v-row align="center">
+        <v-col>
+          <v-toolbar-title>{{}}</v-toolbar-title>
+        </v-col>
+        <v-spacer />
+        <v-col cols="auto">
+          <v-select
+            :items="yearItems"
+            v-model="year"
+            label="Year"
+            hide-details
+            variant="outlined"
+          />
+        </v-col>
+        <v-col
+          cols="auto"
+          v-if="current_user_id === user_id || user_id === 'self'"
+        >
+          <v-btn
+            :to="{ name: 'new_entry' }"
+            color="primary"
+            prepend-icon="mdi-plus"
+          >
+            {{ t("Create entry") }}
+          </v-btn>
+        </v-col>
+      </v-row>
     </template>
+
+    <v-divider />
+
+    <v-card-text>
+      <p>
+        <Total :entries="entries" :allocations="allocations" />
+      </p>
+      <Calendar :entries="entries" />
+    </v-card-text>
   </v-card>
 </template>
 

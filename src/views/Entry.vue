@@ -1,21 +1,14 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" :loading="entry_loading">
-    <template v-if="entry">
-      <v-container fluid>
-        <v-row align="baseline">
-          <v-col>
-            <v-toolbar-title>{{ format_date(entry.date) }}</v-toolbar-title>
-          </v-col>
-          <v-spacer />
-          <v-col cols="auto" v-if="editable">
-            <v-btn color="#c00000" @click="delete_entry" prepend-icon="mdi-delete">
-              {{ t("Schedule delete") }}
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-divider />
+  <v-card max-width="30rem" class="mx-auto" :loading="entry_loading" prepend-icon="mdi-calendar">
+    <template #title>{{ entry ? format_date(entry.date) : '' }}</template>
+    <template v-if="editable" #append>
+      <v-btn color="#c00000" @click="delete_entry" prepend-icon="mdi-delete">
+        {{ t("Schedule delete") }}
+      </v-btn>
+    </template>
+    <v-divider />
 
+    <template v-if="entry">
       <v-card-text>
         <v-row align="baseline">
           <v-col cols="auto">{{ t("User") }}:</v-col>

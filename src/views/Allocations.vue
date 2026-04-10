@@ -1,51 +1,40 @@
 <template>
-  <v-card :loading="allocations_loading">
-    <template v-if="!allocations_loading">
-      <v-container fluid>
-        <v-row align="center">
-          <v-col>
-            <v-toolbar-title v-if="user">{{ user.display_name }}</v-toolbar-title>
-            <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
-          </v-col>
-          <v-spacer />
-          <v-col>
-            <v-select :items="yearItems" v-model="year" :label="t('Year')" />
-          </v-col>
-          <v-col cols="auto">
-            <CreateAllocation
-              :user_id="user_id"
-              :year="year"
-              @createAllocation="get_allocations"
-            />
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-divider />
-
-      <v-card-text>
-        <v-table>
-          <thead>
-            <tr>
-              <th>{{ t("Type") }}</th>
-              <th>{{ t("Carried over") }}</th>
-              <th>{{ t("Current year grants") }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>{{ t("Leaves") }}</td>
-              <td>{{ allocations?.leaves?.carried_over }}</td>
-              <td>{{ allocations?.leaves?.current_year_grants }}</td>
-            </tr>
-            <tr>
-              <td>{{ t("Reserve") }}</td>
-              <td>{{ allocations?.reserve?.carried_over }}</td>
-              <td>{{ allocations?.reserve?.current_year_grants }}</td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card-text>
+  <v-card :loading="allocations_loading" prepend-icon="mdi-account">
+    <template #title>{{ user?.display_name || user_id }}</template>
+    <template #append>
+      <v-select :items="yearItems" v-model="year" :label="t('Year')" hide-details variant="outlined" />
+      <CreateAllocation
+        :user_id="user_id"
+        :year="year"
+        @createAllocation="get_allocations"
+        class="ml-2"
+      />
     </template>
+    <v-divider />
+
+    <v-card-text>
+      <v-table>
+        <thead>
+          <tr>
+            <th>{{ t("Type") }}</th>
+            <th>{{ t("Carried over") }}</th>
+            <th>{{ t("Current year grants") }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ t("Leaves") }}</td>
+            <td>{{ allocations?.leaves?.carried_over }}</td>
+            <td>{{ allocations?.leaves?.current_year_grants }}</td>
+          </tr>
+          <tr>
+            <td>{{ t("Reserve") }}</td>
+            <td>{{ allocations?.reserve?.carried_over }}</td>
+            <td>{{ allocations?.reserve?.current_year_grants }}</td>
+          </tr>
+        </tbody>
+      </v-table>
+    </v-card-text>
   </v-card>
 </template>
 
