@@ -1,14 +1,33 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-information">
-    <template #title>年休カレンダー</template>
-    <v-divider />
+  <v-card
+    max-width="30rem"
+    class="mx-auto"
+    prepend-icon="mdi-information"
+    title="年休カレンダー"
+  >
     <v-card-text>
-      <p>Developped by Maxime MOREILLON</p>
-      <p>Version {{ version }}</p>
-      <p>API URL: {{ api_url }}</p>
-      <p>User manager API URL: {{ user_manager_api_url }}</p>
-      <p>Authentication API URL: {{ authentication_api_url }}</p>
-      <p>Group manager API URL: {{ group_manager_api_url }}</p>
+      <v-list>
+        <v-list-item title="Developer" subtitle="Maxime MOREILLON" />
+        <v-list-item title="Version" :subtitle="version" />
+        <v-divider />
+        <v-list-item
+          title="API URL"
+          :subtitle="VITE_NENKYUU_CALENDAR_API_URL"
+        />
+        <v-list-item
+          title="User manager API URL"
+          :subtitle="VITE_USER_MANAGER_API_URL"
+        />
+        <v-list-item title="Login URL" :subtitle="VITE_LOGIN_URL" />
+        <v-list-item
+          title="Identification URL"
+          :subtitle="VITE_IDENTIFICATION_URL"
+        />
+        <v-list-item
+          title="Group manager API URL"
+          :subtitle="VITE_GROUP_MANAGER_API_URL"
+        />
+      </v-list>
     </v-card-text>
   </v-card>
 </template>
@@ -16,9 +35,13 @@
 <script setup lang="ts">
 import pjson from "../../package.json"
 
+const {
+  VITE_NENKYUU_CALENDAR_API_URL,
+  VITE_GROUP_MANAGER_API_URL,
+  VITE_USER_MANAGER_API_URL,
+  VITE_LOGIN_URL,
+  VITE_IDENTIFICATION_URL,
+} = import.meta.env
+
 const version = pjson.version
-const api_url = import.meta.env.VITE_API_URL
-const group_manager_api_url = import.meta.env.VITE_GROUP_MANAGER_API_URL
-const authentication_api_url = import.meta.env.VITE_AUTHENTICATION_API_URL
-const user_manager_api_url = import.meta.env.VITE_USER_MANAGER_API_URL
 </script>

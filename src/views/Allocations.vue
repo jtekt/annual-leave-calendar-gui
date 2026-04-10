@@ -2,13 +2,25 @@
   <v-card :loading="allocations_loading" prepend-icon="mdi-account">
     <template #title>{{ user?.display_name || user_id }}</template>
     <template #append>
-      <v-select :items="yearItems" v-model="year" :label="t('Year')" hide-details variant="outlined" />
-      <CreateAllocation
-        :user_id="user_id"
-        :year="year"
-        @createAllocation="get_allocations"
-        class="ml-2"
-      />
+      <v-row align="center">
+        <v-col cols="auto">
+          <v-select
+            :items="yearItems"
+            v-model="year"
+            :label="t('Year')"
+            hide-details
+            variant="outlined"
+          />
+        </v-col>
+        <v-col cols="auto">
+          <CreateAllocation
+            :user_id="user_id"
+            :year="year"
+            @createAllocation="get_allocations"
+            class="ml-2"
+          />
+        </v-col>
+      </v-row>
     </template>
     <v-divider />
 
@@ -74,7 +86,9 @@ function get_allocations() {
   allocations_loading.value = true
   const params = { year: year.value }
   axios
-    .get<Array<Allocations>>(`/v1/users/${user_id.value}/allocations`, { params })
+    .get<Array<Allocations>>(`/v1/users/${user_id.value}/allocations`, {
+      params,
+    })
     .then(({ data }) => {
       allocations.value = {
         leaves: data[0].leaves,

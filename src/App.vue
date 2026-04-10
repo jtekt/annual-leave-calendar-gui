@@ -8,10 +8,6 @@
 
       <v-navigation-drawer v-model="drawer">
         <v-list nav>
-          <v-list-item>
-            <LocaleSelector />
-          </v-list-item>
-          <v-divider />
           <v-list-item
             v-for="(item, index) in nav"
             :key="`nav_item_${index}`"
@@ -20,20 +16,25 @@
             :title="item.title"
             exact
           />
-          <v-divider class="mt-auto" />
-          <v-list-item
-            v-if="current_user"
-            prepend-icon="mdi-account-circle-outline"
-            :title="current_user.display_name || current_user.name_kanji || ''"
-            :subtitle="t('Logged in')"
-          />
-          <v-list-item
-            v-if="isAuthEnabled"
-            prepend-icon="mdi-logout"
-            :title="t('Logout')"
-            @click="handleLogout"
-          />
         </v-list>
+
+        <template v-slot:append>
+          <v-divider class="mt-auto" />
+          <v-list>
+            <v-list-item>
+              <LocaleSelector />
+            </v-list-item>
+            <v-list-item v-if="isAuthEnabled">
+              <v-btn
+                prepend-icon="mdi-logout"
+                :text="t('Logout')"
+                @click="handleLogout"
+                block
+                variant="outlined"
+              />
+            </v-list-item>
+          </v-list>
+        </template>
       </v-navigation-drawer>
     </template>
 

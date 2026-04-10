@@ -1,8 +1,11 @@
 <template>
   <v-select
-    prepend-icon="mdi-translate"
+    prepend-inner-icon="mdi-translate"
     :items="locales"
     v-model="locale"
+    hide-details
+    variant="outlined"
+    density="compact"
   />
 </template>
 

@@ -70,4 +70,4 @@ export function useAuth() {
 }
 
 // Named exports so main.ts and router can use them without a component context
-export { initToken, identify }
+export { initToken, identify, getToken }

@@ -5,19 +5,29 @@
 
     <v-card-text>
       <v-form @submit.prevent="submit">
-        <v-row>
-          <v-col>
+        <v-row justify="center">
+          <v-col cols="auto">
             <v-date-picker color="black" elevation="1" v-model="date" />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-select :items="types" v-model="type" :label="t('Type')" />
+            <v-select
+              :items="types"
+              v-model="type"
+              :label="t('Type')"
+              hide-details
+            />
           </v-col>
         </v-row>
         <v-row>
           <v-col>
-            <v-btn :disabled="!date" type="submit" prepend-icon="mdi-plus">
+            <v-btn
+              :disabled="!date"
+              type="submit"
+              prepend-icon="mdi-plus"
+              block
+            >
               {{ t("Create entry") }}
             </v-btn>
           </v-col>
