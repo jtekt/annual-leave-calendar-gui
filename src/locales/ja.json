@@ -20,5 +20,12 @@
   "Cancel": "キャンセル",
   "Carried over": "繰り越し日数",
   "Current year grants": "当年度付与日数",
-  "Year": "年"
+  "Year": "年",
+  "Username": "ユーザー名",
+  "Password": "パスワード",
+  "Login": "ログイン",
+  "Logout": "ログアウト",
+  "Logged in": "ログイン中",
+  "Close": "閉じる",
+  "Login failed. Please check your credentials.": "ログインに失敗しました。資格情報をご確認ください。"
 }

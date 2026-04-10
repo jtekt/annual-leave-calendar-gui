@@ -108,7 +108,7 @@ function format_date(date: string) {
 
 function get_user(user_id: string) {
   user_loading.value = true
-  const url = `${import.meta.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
   axios
     .get<UserType>(url)
     .then(({ data }) => {

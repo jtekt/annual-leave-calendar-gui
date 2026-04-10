@@ -16,8 +16,8 @@
 import pjson from "../../package.json"
 
 const version = pjson.version
-const api_url = import.meta.env.VUE_APP_API_URL
-const group_manager_api_url = import.meta.env.VUE_APP_GROUP_MANAGER_API_URL
-const authentication_api_url = import.meta.env.VUE_APP_AUTHENTICATION_API_URL
-const user_manager_api_url = import.meta.env.VUE_APP_USER_MANAGER_API_URL
+const api_url = import.meta.env.VITE_API_URL
+const group_manager_api_url = import.meta.env.VITE_GROUP_MANAGER_API_URL
+const authentication_api_url = import.meta.env.VITE_AUTHENTICATION_API_URL
+const user_manager_api_url = import.meta.env.VITE_USER_MANAGER_API_URL
 </script>

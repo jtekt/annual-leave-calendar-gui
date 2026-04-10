@@ -1,68 +1,73 @@
 <template>
   <v-app>
-    <v-app-bar :color="colors.app_bar">
-      <v-app-bar-nav-icon @click="drawer = !drawer" />
-      <v-app-bar-title class="text-white">年休カレンダー</v-app-bar-title>
-    </v-app-bar>
+    <template v-if="!isLoginRoute">
+      <v-app-bar :color="colors.app_bar">
+        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <v-app-bar-title class="text-white">年休カレンダー</v-app-bar-title>
+      </v-app-bar>
 
-    <v-navigation-drawer v-model="drawer">
-      <v-list nav>
-        <v-list-item>
-          <LocaleSelector />
-        </v-list-item>
-        <v-divider />
-        <v-list-item
-          v-for="(item, index) in nav"
-          :key="`nav_item_${index}`"
-          :to="item.to"
-          :prepend-icon="item.icon"
-          :title="item.title"
-          exact
-        />
-      </v-list>
-    </v-navigation-drawer>
+      <v-navigation-drawer v-model="drawer">
+        <v-list nav>
+          <v-list-item>
+            <LocaleSelector />
+          </v-list-item>
+          <v-divider />
+          <v-list-item
+            v-for="(item, index) in nav"
+            :key="`nav_item_${index}`"
+            :to="item.to"
+            :prepend-icon="item.icon"
+            :title="item.title"
+            exact
+          />
+          <v-divider class="mt-auto" />
+          <v-list-item
+            v-if="current_user"
+            prepend-icon="mdi-account-circle-outline"
+            :title="current_user.display_name || current_user.name_kanji || ''"
+            :subtitle="t('Logged in')"
+          />
+          <v-list-item
+            v-if="isAuthEnabled"
+            prepend-icon="mdi-logout"
+            :title="t('Logout')"
+            @click="handleLogout"
+          />
+        </v-list>
+      </v-navigation-drawer>
+    </template>
 
     <v-main>
-      <v-container fluid>
-        <router-view />
-      </v-container>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue"
+import { ref, computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import { useStore } from "@/store"
-import axios from "axios"
+import { useAuth } from "@/composables/useAuth"
 import LocaleSelector from "./components/LocaleSelector.vue"
 
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const store = useStore()
+const { logout } = useAuth()
 
 const drawer = ref(true)
 const colors = { app_bar: "#000" }
 
-const VUE_APP_LOGIN_URL = import.meta.env.VUE_APP_LOGIN_URL
-const VUE_APP_IDENTIFICATION_URL = import.meta.env.VUE_APP_IDENTIFICATION_URL
+const isLoginRoute = computed(() => route.name === "login")
+const isAuthEnabled = computed(() => !!import.meta.env.VITE_IDENTIFICATION_URL)
+const current_user = computed(() => store.state.current_user)
 
-function identify() {
-  if (!VUE_APP_IDENTIFICATION_URL) return
-  axios
-    .get(VUE_APP_IDENTIFICATION_URL)
-    .then(({ data }) => {
-      store.commit("set_current_user", data)
-    })
-    .catch((error: { response?: { status: number } }) => {
-      if (error.response?.status === 401 && VUE_APP_LOGIN_URL) {
-        window.location.href = VUE_APP_LOGIN_URL
-      } else {
-        console.error(error)
-      }
-    })
+function handleLogout() {
+  logout()
+  router.push({ name: "login" })
 }
-
-onMounted(() => identify())
 
 const nav = computed(() => [
   {

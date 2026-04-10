@@ -78,7 +78,7 @@ const sentinel = ref<HTMLDivElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 function get_group() {
-  const url = `${import.meta.env.VUE_APP_GROUP_MANAGER_API_URL}/groups/${group_id.value}`
+  const url = `${import.meta.env.VITE_GROUP_MANAGER_API_URL}/groups/${group_id.value}`
   axios
     .get<Group>(url)
     .then(({ data }) => {

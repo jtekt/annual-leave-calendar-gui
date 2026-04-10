@@ -6,17 +6,17 @@ declare module "*.vue" {
 }
 
 interface ImportMetaEnv {
-  readonly VUE_APP_NENKYUU_CALENDAR_API_URL?: string
-  readonly VUE_APP_LOGIN_URL?: string
-  readonly VUE_APP_IDENTIFICATION_URL?: string
-  readonly VUE_APP_LOGIN_HINT?: string
-  readonly VUE_APP_HOMEPAGE_URL?: string
-  readonly VUE_APP_USER_MANAGER_API_URL?: string
-  readonly VUE_APP_GROUP_MANAGER_API_URL?: string
-  readonly VUE_APP_AUTHENTICATION_API_URL?: string
-  readonly VUE_APP_API_URL?: string
-  readonly VUE_APP_I18N_LOCALE?: string
-  readonly VUE_APP_I18N_FALLBACK_LOCALE?: string
+  readonly VITE_NENKYUU_CALENDAR_API_URL?: string
+  readonly VITE_LOGIN_URL?: string
+  readonly VITE_IDENTIFICATION_URL?: string
+  readonly VITE_LOGIN_HINT?: string
+  readonly VITE_HOMEPAGE_URL?: string
+  readonly VITE_USER_MANAGER_API_URL?: string
+  readonly VITE_GROUP_MANAGER_API_URL?: string
+  readonly VITE_AUTHENTICATION_API_URL?: string
+  readonly VITE_API_URL?: string
+  readonly VITE_I18N_LOCALE?: string
+  readonly VITE_I18N_FALLBACK_LOCALE?: string
 }
 
 interface ImportMeta {

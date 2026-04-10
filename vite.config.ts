@@ -9,5 +9,4 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-  envPrefix: "VUE_APP_",
 })

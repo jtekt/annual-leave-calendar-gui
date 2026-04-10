@@ -72,7 +72,7 @@ const user = ref<User | null>(null)
 const allocations = ref<Allocations | null>(null)
 
 function get_user(id: string) {
-  const url = `${import.meta.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${id}`
+  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
   axios
     .get<User>(url)
     .then(({ data }) => {

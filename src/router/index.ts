@@ -1,6 +1,20 @@
 import { createRouter, createWebHistory } from "vue-router"
+import { store } from "@/store"
+
+// Extend RouteMeta with our custom fields
+declare module "vue-router" {
+  interface RouteMeta {
+    requiresAuth?: boolean
+  }
+}
 
 const routes = [
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/Login.vue"),
+    meta: { requiresAuth: false },
+  },
   {
     path: "/about",
     name: "about",
@@ -42,6 +56,21 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+})
+
+router.beforeEach((to) => {
+  const isAuthenticated = store.state.current_user !== null
+  const requiresAuth = to.meta.requiresAuth !== false
+
+  // Unauthenticated user trying to access a protected route
+  if (requiresAuth && !isAuthenticated) {
+    return { name: "login", query: { redirect: to.fullPath } }
+  }
+
+  // Already authenticated user visiting the login page
+  if (to.name === "login" && isAuthenticated) {
+    return { name: "new_entry" }
+  }
 })
 
 export default router

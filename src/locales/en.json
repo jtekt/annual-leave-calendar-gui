@@ -21,5 +21,12 @@
   "Cancel": "Cancel",
   "Carried over": "Carried over",
   "Current year grants": "Current year grants",
-  "Year": "Year"
+  "Year": "Year",
+  "Username": "Username",
+  "Password": "Password",
+  "Login": "Login",
+  "Logout": "Logout",
+  "Logged in": "Logged in",
+  "Close": "Close",
+  "Login failed. Please check your credentials.": "Login failed. Please check your credentials."
 }
