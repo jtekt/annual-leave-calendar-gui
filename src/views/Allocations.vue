@@ -10,6 +10,7 @@
             :label="t('Year')"
             hide-details
             variant="outlined"
+            density="compact"
           />
         </v-col>
         <v-col cols="auto">

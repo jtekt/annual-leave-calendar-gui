@@ -1,11 +1,11 @@
 import { computed } from "vue"
-import { useStore } from "@/store"
+import { useCurrentUser } from "@/composables/useCurrentUser"
 import type { User } from "@/types"
 
 type IdentifiableItem = Pick<User, "_id" | "properties" | "identity">
 
 export function useIdUtils() {
-  const store = useStore()
+  const { current_user } = useCurrentUser()
 
   function get_id_of_item(item: IdentifiableItem): string {
     let id: string | undefined = item._id ?? item.properties?._id
@@ -24,9 +24,8 @@ export function useIdUtils() {
   }
 
   const current_user_id = computed<string | undefined>(() => {
-    const current_user = store.state.current_user
-    if (!current_user) return undefined
-    return get_id_of_item(current_user)
+    if (!current_user.value) return undefined
+    return get_id_of_item(current_user.value)
   })
 
   return { get_id_of_item, current_user_id }

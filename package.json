@@ -21,13 +21,12 @@
     "vue-material-design-icons": "^4.13.0",
     "vue-router": "^4.2.4",
     "vuetify": "^3.3.11",
-    "vuex": "^4.1.0",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/node": "^20.5.0",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
-    "@types/node": "^20.5.0",
     "@vitejs/plugin-vue": "^5.0.0",
     "eslint": "^8.46.0",
     "eslint-plugin-vue": "^9.15.1",

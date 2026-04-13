@@ -1,5 +1,7 @@
 import axios from "axios"
-import { store } from "@/store"
+import { useCurrentUser } from "@/composables/useCurrentUser"
+
+const { setCurrentUser } = useCurrentUser()
 
 const TOKEN_KEY = "nenkyuu_token"
 
@@ -36,11 +38,11 @@ async function identify(): Promise<boolean> {
 
   try {
     const { data } = await axios.get(url)
-    store.commit("set_current_user", data)
+    setCurrentUser(data)
     return true
   } catch {
     clearToken()
-    store.commit("set_current_user", null)
+    setCurrentUser(null)
     return false
   }
 }
@@ -63,7 +65,7 @@ export function useAuth() {
 
   function logout(): void {
     clearToken()
-    store.commit("set_current_user", null)
+    setCurrentUser(null)
   }
 
   return { login, logout }

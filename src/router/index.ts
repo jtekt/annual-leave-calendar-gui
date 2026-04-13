@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
-import { store } from "@/store"
+import { useCurrentUser } from "@/composables/useCurrentUser"
 
 // Extend RouteMeta with our custom fields
 declare module "vue-router" {
@@ -59,7 +59,8 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
-  const isAuthenticated = store.state.current_user !== null
+  const { current_user } = useCurrentUser()
+  const isAuthenticated = current_user.value !== null
   const requiresAuth = to.meta.requiresAuth !== false
 
   // Unauthenticated user trying to access a protected route

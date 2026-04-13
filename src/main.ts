@@ -1,7 +1,6 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
-import { store, key } from "./store"
 import axios from "axios"
 import VueAxios from "vue-axios"
 import vuetify from "./plugins/vuetify"
@@ -20,7 +19,6 @@ async function init() {
 
   const app = createApp(App)
   app.use(router)
-  app.use(store, key)
   app.use(vuetify)
   app.use(i18n)
   app.use(VueAxios, axios)

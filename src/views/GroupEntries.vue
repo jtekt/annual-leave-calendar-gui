@@ -4,8 +4,20 @@
       {{ group ? `${group.properties.name} (${total}人)` : group_id }}
     </template>
     <template #append>
-      <v-select :items="yearItems" v-model="year" label="Year" hide-details variant="outlined" />
-      <ExcelExportButton :total="total" :year="year" :group_id="group_id" class="ml-2" />
+      <v-select
+        :items="yearItems"
+        v-model="year"
+        label="Year"
+        hide-details
+        variant="outlined"
+        density="compact"
+      />
+      <ExcelExportButton
+        :total="total"
+        :year="year"
+        :group_id="group_id"
+        class="ml-2"
+      />
     </template>
     <v-divider />
 
@@ -119,7 +131,10 @@ function setup_observer() {
   if (sentinel.value) observer.observe(sentinel.value)
 }
 
-watch(() => route.params.id, () => reset())
+watch(
+  () => route.params.id,
+  () => reset()
+)
 
 watch(year, (newVal) => {
   router.replace({ query: { ...route.query, year: newVal } })
