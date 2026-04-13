@@ -4,6 +4,11 @@
       <v-app-bar :color="colors.app_bar">
         <v-app-bar-nav-icon @click="drawer = !drawer" />
         <v-app-bar-title class="text-white">有休カレンダー</v-app-bar-title>
+        <template #append>
+          <LocaleSelector />
+          <ThemeToggle />
+          <v-btn icon="mdi-logout" @click="handleLogout" />
+        </template>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer">
@@ -17,24 +22,6 @@
             exact
           />
         </v-list>
-
-        <template v-slot:append>
-          <v-divider class="mt-auto" />
-          <v-list>
-            <v-list-item>
-              <LocaleSelector />
-            </v-list-item>
-            <v-list-item v-if="isAuthEnabled">
-              <v-btn
-                prepend-icon="mdi-logout"
-                :text="t('Logout')"
-                @click="handleLogout"
-                block
-                variant="outlined"
-              />
-            </v-list-item>
-          </v-list>
-        </template>
       </v-navigation-drawer>
     </template>
 
