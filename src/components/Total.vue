@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-row align="center" dense justify="space-around">
-      <v-col cols="auto"> 年休 </v-col>
-      <v-col cols="auto"> 積休 </v-col>
+      <v-col cols="auto">{{ t('Leaves short') }}</v-col>
+      <v-col cols="auto">{{ t('Reserve short') }}</v-col>
     </v-row>
     <v-row dense align="center">
       <v-col>
@@ -24,6 +24,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue"
+import { useI18n } from "vue-i18n"
 import EntriesAllocationsIndicator from "@/components/EntriesAllocationsIndicator.vue"
 import type { Entry, Allocations } from "@/types"
 
@@ -31,6 +32,8 @@ const props = defineProps<{
   entries: Entry[]
   allocations?: Allocations | null
 }>()
+
+const { t } = useI18n()
 
 const leaves = computed(() => props.entries.filter((e) => !e.reserve))
 const reserve = computed(() => props.entries.filter((e) => e.reserve))

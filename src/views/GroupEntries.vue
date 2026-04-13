@@ -1,13 +1,13 @@
 <template>
   <v-card prepend-icon="mdi-account-multiple">
     <template #title>
-      {{ group ? `${group.properties.name} (${total}人)` : group_id }}
+      {{ group ? `${group.properties.name} (${t('people count', { n: total })})` : group_id }}
     </template>
     <template #append>
       <v-select
         :items="yearItems"
         v-model="year"
-        label="Year"
+        :label="t('Year')"
         hide-details
         variant="outlined"
         density="compact"
@@ -51,6 +51,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue"
 import { useRoute, useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
 import axios from "axios"
 import Calendar from "@/components/Calendar.vue"
 import User from "@/components/User.vue"
@@ -58,6 +59,7 @@ import Total from "@/components/Total.vue"
 import ExcelExportButton from "@/components/ExcelExportButton.vue"
 import type { Group, GroupItem } from "@/types"
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 

@@ -6,7 +6,7 @@
           <!-- Header -->
           <v-card-item class="text-center py-6" style="background-color: #000">
             <v-icon size="48" color="white" class="mb-2">mdi-calendar-check</v-icon>
-            <v-card-title class="text-white text-h5">年休カレンダー</v-card-title>
+            <v-card-title class="text-white text-h5">{{ t("App title") }}</v-card-title>
           </v-card-item>
 
           <v-card-text class="pa-6">

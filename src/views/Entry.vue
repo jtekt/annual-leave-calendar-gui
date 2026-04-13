@@ -121,7 +121,7 @@ function get_entry() {
       get_user(data.user_id)
     })
     .catch((error) => {
-      alert("Error while getting the entry")
+      snackbar.value = { show: true, message: t("Error while getting entry"), color: "red" }
       console.error(error)
     })
     .finally(() => (entry_loading.value = false))
@@ -133,18 +133,18 @@ function update_entry() {
   axios
     .put(`/entries/${entry.value._id}`, entry.value)
     .then(() => {
-      snackbar.value = { show: true, message: "Entry saved", color: "green" }
+      snackbar.value = { show: true, message: t("Entry saved"), color: "green" }
     })
     .catch((error) => {
       console.error(error)
-      alert("Error while updating the entry")
+      snackbar.value = { show: true, message: t("Error while updating entry"), color: "red" }
     })
     .finally(() => (entry_loading.value = false))
 }
 
 function delete_entry() {
   if (!entry.value) return
-  if (!confirm("ホンマに？")) return
+  if (!confirm(t("Delete entry confirmation"))) return
   axios
     .delete(`/entries/${entry.value._id}`)
     .then(() => {
@@ -154,7 +154,7 @@ function delete_entry() {
       })
     })
     .catch((error) => {
-      alert("Error while deleting the entry")
+      snackbar.value = { show: true, message: t("Error while deleting entry"), color: "red" }
       console.error(error)
     })
 }

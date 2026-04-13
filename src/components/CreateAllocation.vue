@@ -104,7 +104,7 @@ function submit() {
     .then(() => emit("createAllocation"))
     .catch((error) => {
       console.error(error)
-      alert("Error while creating")
+      alert(t("Error while creating allocation"))
     })
     .finally(() => {
       loading.value = false

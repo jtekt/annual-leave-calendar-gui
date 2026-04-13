@@ -3,28 +3,28 @@
     max-width="30rem"
     class="mx-auto"
     prepend-icon="mdi-information"
-    title="年休カレンダー"
+    :title="t('App title')"
   >
     <v-card-text>
       <v-list>
-        <v-list-item title="Developer" subtitle="Maxime MOREILLON" />
-        <v-list-item title="Version" :subtitle="version" />
+        <v-list-item :title="t('Developer')" subtitle="Maxime MOREILLON" />
+        <v-list-item :title="t('Version')" :subtitle="version" />
         <v-divider />
         <v-list-item
-          title="API URL"
+          :title="t('API URL')"
           :subtitle="VITE_NENKYUU_CALENDAR_API_URL"
         />
         <v-list-item
-          title="User manager API URL"
+          :title="t('User manager API URL')"
           :subtitle="VITE_USER_MANAGER_API_URL"
         />
-        <v-list-item title="Login URL" :subtitle="VITE_LOGIN_URL" />
+        <v-list-item :title="t('Login URL')" :subtitle="VITE_LOGIN_URL" />
         <v-list-item
-          title="Identification URL"
+          :title="t('Identification URL')"
           :subtitle="VITE_IDENTIFICATION_URL"
         />
         <v-list-item
-          title="Group manager API URL"
+          :title="t('Group manager API URL')"
           :subtitle="VITE_GROUP_MANAGER_API_URL"
         />
       </v-list>
@@ -33,7 +33,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from "vue-i18n"
 import pjson from "../../package.json"
+
+const { t } = useI18n()
 
 const {
   VITE_NENKYUU_CALENDAR_API_URL,

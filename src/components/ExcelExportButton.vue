@@ -13,7 +13,7 @@
           </v-btn>
         </span>
       </template>
-      <span>max: 500 people</span>
+      <span>{{ t('Max export limit') }}</span>
     </v-tooltip>
 
     <table id="export_table">
@@ -147,7 +147,7 @@ function excel_export() {
     })
     .catch((error) => {
       console.error(error)
-      alert(error)
+      alert(error?.message ?? t("Failed to load data"))
       excel_exporting.value = false
     })
 }

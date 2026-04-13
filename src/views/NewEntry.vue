@@ -81,12 +81,8 @@ function submit() {
       router.push({ name: "entry", params: { id: data._id } })
     })
     .catch((error) => {
-      if (!error.response) {
-        alert("Error while creating 予定")
-        console.error(error)
-        return
-      }
-      alert(error.response.data)
+      alert(error.response?.data ?? t("Error while creating entry"))
+      console.error(error)
     })
 }
 

@@ -9,7 +9,7 @@
       }"
       :key="`month_${month}`"
     >
-      <div class="month_header">{{ month }}月</div>
+      <div class="month_header">{{ t('month label', { month }) }}</div>
       <div class="entries_container">
         <router-link
           class="entry"
@@ -41,6 +41,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { useRoute } from "vue-router"
+import { useI18n } from "vue-i18n"
 import { colors } from "@/config"
 import type { Entry } from "@/types"
 
@@ -48,6 +49,7 @@ const props = defineProps<{
   entries: Entry[]
 }>()
 
+const { t } = useI18n()
 const route = useRoute()
 
 const current_month = computed(() => new Date().getMonth() + 1)

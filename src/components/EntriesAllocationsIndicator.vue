@@ -11,7 +11,7 @@
             {{ allocations.carried_over }}
           </div>
         </template>
-        <span>繰越日数</span>
+        <span>{{ t('Carried over days') }}</span>
       </v-tooltip>
 
       <v-tooltip location="top" :color="colors.allocations.current_year_grants">
@@ -24,7 +24,7 @@
             {{ allocations.current_year_grants }}
           </div>
         </template>
-        <span>当年度付与日数</span>
+        <span>{{ t('Current year grants days') }}</span>
       </v-tooltip>
 
       <v-tooltip
@@ -39,7 +39,7 @@
             :style="{ width: `${minPercent}%` }"
           />
         </template>
-        <span>今年取らないといけない分: {{ min - total_taken - total_yotei }}</span>
+        <span>{{ t('Must take this year', { n: min - total_taken - total_yotei }) }}</span>
       </v-tooltip>
     </template>
 
@@ -57,7 +57,7 @@
             {{ total_taken }}
           </div>
         </template>
-        <span>当年度取得日数</span>
+        <span>{{ t('Days taken this year') }}</span>
       </v-tooltip>
 
       <v-tooltip location="bottom" :color="colors.leaves.yotei">
@@ -74,7 +74,7 @@
             {{ total_yotei }}
           </div>
         </template>
-        <span>当年度予定日数</span>
+        <span>{{ t('Days planned this year') }}</span>
       </v-tooltip>
     </template>
 
@@ -85,13 +85,14 @@
         !entries.length
       "
     >
-      データなし
+      {{ t('No data') }}
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue"
+import { useI18n } from "vue-i18n"
 import { colors } from "@/config"
 import type { Entry, AllocationData } from "@/types"
 
@@ -101,6 +102,7 @@ const props = defineProps<{
   reserve?: boolean
 }>()
 
+const { t } = useI18n()
 const min = 5
 
 const total_yotei = computed(() =>

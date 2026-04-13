@@ -3,7 +3,7 @@
     <template v-if="!isLoginRoute">
       <v-app-bar :color="colors.app_bar">
         <v-app-bar-nav-icon @click="drawer = !drawer" />
-        <v-app-bar-title class="text-white">有休カレンダー</v-app-bar-title>
+        <v-app-bar-title class="text-white">{{ t("App title") }}</v-app-bar-title>
         <template #append>
           <LocaleSelector />
           <ThemeToggle />

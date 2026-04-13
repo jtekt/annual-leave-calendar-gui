@@ -17,7 +17,7 @@
           <v-select
             :items="yearItems"
             v-model="year"
-            label="Year"
+            :label="t('Year')"
             hide-details
             variant="outlined"
             density="compact"
@@ -88,7 +88,7 @@ function get_entries() {
       entries.value = data.entries
     })
     .catch((error) => {
-      alert("Failed to query items")
+      alert(t("Failed to load data"))
       console.error(error)
     })
     .finally(() => {
