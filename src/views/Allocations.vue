@@ -2,26 +2,20 @@
   <v-card :loading="allocations_loading" prepend-icon="mdi-account">
     <template #title>{{ user?.display_name || user_id }}</template>
     <template #append>
-      <v-row align="center">
-        <v-col cols="auto">
-          <v-select
-            :items="yearItems"
-            v-model="year"
-            :label="t('Year')"
-            hide-details
-            variant="outlined"
-            density="compact"
-          />
-        </v-col>
-        <v-col cols="auto">
-          <CreateAllocation
-            :user_id="user_id"
-            :year="year"
-            @createAllocation="get_allocations"
-            class="ml-2"
-          />
-        </v-col>
-      </v-row>
+      <v-select
+        :items="yearItems"
+        v-model="year"
+        :label="t('Year')"
+        hide-details
+        variant="outlined"
+        density="compact"
+        class="mr-2"
+      />
+      <CreateAllocation
+        :user_id="user_id"
+        :year="year"
+        @createAllocation="get_allocations"
+      />
     </template>
     <v-divider />
 
@@ -64,10 +58,11 @@ const route = useRoute()
 const router = useRouter()
 
 const user_id = computed(() => String(route.params.id))
-const year = ref(Number(route.query.year) || new Date().getFullYear())
-const yearItems = Array.from(Array(10).keys()).map(
-  (x) => new Date().getFullYear() + x - 5
-)
+const yearItems = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i - 5)
+const year = computed({
+  get: () => Number(route.query.year) || new Date().getFullYear(),
+  set: (val) => router.replace({ query: { ...route.query, year: val } }),
+})
 
 const allocations_loading = ref(false)
 const user = ref<User | null>(null)
@@ -105,10 +100,7 @@ watch(user_id, (id) => {
   get_user(id)
 })
 
-watch(year, (newVal) => {
-  router.replace({ query: { ...route.query, year: newVal } })
-  get_allocations()
-})
+watch(year, () => get_allocations())
 
 onMounted(() => {
   get_allocations()

@@ -1,6 +1,11 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" :loading="entry_loading" prepend-icon="mdi-calendar">
-    <template #title>{{ entry ? format_date(entry.date) : '' }}</template>
+  <v-card
+    max-width="30rem"
+    class="mx-auto"
+    :loading="entry_loading"
+    prepend-icon="mdi-calendar"
+  >
+    <template #title>{{ entry ? format_date(entry.date) : "" }}</template>
     <template v-if="editable" #append>
       <v-btn color="#c00000" @click="delete_entry" prepend-icon="mdi-delete">
         {{ t("Schedule delete") }}
@@ -23,14 +28,18 @@
             </router-link>
           </v-col>
         </v-row>
-
-        <v-select
-          :disabled="!editable"
-          :items="types"
-          v-model="entry.type"
-          :label="t('Type')"
-          @update:model-value="update_entry"
-        />
+        <v-row>
+          <v-col>
+            <v-select
+              :disabled="!editable"
+              :items="types"
+              v-model="entry.type"
+              :label="t('Type')"
+              @update:model-value="update_entry"
+              hide-details
+            />
+          </v-col>
+        </v-row>
 
         <v-row>
           <v-col>
@@ -39,6 +48,7 @@
               :disabled="!editable"
               v-model="entry.refresh"
               @update:model-value="update_entry"
+              hide-details
             />
           </v-col>
           <v-col>
@@ -47,6 +57,7 @@
               :disabled="!editable"
               v-model="entry.reserve"
               @update:model-value="update_entry"
+              hide-details
             />
           </v-col>
         </v-row>
@@ -121,7 +132,11 @@ function get_entry() {
       get_user(data.user_id)
     })
     .catch((error) => {
-      snackbar.value = { show: true, message: t("Error while getting entry"), color: "red" }
+      snackbar.value = {
+        show: true,
+        message: t("Error while getting entry"),
+        color: "red",
+      }
       console.error(error)
     })
     .finally(() => (entry_loading.value = false))
@@ -137,7 +152,11 @@ function update_entry() {
     })
     .catch((error) => {
       console.error(error)
-      snackbar.value = { show: true, message: t("Error while updating entry"), color: "red" }
+      snackbar.value = {
+        show: true,
+        message: t("Error while updating entry"),
+        color: "red",
+      }
     })
     .finally(() => (entry_loading.value = false))
 }
@@ -154,7 +173,11 @@ function delete_entry() {
       })
     })
     .catch((error) => {
-      snackbar.value = { show: true, message: t("Error while deleting entry"), color: "red" }
+      snackbar.value = {
+        show: true,
+        message: t("Error while deleting entry"),
+        color: "red",
+      }
       console.error(error)
     })
 }

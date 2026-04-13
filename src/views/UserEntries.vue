@@ -8,42 +8,35 @@
     <template v-slot:title> {{ user?.display_name || user_id }} </template>
 
     <template v-slot:append>
-      <v-row align="center">
-        <v-col>
-          <v-toolbar-title>{{}}</v-toolbar-title>
-        </v-col>
-        <v-spacer />
-        <v-col cols="auto">
-          <v-select
-            :items="yearItems"
-            v-model="year"
-            :label="t('Year')"
-            hide-details
-            variant="outlined"
-            density="compact"
-          />
-        </v-col>
-        <v-col
-          cols="auto"
-          v-if="current_user_id === user_id || user_id === 'self'"
-        >
-          <v-btn
-            :to="{ name: 'new_entry' }"
-            color="primary"
-            prepend-icon="mdi-plus"
-          >
-            {{ t("Create entry") }}
-          </v-btn>
-        </v-col>
-      </v-row>
+      <v-select
+        :items="yearItems"
+        v-model="year"
+        :label="t('Year')"
+        hide-details
+        variant="outlined"
+        density="compact"
+        class="mr-2"
+      />
+      <v-btn
+        v-if="current_user_id === user_id || user_id === 'self'"
+        :to="{ name: 'new_entry' }"
+        color="primary"
+        prepend-icon="mdi-plus"
+      >
+        {{ t("Create entry") }}
+      </v-btn>
     </template>
 
     <v-divider />
 
     <v-card-text>
-      <p>
-        <Total :entries="entries" :allocations="allocations" />
-      </p>
+      <v-row>
+        <v-spacer />
+        <v-col cols="6">
+          <Total :entries="entries" :allocations="allocations" />
+        </v-col>
+      </v-row>
+
       <Calendar :entries="entries" />
     </v-card-text>
   </v-card>
@@ -65,10 +58,14 @@ const router = useRouter()
 const { current_user_id } = useIdUtils()
 
 const user_id = computed(() => String(route.params.id))
-const year = ref(Number(route.query.year) || new Date().getFullYear())
-const yearItems = Array.from(Array(10).keys()).map(
-  (x) => new Date().getFullYear() + x - 5
+const yearItems = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() + i - 5
 )
+const year = computed({
+  get: () => Number(route.query.year) || new Date().getFullYear(),
+  set: (val) => router.replace({ query: { ...route.query, year: val } }),
+})
 
 const entries = ref<Entry[]>([])
 const entries_loading = ref(false)
@@ -111,10 +108,7 @@ watch(user_id, (id) => {
   get_user(id)
 })
 
-watch(year, (newVal) => {
-  router.replace({ query: { ...route.query, year: newVal } })
-  get_entries()
-})
+watch(year, () => get_entries())
 
 onMounted(() => {
   get_entries()

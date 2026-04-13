@@ -2,7 +2,7 @@
   <div class="total">
     <template v-if="allocations">
       <v-tooltip location="top" :color="colors.allocations.carried_over">
-        <template v-slot:activator="{ props: tooltipProps }">
+        <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
             class="carriedOver allocation bar"
@@ -11,11 +11,11 @@
             {{ allocations.carried_over }}
           </div>
         </template>
-        <span>{{ t('Carried over days') }}</span>
+        <span>{{ t("Carried over days") }}</span>
       </v-tooltip>
 
       <v-tooltip location="top" :color="colors.allocations.current_year_grants">
-        <template v-slot:activator="{ props: tooltipProps }">
+        <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
             class="currentYear allocation bar"
@@ -24,57 +24,54 @@
             {{ allocations.current_year_grants }}
           </div>
         </template>
-        <span>{{ t('Current year grants days') }}</span>
+        <span>{{ t("Current year grants days") }}</span>
       </v-tooltip>
 
       <v-tooltip
+        v-if="!reserve"
         location="bottom"
         :color="colors.leaves.insufficient"
-        v-if="!reserve"
       >
-        <template v-slot:activator="{ props: tooltipProps }">
+        <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
             class="min leaves bar"
             :style="{ width: `${minPercent}%` }"
           />
         </template>
-        <span>{{ t('Must take this year', { n: min - total_taken - total_yotei }) }}</span>
+        <span>{{ t("Must take this year", { n: min - total_taken - total_yotei }) }}</span>
       </v-tooltip>
     </template>
 
     <template v-if="total_taken + total_yotei">
       <v-tooltip location="bottom" :color="colors.leaves.taken">
-        <template v-slot:activator="{ props: tooltipProps }">
+        <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
             class="taken leaves bar"
-            :style="{
-              width: `${takenPercent}%`,
-              'background-color': colors.leaves.taken,
-            }"
+            :style="{ width: `${takenPercent}%`, backgroundColor: colors.leaves.taken }"
           >
             {{ total_taken }}
           </div>
         </template>
-        <span>{{ t('Days taken this year') }}</span>
+        <span>{{ t("Days taken this year") }}</span>
       </v-tooltip>
 
       <v-tooltip location="bottom" :color="colors.leaves.yotei">
-        <template v-slot:activator="{ props: tooltipProps }">
+        <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
             class="yotei leaves bar"
             :style="{
               width: `${yoteiPercent}%`,
               left: `${takenPercent}%`,
-              'background-color': colors.leaves.yotei,
+              backgroundColor: colors.leaves.yotei,
             }"
           >
             {{ total_yotei }}
           </div>
         </template>
-        <span>{{ t('Days planned this year') }}</span>
+        <span>{{ t("Days planned this year") }}</span>
       </v-tooltip>
     </template>
 
@@ -85,7 +82,7 @@
         !entries.length
       "
     >
-      {{ t('No data') }}
+      {{ t("No data") }}
     </div>
   </div>
 </template>
@@ -155,9 +152,9 @@ const yoteiPercent = computed(() => {
     : 0
 })
 
-const minPercent = computed(() => {
-  return total_allocations.value ? (min / total_allocations.value) * 100 : 0
-})
+const minPercent = computed(() =>
+  total_allocations.value ? (min / total_allocations.value) * 100 : 0
+)
 </script>
 
 <style scoped>
@@ -180,12 +177,12 @@ const minPercent = computed(() => {
 
 .carriedOver {
   left: 0;
-  background-color: rgba(79, 195, 247);
+  background-color: v-bind("colors.allocations.carried_over");
 }
 
 .currentYear {
   right: 0;
-  background-color: rgba(3, 155, 229);
+  background-color: v-bind("colors.allocations.current_year_grants");
 }
 
 .leaves {
@@ -197,17 +194,14 @@ const minPercent = computed(() => {
 
 .taken {
   left: 0;
-  background-color: #00c000bb;
 }
 
-.remaining {
-  right: 0;
-  color: white;
-  background-color: #44444444;
+.yotei {
+  position: absolute;
 }
 
 .min {
   background-color: #ff000099;
-  border-right: 2px solid red;
+  border-right: 2px solid v-bind("colors.leaves.insufficient");
 }
 </style>

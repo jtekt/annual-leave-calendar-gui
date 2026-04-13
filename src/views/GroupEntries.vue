@@ -1,7 +1,11 @@
 <template>
   <v-card prepend-icon="mdi-account-multiple">
     <template #title>
-      {{ group ? `${group.properties.name} (${t('people count', { n: total })})` : group_id }}
+      {{
+        group
+          ? `${group.properties.name} (${t("people count", { n: total })})`
+          : group_id
+      }}
     </template>
     <template #append>
       <v-select
@@ -11,13 +15,9 @@
         hide-details
         variant="outlined"
         density="compact"
+        class="mr-2"
       />
-      <ExcelExportButton
-        :total="total"
-        :year="year"
-        :group_id="group_id"
-        class="ml-2"
-      />
+      <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
     </template>
     <v-divider />
 
@@ -64,10 +64,14 @@ const route = useRoute()
 const router = useRouter()
 
 const group_id = computed(() => String(route.params.id))
-const year = ref(Number(route.query.year) || new Date().getFullYear())
-const yearItems = Array.from(Array(10).keys()).map(
-  (x) => new Date().getFullYear() + x - 5
+const yearItems = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() + i - 5
 )
+const year = computed({
+  get: () => Number(route.query.year) || new Date().getFullYear(),
+  set: (val) => router.replace({ query: { ...route.query, year: val } }),
+})
 
 const items = ref<GroupItem[]>([])
 const total = ref(0)
@@ -138,10 +142,7 @@ watch(
   () => reset()
 )
 
-watch(year, (newVal) => {
-  router.replace({ query: { ...route.query, year: newVal } })
-  reset()
-})
+watch(year, () => reset())
 
 onMounted(() => {
   get_group()

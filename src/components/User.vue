@@ -30,10 +30,11 @@ const { get_id_of_item } = useIdUtils()
   border: 1px solid #dddddd;
   border-radius: 0.25em;
   transition: 0.25s;
+  font-size: 110%;
 }
 
 .name {
-  max-width: 150px;
+  max-width: 300px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
