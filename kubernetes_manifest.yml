@@ -41,7 +41,7 @@ spec:
     - port: 80
       nodePort: 30515
   selector:
-    app: ${APPLICATION_NAME}
+    app: ${APPLICATION_NAME}-redirection
   type: NodePort
 ---
 apiVersion: networking.k8s.io/v1
@@ -60,3 +60,26 @@ spec:
                 name: ${APPLICATION_NAME}
                 port:
                   number: 80
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APPLICATION_NAME}-redirection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APPLICATION_NAME}-redirection
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}-redirection
+    spec:
+      containers:
+        - name: ${APPLICATION_NAME}-redirection
+          image: moreillon/redirection:c8ab3fdf
+          env:
+            - name: REDIRECTION_TARGET_URL
+              value: https://leaves.jtektrnd.net
+            - name: REDIRECTION_WARN
+              value: "true"
