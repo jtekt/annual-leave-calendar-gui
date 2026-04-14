@@ -52,5 +52,6 @@ const reserve = computed(() => props.entries.filter((e) => e.reserve))
   font-size: 80%;
   opacity: 80%;
   text-align: center;
+  margin-bottom: 0.25em;
 }
 </style>
