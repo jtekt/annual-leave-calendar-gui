@@ -1,41 +1,36 @@
 <template>
-  <v-toolbar class="mb-6" elevation="3">
-    <v-toolbar-title>
-      {{ group ? group.name : group_id }}
-    </v-toolbar-title>
-    <v-spacer></v-spacer>
-    <v-select
-      :items="yearItems"
-      v-model="year"
-      :label="t('Year')"
-      hide-details
-      variant="outlined"
-      density="compact"
-      class="mr-2"
-      max-width="150px"
-    />
-    <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
-  </v-toolbar>
+  <v-row>
+    <v-col>
+      <v-card prepend-icon="mdi-account-multiple">
+        <template #title>
+          <v-card-title>
+            {{ group ? group.name : group_id }}
+          </v-card-title>
+        </template>
+        <!-- <template #subtitle>
+          <v-icon>mdi-account</v-icon>x{{ total }}
+        </template> -->
+        <template #append>
+          <v-select
+            :items="yearItems"
+            v-model="year"
+            :label="t('Year')"
+            hide-details
+            variant="outlined"
+            density="compact"
+            class="mr-2"
+            max-width="150px"
+          />
+        </template>
+        <v-card-actions>
+          <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
+        </v-card-actions>
+      </v-card>
+    </v-col>
+  </v-row>
 
   <v-row v-for="(item, index) in items" :key="`user_${index}`">
     <v-col>
-      <!-- <v-card>
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <User :user="item.user" />
-            </v-col>
-            <v-col>
-              <Total :entries="item.entries" :allocations="item.allocations" />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <Calendar :entries="item.entries" />
-            </v-col>
-          </v-row>
-        </v-card-text>
-      </v-card> -->
       <UserCard
         :user="item.user"
         :entries="item.entries"
@@ -57,9 +52,7 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
-import Calendar from "@/components/Calendar.vue"
-import User from "@/components/User.vue"
-import Total from "@/components/Total.vue"
+
 import ExcelExportButton from "@/components/ExcelExportButton.vue"
 import type { Group, GroupItem } from "@/types"
 import UserCard from "@/components/UserCard.vue"

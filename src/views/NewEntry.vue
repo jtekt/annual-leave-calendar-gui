@@ -1,13 +1,18 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-calendar-plus">
+  <v-card width="30rem" class="mx-auto" prepend-icon="mdi-calendar-plus">
     <template #title>{{ t("Create entry") }}</template>
-    <v-divider />
 
     <v-card-text>
       <v-form @submit.prevent="submit">
         <v-row justify="center">
-          <v-col cols="auto">
-            <v-date-picker color="black" elevation="1" v-model="date" :events="entryDates" />
+          <v-col>
+            <v-date-picker
+              color="black"
+              outline
+              v-model="date"
+              :events="entryDates"
+              width="100%"
+            />
           </v-col>
         </v-row>
         <v-row>
@@ -52,7 +57,9 @@ const date = ref<string | null>(null)
 const type = ref("有休")
 const entries = ref<Entry[]>([])
 
-const entryDates = computed(() => entries.value.map((e) => e.date.substring(0, 10)))
+const entryDates = computed(() =>
+  entries.value.map((e) => e.date.substring(0, 10))
+)
 
 const types = computed(() => [
   { title: t("All day"), value: "有休" },
@@ -88,4 +95,3 @@ function submit() {
 
 onMounted(() => get_entries())
 </script>
-

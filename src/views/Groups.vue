@@ -1,7 +1,6 @@
 <template>
   <v-card max-width="50rem" class="mx-auto" prepend-icon="mdi-account-group">
     <template #title>{{ t("Groups") }}</template>
-    <v-divider />
 
     <v-card-text>
       <GroupPicker

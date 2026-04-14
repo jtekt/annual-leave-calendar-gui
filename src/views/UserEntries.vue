@@ -6,12 +6,48 @@
   </v-row>
 
   <template v-else>
-    <v-toolbar class="mb-6" elevation="3">
+    <v-row>
+      <v-col>
+        <v-card :loading="user_loading" prepend-icon="mdi-account">
+          <template #title>
+            <v-card-title> {{ user?.display_name }} </v-card-title>
+          </template>
+          <template #append>
+            <v-select
+              :items="yearItems"
+              v-model="year"
+              :label="t('Year')"
+              hide-details
+              variant="outlined"
+              density="compact"
+              max-width="150px"
+              class="mr-2"
+            />
+          </template>
+          <v-card-actions
+            v-if="user && (current_user_id === user_id || user_id === 'self')"
+          >
+            <v-row>
+              <v-col cols="auto">
+                <v-btn
+                  :to="{ name: 'new_entry' }"
+                  prepend-icon="mdi-calendar-plus"
+                  color="primary"
+                >
+                  {{ t("Create entry") }}
+                </v-btn>
+              </v-col>
+              <v-col cols="auto">
+                <CreateAllocation :user_id="user?._id" :year="year" />
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+    <!-- <v-toolbar class="mb-6" elevation="3">
       <template v-if="current_user_id === user_id || user_id === 'self'">
-        <v-btn :to="{ name: 'new_entry' }" prepend-icon="mdi-calendar-plus">
-          {{ t("Create entry") }}
-        </v-btn>
-        <CreateAllocation :user_id="user?._id" :year="year" />
+        
       </template>
 
       <v-spacer></v-spacer>
@@ -26,14 +62,18 @@
         max-width="150px"
         class="mr-2"
       />
-    </v-toolbar>
+    </v-toolbar> -->
 
-    <UserCard
-      :user="user"
-      :entries="entries"
-      :allocations="allocations"
-      v-if="user"
-    />
+    <v-row>
+      <v-col>
+        <UserCard
+          :user="null"
+          :entries="entries"
+          :allocations="allocations"
+          v-if="user"
+        />
+      </v-col>
+    </v-row>
   </template>
 </template>
 
@@ -67,7 +107,7 @@ const entries = ref<Entry[]>([])
 const entries_loading = ref(false)
 const user = ref<User | null>(null)
 const allocations = ref<Allocations | null>(null)
-
+const user_loading = ref(false)
 function get_entries() {
   entries_loading.value = true
   const params = { year: year.value }
@@ -89,14 +129,18 @@ function get_entries() {
     })
 }
 
-function get_user(id: string) {
+async function get_user(id: string) {
+  user_loading.value = true
   const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
-  axios
-    .get<User>(url)
-    .then(({ data }) => {
-      user.value = data
-    })
-    .catch((error) => console.error(error))
+  try {
+    const { data } = await axios.get<User>(url)
+    user.value = data
+  } catch (error) {
+    console.error(error)
+    alert("Failed to query user")
+  } finally {
+    user_loading.value = false
+  }
 }
 
 watch(user_id, (id) => {

@@ -2,9 +2,10 @@
   <v-card>
     <v-card-text>
       <v-row dense density="compact">
-        <v-col>
+        <v-col cols="auto" v-if="user">
           <UserChip :user="user" />
         </v-col>
+        <v-spacer></v-spacer>
         <v-col>
           <Total :entries="entries" :allocations="allocations" />
         </v-col>
@@ -24,7 +25,7 @@ import Calendar from "./Calendar.vue"
 import UserChip from "./UserChip.vue"
 
 const props = defineProps<{
-  user: User
+  user?: User
   entries: Entry[]
   allocations: Allocations | null
 }>()
