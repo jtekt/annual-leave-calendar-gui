@@ -16,10 +16,9 @@
     <template v-if="entry">
       <v-card-text>
         <v-row align="baseline">
-          <v-col cols="auto">{{ t("User") }}:</v-col>
           <v-col>
             <v-progress-circular v-if="user_loading" indeterminate />
-            <User v-else-if="user" :user="user" />
+            <UserChip v-else-if="user" :user="user" />
             <router-link
               v-else
               :to="{ name: 'user_entries', params: { id: entry.user_id } }"
@@ -76,7 +75,7 @@ import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 import { useIdUtils } from "@/composables/useIdUtils"
-import User from "@/components/User.vue"
+import UserChip from "@/components/UserChip.vue"
 import type { Entry, User as UserType } from "@/types"
 
 const { t } = useI18n()
