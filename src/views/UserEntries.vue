@@ -45,24 +45,6 @@
         </v-card>
       </v-col>
     </v-row>
-    <!-- <v-toolbar class="mb-6" elevation="3">
-      <template v-if="current_user_id === user_id || user_id === 'self'">
-        
-      </template>
-
-      <v-spacer></v-spacer>
-
-      <v-select
-        :items="yearItems"
-        v-model="year"
-        :label="t('Year')"
-        hide-details
-        variant="outlined"
-        density="compact"
-        max-width="150px"
-        class="mr-2"
-      />
-    </v-toolbar> -->
 
     <v-row>
       <v-col>
