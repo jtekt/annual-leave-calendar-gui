@@ -66,7 +66,11 @@
         <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
       </v-tooltip>
 
-      <v-tooltip location="bottom" :color="colors.leaves.yotei">
+      <v-tooltip
+        location="bottom"
+        :color="colors.leaves.yotei"
+        v-if="total_yotei"
+      >
         <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
@@ -208,7 +212,7 @@ const minPercent = computed(() => {
 
 .leaves {
   position: absolute;
-  top: 30%;
+  top: 40%;
   bottom: 0;
   overflow: hidden;
   color: white;
@@ -223,6 +227,10 @@ const minPercent = computed(() => {
   border-bottom-left-radius: 0.25em;
 }
 
+.taken:last-child {
+  border-radius: 0.25em;
+}
+
 .yotei {
   position: absolute;
   border-top-right-radius: 0.25em;
@@ -230,7 +238,8 @@ const minPercent = computed(() => {
 }
 
 .min {
-  background-color: #ff000066;
+  background-color: #ff000022;
+  border: 1.5px dashed #ff0000aa;
   border-radius: 0.25em;
   border-radius: 0.25em;
 }
