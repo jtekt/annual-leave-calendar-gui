@@ -119,7 +119,7 @@ function passed_date(entry: Entry): boolean {
   /* color: v-bind(colors.leaves.taken); */
 }
 .entry:not(.taken) {
-  /* color: v-bind(colors.leaves.yotei); */
+  /* color: v-bind(colors.leaves.future); */
   opacity: 75%;
 }
 

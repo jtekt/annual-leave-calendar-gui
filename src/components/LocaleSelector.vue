@@ -6,6 +6,7 @@
     hide-details
     variant="outlined"
     density="compact"
+    width="150px"
   />
 </template>
 

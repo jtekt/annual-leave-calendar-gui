@@ -1,11 +1,11 @@
 export const colors = {
   leaves: {
-    taken: "#777777",
-    yotei: "#777777aa",
+    taken: "#666666",
+    future: "#888888",
   },
   allocations: {
-    current_year_grants: "#b4dbed88",
-    carried_over: "#6ec3ed88",
+    current_year_grants: "#a0d1e7",
+    carried_over: "#6fb6da",
   },
 }
 
