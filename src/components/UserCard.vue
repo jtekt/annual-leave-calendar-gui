@@ -6,7 +6,7 @@
           <UserChip :user="user" />
         </v-col>
         <v-spacer></v-spacer>
-        <v-col>
+        <v-col cols="12" md="7">
           <Total :entries="entries" :allocations="allocations" />
         </v-col>
       </v-row>
