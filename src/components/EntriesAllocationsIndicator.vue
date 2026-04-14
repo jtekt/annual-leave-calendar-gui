@@ -60,7 +60,7 @@
               backgroundColor: colors.leaves.taken,
             }"
           >
-            {{ total_taken }}
+            {{ takenPercent > 20 ? total_taken : "" }}
           </div>
         </template>
         <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
@@ -77,10 +77,10 @@
               backgroundColor: colors.leaves.yotei,
             }"
           >
-            {{ total_yotei }}
+            {{ yoteiPercent > 20 ? total_yotei : "" }}
           </div>
         </template>
-        <span>{{ t("Days planned this year") }}: {{ total_yotei }}</span>
+        <span> {{ t("Days planned this year") }}: {{ total_yotei }} </span>
       </v-tooltip>
     </template>
 
@@ -184,10 +184,6 @@ const minPercent = computed(() => {
   font-size: 80%;
 }
 
-.bar {
-  color: white;
-}
-
 .allocation {
   position: absolute;
   top: 0;
@@ -199,22 +195,26 @@ const minPercent = computed(() => {
 .carriedOver {
   left: 0;
   background-color: v-bind("colors.allocations.carried_over");
-  border-top-left-radius: 0.5em;
-  border-bottom-left-radius: 0.5em;
+  border-top-left-radius: 0.25em;
+  border-bottom-left-radius: 0.25em;
 }
 
 .currentYear {
   right: 0;
   background-color: v-bind("colors.allocations.current_year_grants");
-  border-top-right-radius: 0.5em;
-  border-bottom-right-radius: 0.5em;
+  border-top-right-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
 }
 
 .leaves {
   position: absolute;
-  top: 40%;
-  bottom: 10%;
+  top: 30%;
+  bottom: 0;
   overflow: hidden;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .taken {
@@ -230,7 +230,7 @@ const minPercent = computed(() => {
 }
 
 .min {
-  background-color: #ff000099;
+  background-color: #ff000066;
   border-radius: 0.25em;
   border-radius: 0.25em;
 }

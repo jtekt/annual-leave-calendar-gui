@@ -5,8 +5,8 @@ export const colors = {
     insufficient: "#c00000",
   },
   allocations: {
-    current_year_grants: "#4fc3f7",
-    carried_over: "#039be5",
+    current_year_grants: "#b4dbed",
+    carried_over: "#6ec3ed",
   },
 }
 
