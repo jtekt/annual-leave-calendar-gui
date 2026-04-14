@@ -1,227 +1,183 @@
 <template>
-  <!-- TODO: use one big tooltip for all? -->
-  <!-- <v-tooltip top>
-    <template v-slot:activator="{ on, attrs }"> -->
   <div class="total">
     <template v-if="allocations">
-      <v-tooltip top :color="colors.allocations.carried_over">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip location="top" :color="colors.allocations.carried_over">
+        <template #activator="{ props: tooltipProps }">
           <div
-            v-bind="attrs"
-            v-on="on"
+            v-bind="tooltipProps"
             class="carriedOver allocation bar"
             :style="{ width: `${carriedOverPercent}%` }"
           >
-            {{ allocations?.carried_over }}
+            {{ allocations.carried_over }}
           </div>
         </template>
-        <span> 繰越日数 </span>
+        <span
+          >{{ t("Carried over days") }}: {{ allocations.carried_over }}</span
+        >
       </v-tooltip>
 
-      <v-tooltip top :color="colors.allocations.current_year_grants">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip location="top" :color="colors.allocations.current_year_grants">
+        <template #activator="{ props: tooltipProps }">
           <div
-            v-bind="attrs"
-            v-on="on"
+            v-bind="tooltipProps"
             class="currentYear allocation bar"
             :style="{ width: `${100 - carriedOverPercent}%` }"
           >
-            {{ allocations?.current_year_grants }}
+            {{ allocations.current_year_grants }}
           </div>
         </template>
-        <span> 当年度付与日数 </span>
-      </v-tooltip>
-
-      <!-- Remaining -->
-      <!-- <v-tooltip bottom color="#777777">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="remaining leaves bar"
-            :style="{
-              width: `${100 - takenPercent - yoteiPercent}%`,
-            }"
-          >
-            {{
-              allocations.current_year_grants +
-              allocations.carried_over -
-              total_yotei -
-              total_taken
-            }}
-          </div>
-        </template>
-        <span> 残り </span>
-      </v-tooltip> -->
-
-      <!-- Minimum -->
-      <v-tooltip bottom :color="colors.leaves.insufficient" v-if="!reserve">
-        <template v-slot:activator="{ on, attrs }">
-          <div
-            v-bind="attrs"
-            v-on="on"
-            class="min leaves bar"
-            :style="{
-              width: `${minPercent}%`,
-            }"
-          ></div>
-        </template>
-        <span>
-          今年取らないといけない分: {{ min - total_taken - total_yotei }}</span
+        <span
+          >{{ t("Current year grants days") }}:
+          {{ allocations.current_year_grants }}</span
         >
       </v-tooltip>
     </template>
-    <!-- Taken -->
+    <v-tooltip
+      v-if="!reserve"
+      location="bottom"
+      :color="colors.leaves.insufficient"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <div
+          v-bind="tooltipProps"
+          class="min leaves bar"
+          :style="{ width: `${minPercent}%` }"
+        />
+      </template>
+      <span>{{
+        t("Must take this year", { n: min - total_taken - total_yotei })
+      }}</span>
+    </v-tooltip>
+
     <template v-if="total_taken + total_yotei">
-      <v-tooltip bottom :color="colors.leaves.taken">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip location="bottom" :color="colors.leaves.taken">
+        <template #activator="{ props: tooltipProps }">
           <div
-            v-bind="attrs"
-            v-on="on"
+            v-bind="tooltipProps"
             class="taken leaves bar"
             :style="{
               width: `${takenPercent}%`,
-              'background-color': colors.leaves.taken,
+              backgroundColor: colors.leaves.taken,
             }"
           >
-            {{ total_taken }}
+            {{ takenPercent > 20 ? total_taken : "" }}
           </div>
         </template>
-        <span> 当年度取得日数 </span>
+        <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
       </v-tooltip>
 
-      <!-- Yotei -->
-      <v-tooltip bottom :color="colors.leaves.taken">
-        <template v-slot:activator="{ on, attrs }">
+      <v-tooltip
+        location="bottom"
+        :color="colors.leaves.yotei"
+        v-if="total_yotei"
+      >
+        <template #activator="{ props: tooltipProps }">
           <div
-            v-bind="attrs"
-            v-on="on"
+            v-bind="tooltipProps"
             class="yotei leaves bar"
             :style="{
               width: `${yoteiPercent}%`,
               left: `${takenPercent}%`,
-              'background-color': colors.leaves.yotei,
+              backgroundColor: colors.leaves.yotei,
             }"
           >
-            {{ total_yotei }}
+            {{ yoteiPercent > 20 ? total_yotei : "" }}
           </div>
         </template>
-        <span> 当年度予定日数 </span>
+        <span> {{ t("Days planned this year") }}: {{ total_yotei }} </span>
       </v-tooltip>
     </template>
+
     <div
       v-if="
-        (allocations?.current_year_grants === undefined || null) &&
+        allocations?.current_year_grants === undefined &&
         !allocations?.carried_over &&
-        !entries.length
+        !entries.length &&
+        reserve
       "
     >
-      データなし
+      {{ t("No data") }}
     </div>
   </div>
-  <!-- </template>
-    <div class="tooltip">
-      <div>
-        <div class="colorLegend" style="background-color: rgba(79, 195, 247)" />
-        <div>繰越日数</div>
-      </div>
-      <div>
-        <div class="colorLegend" style="background-color: rgba(3, 155, 229)" />
-        <div>当年度付与日数</div>
-      </div>
-      <div>
-        <div
-          class="colorLegend"
-          :style="{ 'background-color': colors.leave.taken }"
-        />
-        <div>当年度取得日数</div>
-      </div>
-      <div>
-        <div
-          class="colorLegend"
-          :style="{ 'background-color': colors.leave.yotei }"
-        />
-        <div>当年度予定日数</div>
-      </div>
-    </div>
-  </v-tooltip> -->
 </template>
 
-<script>
-import { colors, notTakenOpacity } from "../config"
-export default {
-  name: "EntriesAllocationsIndicator",
-  props: {
-    entries: Array,
-    allocations: Object,
-    reserve: Boolean,
-  },
-  data() {
-    return {
-      min: 5,
-      colors,
-      notTakenOpacity,
-    }
-  },
-  computed: {
-    total_yotei() {
-      return this.entries.reduce((total, { type, date }) => {
-        if (new Date(date) > new Date()) {
-          if (type === "有休") return total + 1
-          else if (type === "前半休" || type === "後半休") return total + 0.5
-        }
-        return total
-      }, 0)
-    },
-    total_taken() {
-      return this.entries.reduce((total, { type, date }) => {
-        if (new Date(date) < new Date()) {
-          if (type === "有休") return total + 1
-          else if (type === "前半休" || type === "後半休") return total + 0.5
-        }
-        return total
-      }, 0)
-    },
-    total_allocations() {
-      return (
-        this.allocations.current_year_grants + this.allocations.carried_over
-      )
-    },
-    carriedOverPercent() {
-      return (this.allocations.carried_over / this.total_allocations) * 100
-    },
+<script setup lang="ts">
+import { computed } from "vue"
+import { useI18n } from "vue-i18n"
+import { colors } from "@/config"
+import type { Entry, AllocationData } from "@/types"
 
-    takenPercent() {
-      if (
-        !this.allocations?.current_year_grants &&
-        !this.allocations?.carried_over
-      )
-        return (this.total_taken / (this.total_yotei + this.total_taken)) * 100
-      return (this.total_taken / this.total_allocations) * 100
-    },
-    yoteiPercent() {
-      if (
-        !this.allocations?.current_year_grants &&
-        !this.allocations?.carried_over
-      )
-        return (this.total_yotei / (this.total_yotei + this.total_taken)) * 100
-      return (
-        (this.total_yotei /
-          (this.allocations.carried_over +
-            this.allocations.current_year_grants)) *
-        100
-      )
-    },
-    minPercent() {
-      return (
-        (this.min /
-          (this.allocations.carried_over +
-            this.allocations.current_year_grants)) *
-        100
-      )
-    },
-  },
-}
+const props = defineProps<{
+  entries: Entry[]
+  allocations?: AllocationData
+  reserve?: boolean
+}>()
+
+const { t } = useI18n()
+const min = 5
+
+const total_yotei = computed(() =>
+  props.entries.reduce((total, { type, date }) => {
+    if (new Date(date) > new Date()) {
+      if (type === "有休") return total + 1
+      if (type === "前半休" || type === "後半休") return total + 0.5
+    }
+    return total
+  }, 0)
+)
+
+const total_taken = computed(() =>
+  props.entries.reduce((total, { type, date }) => {
+    if (new Date(date) < new Date()) {
+      if (type === "有休") return total + 1
+      if (type === "前半休" || type === "後半休") return total + 0.5
+    }
+    return total
+  }, 0)
+)
+
+const total_allocations = computed(() => {
+  if (!props.allocations) return 0
+  return props.allocations.current_year_grants + props.allocations.carried_over
+})
+
+const carriedOverPercent = computed(() => {
+  if (!props.allocations || !total_allocations.value) return 0
+  return (props.allocations.carried_over / total_allocations.value) * 100
+})
+
+const takenPercent = computed(() => {
+  if (
+    !props.allocations?.current_year_grants &&
+    !props.allocations?.carried_over
+  ) {
+    const denom = Math.max(total_yotei.value + total_taken.value, min)
+    return denom ? (total_taken.value / denom) * 100 : 0
+  }
+  return total_allocations.value
+    ? (total_taken.value / total_allocations.value) * 100
+    : 0
+})
+
+const yoteiPercent = computed(() => {
+  if (
+    !props.allocations?.current_year_grants &&
+    !props.allocations?.carried_over
+  ) {
+    const denom = total_yotei.value + total_taken.value
+    return denom ? (total_yotei.value / denom) * 100 : 0
+  }
+  return total_allocations.value
+    ? (total_yotei.value / total_allocations.value) * 100
+    : 0
+})
+
+const minPercent = computed(() => {
+  if (total_allocations.value) return (min / total_allocations.value) * 100
+  else if (total_yotei.value + total_taken.value < min) {
+    return 100
+  } else return 0
+})
 </script>
 
 <style scoped>
@@ -229,10 +185,7 @@ export default {
   position: relative;
   height: 3em;
   text-align: center;
-}
-
-.bar {
-  color: white;
+  font-size: 80%;
 }
 
 .allocation {
@@ -240,49 +193,54 @@ export default {
   top: 0;
   bottom: 0;
   overflow: hidden;
+  font-size: 80%;
 }
 
 .carriedOver {
   left: 0;
-  background-color: rgba(79, 195, 247);
+  background-color: v-bind("colors.allocations.carried_over");
+  border-top-left-radius: 0.25em;
+  border-bottom-left-radius: 0.25em;
 }
 
 .currentYear {
   right: 0;
-  background-color: rgba(3, 155, 229);
+  background-color: v-bind("colors.allocations.current_year_grants");
+  border-top-right-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
 }
 
 .leaves {
   position: absolute;
-  top: 50%;
+  top: 40%;
   bottom: 0;
   overflow: hidden;
-}
-.taken {
-  left: 0;
-  background-color: #00c000bb;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.remaining {
-  right: 0;
-  color: white;
-  background-color: #44444444;
+.taken {
+  left: 0;
+  border-top-left-radius: 0.25em;
+  border-bottom-left-radius: 0.25em;
+}
+
+.taken:last-child {
+  border-radius: 0.25em;
+}
+
+.yotei {
+  position: absolute;
+  border-top-right-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
 }
 
 .min {
-  background-color: #ff000099;
-  border-right: 2px solid red;
-}
-
-.tooltip {
-  width: 200px;
-}
-.tooltip > div {
-  display: flex;
-  align-items: stretch;
-  gap: 0.5em;
-}
-.colorLegend {
-  flex-basis: 20px;
+  background-color: #ff000022;
+  border: 1.5px dashed #ff0000aa;
+  border-radius: 0.25em;
+  border-radius: 0.25em;
 }
 </style>

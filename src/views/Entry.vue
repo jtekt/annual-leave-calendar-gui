@@ -1,31 +1,24 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" :loading="entry_loading">
+  <v-card
+    max-width="30rem"
+    class="mx-auto"
+    :loading="entry_loading"
+    prepend-icon="mdi-calendar"
+  >
+    <template #title>{{ entry ? format_date(entry.date) : "" }}</template>
+    <template v-if="editable" #append>
+      <v-btn color="#c00000" @click="delete_entry" prepend-icon="mdi-delete">
+        {{ t("Schedule delete") }}
+      </v-btn>
+    </template>
+    <v-divider />
+
     <template v-if="entry">
-      <v-container fluid>
-        <v-row align="baseline">
-          <v-col>
-            <v-toolbar-title>{{ format_date(entry.date) }}</v-toolbar-title>
-          </v-col>
-          <v-spacer />
-
-          <v-col cols="auto" v-if="editable">
-            <v-btn color="#c00000" dark @click="delete_entry()">
-              <v-icon>mdi-delete</v-icon>
-              <span class="ml-2">{{ $t("Schedule delete") }}</span>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-divider />
-
       <v-card-text>
-        <!-- user info -->
-
         <v-row align="baseline">
-          <v-col cols="auto"> {{ $t("User") }}: </v-col>
           <v-col>
             <v-progress-circular v-if="user_loading" indeterminate />
-            <User v-else-if="user" :user="user" />
+            <UserChip v-else-if="user" :user="user" />
             <router-link
               v-else
               :to="{ name: 'user_entries', params: { id: entry.user_id } }"
@@ -34,30 +27,36 @@
             </router-link>
           </v-col>
         </v-row>
-
-        <v-select
-          :disabled="!editable"
-          :items="types"
-          v-model="entry.type"
-          :label="$t('Type')"
-          @change="update_entry()"
-        />
+        <v-row>
+          <v-col>
+            <v-select
+              :disabled="!editable"
+              :items="types"
+              v-model="entry.type"
+              :label="t('Type')"
+              @update:model-value="update_entry"
+              hide-details
+            />
+          </v-col>
+        </v-row>
 
         <v-row>
           <v-col>
             <v-checkbox
-              :label="$t('Refresh')"
+              :label="t('Refresh')"
               :disabled="!editable"
               v-model="entry.refresh"
-              @change="update_entry()"
+              @update:model-value="update_entry"
+              hide-details
             />
           </v-col>
           <v-col>
             <v-checkbox
-              :label="$t('Reserve')"
+              :label="t('Reserve')"
               :disabled="!editable"
               v-model="entry.reserve"
-              @change="update_entry()"
+              @update:model-value="update_entry"
+              hide-details
             />
           </v-col>
         </v-row>
@@ -70,122 +69,119 @@
   </v-card>
 </template>
 
-<script>
-// @ is an alias to /src
-import User from "@/components/User.vue"
-import IdUtils from "@/mixins/IdUtils.js"
+<script setup lang="ts">
+import { ref, computed, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
+import axios from "axios"
+import { useIdUtils } from "@/composables/useIdUtils"
+import UserChip from "@/components/UserChip.vue"
+import type { Entry, User as UserType } from "@/types"
 
-export default {
-  name: "Entry",
-  components: {
-    User,
-  },
-  mixins: [IdUtils],
-  data() {
-    return {
-      entry: null,
-      entry_loading: false,
-      user: null,
-      user_loading: false,
-      snackbar: {
-        show: false,
-        message: null,
-        color: "red",
-      },
-    }
-  },
-  mounted() {
-    this.get_entry()
-  },
-  methods: {
-    get_entry() {
-      this.entry_loading = true
-      const entry_id = this.$route.params.id
-      const url = `/entries/${entry_id}`
-      this.axios
-        .get(url)
-        .then((response) => {
-          this.entry = response.data
-          this.get_user(this.entry.user_id)
-        })
-        .catch((error) => {
-          alert(`Error while getting the entry`)
-          console.error(error)
-        })
-        .finally(() => {
-          this.entry_loading = false
-        })
-    },
-    get_user(user_id) {
-      this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
-      this.axios
-        .get(url)
-        .then(({ data }) => {
-          this.user = data
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.user_loading = false
-        })
-    },
-    update_entry() {
-      this.entry_loading = true
-      const entry_id = this.entry._id
-      const url = `/entries/${entry_id}`
-      this.axios
-        .put(url, this.entry)
-        .then(() => {
-          this.snackbar.show = true
-          this.snackbar.message = "Entry saved"
-          this.snackbar.color = "green"
-        })
-        .catch((error) => {
-          console.error(error)
-          alert(`Error while updating the entry`)
-        })
-        .finally(() => {
-          this.entry_loading = false
-        })
-    },
-    format_date(date) {
-      const options = { year: "2-digit", month: "2-digit", day: "2-digit" }
-      return new Date(date).toLocaleString("ja-JP", options)
-    },
-    delete_entry() {
-      if (!confirm("ホンマに？")) return
-      const entry_id = this.entry._id
-      const url = `/entries/${entry_id}`
-      this.axios
-        .delete(url)
-        .then(() => {
-          this.$router.push({
-            name: "user_entries",
-            params: { id: this.entry.user_id },
-          })
-        })
-        .catch((error) => {
-          alert(`Error while deleting the entry`)
-          console.error(error)
-        })
-    },
-  },
-  computed: {
-    editable() {
-      const user_id = this.entry.user_id.toString()
-      return user_id === this.current_user_id
-    },
-    types() {
-      return [
-        { text: this.$t("All day"), value: "有休" },
-        { text: this.$t("Morning"), value: "前半休" },
-        { text: this.$t("Afternoon"), value: "後半休" },
-      ]
-    },
-  },
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+const { current_user_id } = useIdUtils()
+
+const entry = ref<Entry | null>(null)
+const entry_loading = ref(false)
+const user = ref<UserType | null>(null)
+const user_loading = ref(false)
+const snackbar = ref({ show: false, message: "", color: "red" })
+
+const editable = computed(() => {
+  if (!entry.value) return false
+  return entry.value.user_id.toString() === current_user_id.value
+})
+
+const types = computed(() => [
+  { title: t("All day"), value: "有休" },
+  { title: t("Morning"), value: "前半休" },
+  { title: t("Afternoon"), value: "後半休" },
+])
+
+function format_date(date: string) {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "2-digit",
+    month: "2-digit",
+    day: "2-digit",
+  }
+  return new Date(date).toLocaleString("ja-JP", options)
 }
+
+function get_user(user_id: string) {
+  user_loading.value = true
+  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+  axios
+    .get<UserType>(url)
+    .then(({ data }) => {
+      user.value = data
+    })
+    .catch((error) => console.error(error))
+    .finally(() => (user_loading.value = false))
+}
+
+function get_entry() {
+  entry_loading.value = true
+  const entry_id = route.params.id
+  axios
+    .get<Entry>(`/entries/${entry_id}`)
+    .then(({ data }) => {
+      entry.value = data
+      get_user(data.user_id)
+    })
+    .catch((error) => {
+      snackbar.value = {
+        show: true,
+        message: t("Error while getting entry"),
+        color: "red",
+      }
+      console.error(error)
+    })
+    .finally(() => (entry_loading.value = false))
+}
+
+function update_entry() {
+  if (!entry.value) return
+  entry_loading.value = true
+  axios
+    .put(`/entries/${entry.value._id}`, entry.value)
+    .then(() => {
+      snackbar.value = { show: true, message: t("Entry saved"), color: "green" }
+    })
+    .catch((error) => {
+      console.error(error)
+      snackbar.value = {
+        show: true,
+        message: t("Error while updating entry"),
+        color: "red",
+      }
+    })
+    .finally(() => (entry_loading.value = false))
+}
+
+function delete_entry() {
+  if (!entry.value) return
+  if (!confirm(t("Delete entry confirmation"))) return
+  axios
+    .delete(`/entries/${entry.value._id}`)
+    .then(() => {
+      router.push({
+        name: "user_entries",
+        params: { id: entry.value!.user_id },
+      })
+    })
+    .catch((error) => {
+      snackbar.value = {
+        show: true,
+        message: t("Error while deleting entry"),
+        color: "red",
+      }
+      console.error(error)
+    })
+}
+
+onMounted(() => get_entry())
 </script>
 
 <style scoped>

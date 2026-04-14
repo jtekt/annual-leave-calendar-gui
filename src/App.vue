@@ -1,101 +1,90 @@
 <template>
-  <AppTemplate :options="options" @user="get_user($event)">
-    <template v-slot:nav>
-      <v-list dense nav>
-        <v-list-item>
+  <v-app>
+    <template v-if="!isLoginRoute">
+      <v-app-bar :color="colors.app_bar">
+        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <v-app-bar-title class="text-white">{{
+          t("App title")
+        }}</v-app-bar-title>
+        <template #append>
           <LocaleSelector />
-        </v-list-item>
-        <v-divider />
+          <ThemeToggle />
+          <v-btn icon="mdi-logout" @click="handleLogout" />
+        </template>
+      </v-app-bar>
 
-        <v-list-item
-          v-for="(item, index) in nav"
-          :key="`nav_item_${index}`"
-          :to="item.to"
-          exact
-        >
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <v-navigation-drawer v-model="drawer">
+        <v-list nav>
+          <v-list-item
+            v-for="(item, index) in nav"
+            :key="`nav_item_${index}`"
+            :to="item.to"
+            :prepend-icon="item.icon"
+            :title="item.title"
+            exact
+          />
+        </v-list>
+      </v-navigation-drawer>
     </template>
-  </AppTemplate>
+
+    <v-main>
+      <v-container>
+        <router-view />
+      </v-container>
+    </v-main>
+  </v-app>
 </template>
 
-<script>
-import AppTemplate from "@moreillon/vue_application_template_vuetify"
+<script setup lang="ts">
+import { ref, computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
+import { useAuth } from "@/composables/useAuth"
 import LocaleSelector from "./components/LocaleSelector.vue"
 
-const {
-  VUE_APP_LOGIN_URL,
-  VUE_APP_IDENTIFICATION_URL,
-  VUE_APP_LOGIN_HINT,
-  VUE_APP_HOMEPAGE_URL,
-} = process.env
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+const { logout } = useAuth()
 
-export default {
-  name: "App",
+const drawer = ref(true)
+const colors = { app_bar: "#000" }
 
-  components: {
-    AppTemplate,
-    LocaleSelector,
-  },
+const isLoginRoute = computed(() => route.name === "login")
+const isAuthEnabled = computed(() => !!import.meta.env.VITE_IDENTIFICATION_URL)
 
-  data: () => ({
-    options: {
-      title: "年休カレンダー",
-      login_url: VUE_APP_LOGIN_URL,
-      identification_url: VUE_APP_IDENTIFICATION_URL,
-      header_logo: require("@/assets/jtekt_logo_negative.jpg"),
-      authentication_logo: require("@/assets/jtekt_logo.jpg"),
-      colors: { app_bar: "#000" },
-      author: "Maxime Moreillon - JTEKT Corporation",
-      login_hint: VUE_APP_LOGIN_HINT,
-      homepage_url: VUE_APP_HOMEPAGE_URL,
-    },
-  }),
-
-  methods: {
-    get_user(user) {
-      this.$store.commit("set_current_user", user)
-    },
-  },
-  computed: {
-    nav() {
-      return [
-        {
-          title: this.$t("Create entry"),
-          to: { name: "new_entry" },
-          icon: "mdi-plus",
-        },
-        {
-          title: this.$t("My entries"),
-          to: { name: "user_entries", params: { id: "self" } },
-          icon: "mdi-account",
-        },
-        {
-          title: this.$t("My allocations"),
-          to: { name: "user_allocations", params: { id: "self" } },
-          icon: "mdi-account",
-        },
-        {
-          title: this.$t("Groups"),
-          to: { name: "groups" },
-          icon: "mdi-account-multiple",
-        },
-        {
-          title: this.$t("About"),
-          to: { name: "about" },
-          icon: "mdi-information-outline",
-        },
-      ]
-    },
-  },
+function handleLogout() {
+  logout()
+  router.push({ name: "login" })
 }
+
+const nav = computed(() => [
+  {
+    title: t("Create entry"),
+    to: { name: "new_entry" },
+    icon: "mdi-calendar-plus",
+  },
+  {
+    title: t("My entries"),
+    to: { name: "user_entries", params: { id: "self" } },
+    icon: "mdi-account",
+  },
+  // {
+  //   title: t("My allocations"),
+  //   to: { name: "user_allocations", params: { id: "self" } },
+  //   icon: "mdi-account",
+  // },
+  {
+    title: t("Groups"),
+    to: { name: "groups" },
+    icon: "mdi-account-multiple",
+  },
+  {
+    title: t("About"),
+    to: { name: "about" },
+    icon: "mdi-information-outline",
+  },
+])
 </script>
 
 <style>

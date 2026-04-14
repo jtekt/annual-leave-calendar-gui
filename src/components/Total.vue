@@ -1,22 +1,17 @@
 <template>
-  <div>
-    <v-row align="center" dense justify="space-around">
-      <v-col cols="auto"> 年休 </v-col>
-
-      <v-col cols="auto"> 積休 </v-col>
-    </v-row>
+  <div class="total_indicator">
     <v-row dense align="center">
-      <!-- <v-col cols="auto"> 年休 </v-col> -->
       <v-col>
+        <div class="legend">{{ t("Leaves short") }}</div>
         <EntriesAllocationsIndicator
           :entries="leaves"
           :allocations="allocations?.leaves"
         />
       </v-col>
-      <!-- <v-col cols="auto"> 積休 </v-col> -->
       <v-col>
+        <div class="legend">{{ t("Reserve short") }}</div>
         <EntriesAllocationsIndicator
-          reserve
+          :reserve="true"
           :entries="reserve"
           :allocations="allocations?.reserve"
         />
@@ -25,71 +20,38 @@
   </div>
 </template>
 
-<script>
+<script setup lang="ts">
+import { computed } from "vue"
+import { useI18n } from "vue-i18n"
 import EntriesAllocationsIndicator from "@/components/EntriesAllocationsIndicator.vue"
-export default {
-  name: "Total",
-  components: { EntriesAllocationsIndicator },
-  props: {
-    entries: Array,
-    allocations: Object,
-  },
-  computed: {
-    leaves() {
-      return this.entries.filter((l) => !l.reserve)
-    },
-    reserve() {
-      return this.entries.filter((l) => l.reserve)
-    },
-  },
-}
+import type { Entry, Allocations } from "@/types"
+
+const props = defineProps<{
+  entries: Entry[]
+  allocations?: Allocations | null
+}>()
+
+const { t } = useI18n()
+const leaves = computed(() => props.entries.filter((e) => !e.reserve))
+const reserve = computed(() => props.entries.filter((e) => e.reserve))
 </script>
 
 <style scoped>
+.total_indicator {
+  border: 1px solid #ddd;
+  border-radius: 0.5em;
+  padding: 0.25em 0.5em;
+}
 .totalBar {
   display: flex;
   position: relative;
   height: 3em;
   color: white;
 }
-
-.allocationBar {
-  position: absolute;
-  top: 0;
-  bottom: 0;
+.legend {
+  font-size: 80%;
+  opacity: 80%;
   text-align: center;
-  overflow: hidden;
-}
-
-.carriedOver {
-  left: 0;
-  background-color: rgba(79, 195, 247);
-}
-
-.currentYear {
-  right: 0;
-  background-color: rgba(3, 155, 229);
-}
-
-.leavesBar {
-  position: absolute;
-  top: 50%;
-  bottom: 0;
-  text-align: center;
-  overflow: hidden;
-}
-.taken {
-  left: 0;
-  background-color: #00c000bb;
-}
-
-.yotei {
-  background-color: #3f663fbb;
-}
-
-.remaining {
-  right: 0;
-  color: white;
-  background-color: #44444444;
+  margin-bottom: 0.25em;
 }
 </style>

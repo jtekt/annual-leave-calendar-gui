@@ -1,195 +1,159 @@
 <template>
   <div>
-    <v-tooltip bottom :disabled="!export_disabled">
-      <template v-slot:activator="{ on }">
-        <span v-on="on">
+    <v-tooltip location="bottom" :disabled="!export_disabled">
+      <template v-slot:activator="{ props: tooltipProps }">
+        <span v-bind="tooltipProps">
           <v-btn
             :disabled="export_disabled"
             :loading="excel_exporting"
-            @click="excel_export()"
+            @click="excel_export"
           >
             <v-icon>mdi-download</v-icon>
-            <span class="ml-2">{{ $t("Export") }}</span>
+            <span class="ml-2">{{ t("Export") }}</span>
           </v-btn>
         </span>
       </template>
-      <span>max: 500 people</span>
+      <span>{{ t("Max export limit") }}</span>
     </v-tooltip>
 
     <table id="export_table">
-      <tr>
-        <th>No</th>
-        <th>名前</th>
-        <th>1-6月r</th>
-        <th>7-12月r</th>
-
-        <template v-for="month in 12">
-          <th :key="`table_month_header_${month}`">{{ month }}月</th>
-
-          <th
-            v-if="month === 5 || month === 8"
-            :key="`5_days_taken_${month}_header`"
-          >
-            5日以上
-          </th>
-        </template>
-      </tr>
-      <template v-for="(item, index) in items">
-        <tr :key="`user_${index}_yotei`">
-          <!-- INDEX -->
-          <td>{{ index + 1 }}</td>
-          <!-- User name -->
-          <td>{{ item.user.display_name }}</td>
-
-          <!-- Refresh 1-6 -->
-          <td>
-            {{
-              refresh_entries_first_semester(item.user)
-                .map((entry) => {
-                  return `${month_of_entry(entry)}/${day_of_entry(entry)}`
-                })
-                .join(", ")
-            }}
-          </td>
-
-          <!-- Refresh 1-6 -->
-          <td>
-            {{
-              refresh_entries_second_semester(item.user)
-                .map((entry) => {
-                  return `${month_of_entry(entry)}/${day_of_entry(entry)}`
-                })
-                .join(", ")
-            }}
-          </td>
-
-          <template v-for="month in 12">
-            <td :key="`user_${index}_taken_${month}`">
-              {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
-            </td>
-            <td v-if="month === 5" :key="`user_${index}_5_days_taken_${month}`">
-              {{ five_days_taken(item, month) }}
-            </td>
-            <td v-if="month === 8" :key="`user_${index}_5_days_taken_${month}`">
-              {{ five_days_taken(item, month) }}
-            </td>
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>名前</th>
+          <th>1-6月r</th>
+          <th>7-12月r</th>
+          <template v-for="month in 12" :key="`header_${month}`">
+            <th>{{ month }}月</th>
+            <th v-if="month === 5 || month === 8">5日以上</th>
           </template>
         </tr>
-      </template>
+      </thead>
+      <tbody>
+        <template v-for="(item, index) in items" :key="`user_${index}`">
+          <tr>
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.user.display_name }}</td>
+            <td>
+              {{
+                refresh_entries_first_semester(item)
+                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
+                  .join(", ")
+              }}
+            </td>
+            <td>
+              {{
+                refresh_entries_second_semester(item)
+                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
+                  .join(", ")
+              }}
+            </td>
+            <template v-for="month in 12" :key="`user_${index}_month_${month}`">
+              <td>
+                {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
+              </td>
+              <td v-if="month === 5">{{ five_days_taken(item, month) }}</td>
+              <td v-if="month === 8">{{ five_days_taken(item, month) }}</td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
     </table>
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
+<script setup lang="ts">
+import { ref, computed } from "vue"
+import { useI18n } from "vue-i18n"
+import axios from "axios"
 import { utils, writeFile } from "xlsx"
+import type { GroupItem, Entry } from "@/types"
 
-export default {
-  name: "ExcelExportTable",
-  props: {
-    total: Number,
-    group_id: String,
-    year: Number,
-  },
-  data() {
-    return {
-      items: [],
-      excel_exporting: false,
-    }
-  },
-  methods: {
-    entries_of_month(item, month) {
-      return item.entries.filter(({ date, type }) => {
-        return (
-          new Date(date).getMonth() + 1 === month &&
-          ["有休", "前半休", "後半休"].includes(type)
+const props = defineProps<{
+  total: number
+  group_id: string
+  year: number
+}>()
+
+const { t } = useI18n()
+const items = ref<GroupItem[]>([])
+const excel_exporting = ref(false)
+
+const export_disabled = computed(() => props.total === 0 || props.total > 500)
+
+function entries_of_month(item: GroupItem, month: number): Entry[] {
+  return item.entries.filter(({ date, type }) => {
+    return (
+      new Date(date).getMonth() + 1 === month &&
+      ["有休", "前半休", "後半休"].includes(type)
+    )
+  })
+}
+
+function day_of_entry(entry: Entry): string | number {
+  const day = new Date(entry.date).getDate()
+  if (entry.type === "前半休") return `${day}am`
+  if (entry.type === "後半休") return `${day}pm`
+  return day
+}
+
+function month_of_entry(entry: Entry): number {
+  return new Date(entry.date).getMonth() + 1
+}
+
+function refresh_entries_first_semester(item: GroupItem): Entry[] {
+  return item.entries
+    .filter((e) => e.refresh)
+    .filter((e) => month_of_entry(e) <= 6)
+}
+
+function refresh_entries_second_semester(item: GroupItem): Entry[] {
+  return item.entries
+    .filter((e) => e.refresh)
+    .filter((e) => month_of_entry(e) > 6)
+}
+
+function five_days_taken(item: GroupItem, month: number): string {
+  const count = item.entries
+    .filter((e) => month_of_entry(e) <= month)
+    .reduce((total, { type }) => {
+      if (type === "有休") return total + 1
+      if (type === "前半休" || type === "後半休") return total + 0.5
+      return total
+    }, 0)
+  return count > 5 ? "〇" : "×"
+}
+
+function excel_export() {
+  excel_exporting.value = true
+  const params = { year: props.year }
+  axios
+    .get<{ items: GroupItem[]; total: number }>(
+      `/groups/${props.group_id}/entries`,
+      { params }
+    )
+    .then(({ data }) => {
+      if (data.total !== data.items.length)
+        throw new Error(
+          "The number of people for Excel exporting is limited to 500."
         )
-      })
-    },
-    day_of_entry(entry) {
-      let output = new Date(entry.date).getDate()
-      if (entry.type === "前半休") output = `${output}am`
-      else if (entry.type === "後半休") output = `${output}pm`
-      return output
-    },
-    month_of_entry(entry) {
-      return new Date(entry.date).getMonth() + 1
-    },
-    refresh_entries_first_semester(item) {
-      return item.entries
-        .filter((entry) => {
-          return entry.refresh
-        })
-        .filter((entry) => {
-          return this.month_of_entry(entry) <= 6
-        })
-    },
-    refresh_entries_second_semester(item) {
-      return item.entries
-        .filter((entry) => {
-          return entry.refresh
-        })
-        .filter((entry) => {
-          return this.month_of_entry(entry) > 6
-        })
-    },
-    five_days_taken(item, month) {
-      let count = item.entries
-        .filter((entry) => this.month_of_entry(entry) <= month)
-        .reduce((total, entry) => {
-          switch (entry.type) {
-            case "有休":
-              return (total += 1)
-            case "前半休":
-              return (total += 0.5)
-            case "後半休":
-              return (total += 0.5)
-            default:
-              return total
-          }
-        }, 0)
-
-      if (count > 5) return "〇"
-      else return "×"
-    },
-    excel_export() {
-      this.excel_exporting = true
-
-      const url = `/groups/${this.group_id}/entries`
-      const params = { year: this.year }
-      this.axios
-        .get(url, { params })
-        .then(({ data }) => {
-          if (data.total !== data.items.length)
-            throw new Error(
-              "The number of people for Excel exporting is limited to 500."
-            )
-
-          this.items = data.items
-
-          setTimeout(() => {
-            var workbook = utils.book_new()
-            var ws1 = utils.table_to_sheet(
-              document.getElementById("export_table"),
-              { raw: true }
-            )
-            utils.book_append_sheet(workbook, ws1, "Sheet1")
-            writeFile(workbook, `nenkyuu_calendar_${this.group_id}_export.xlsx`)
-            this.excel_exporting = false
-          }, 100)
-        })
-        .catch((error) => {
-          console.error(error)
-          alert(error)
-          this.excel_exporting = false
-        })
-    },
-  },
-  computed: {
-    export_disabled() {
-      return this.total === 0 || 500 < this.total
-    },
-  },
+      items.value = data.items
+      setTimeout(() => {
+        const workbook = utils.book_new()
+        const ws = utils.table_to_sheet(
+          document.getElementById("export_table")!,
+          { raw: true }
+        )
+        utils.book_append_sheet(workbook, ws, "Sheet1")
+        writeFile(workbook, `nenkyuu_calendar_${props.group_id}_export.xlsx`)
+        excel_exporting.value = false
+      }, 100)
+    })
+    .catch((error) => {
+      console.error(error)
+      alert(error?.message ?? t("Failed to load data"))
+      excel_exporting.value = false
+    })
 }
 </script>
 

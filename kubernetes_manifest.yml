@@ -15,14 +15,22 @@ spec:
       containers:
         - name: ${APPLICATION_NAME}
           image: ${CONTAINER_IMAGE_TAGGED}
-          ports:
-            - containerPort: 80
-          envFrom:
-            - secretRef:
-                name: environment-variables
+          # envFrom:
+          #   - secretRef:
+          #       name: environment-variables
           env:
-            - name: VUE_APP_NENKYUU_CALENDAR_API_URL
+            - name: VITE_NENKYUU_CALENDAR_API_URL
               value: http://10.115.1.100:30514
+            - name: VITE_GROUP_MANAGER_API_URL
+              value: https://groups-api.jtektrnd.net
+            - name: VITE_USER_MANAGER_API_URL
+              value: https://employees-api.jtektrnd.net
+            - name: VITE_LOGIN_URL
+              value: https://employees-api.jtektrnd.net/v3/auth/login
+            - name: VITE_IDENTIFICATION_URL
+              value: https://employees-api.jtektrnd.net/v3/users/self
+          resources: {}
+
 ---
 apiVersion: v1
 kind: Service

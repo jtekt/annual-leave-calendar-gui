@@ -1,136 +1,139 @@
 <template>
-  <v-card :loading="entries_loading">
-    <template v-if="!entries_loading">
-      <v-container fluid>
-        <v-row align="baseline">
-          <v-col>
-            <v-toolbar-title v-if="user">
-              {{ user.display_name }}
-            </v-toolbar-title>
-            <v-toolbar-title v-else>{{ user_id }}</v-toolbar-title>
-          </v-col>
-          <v-spacer />
-          <v-col cols="auto">
+  <v-row justify="center" v-if="entries_loading">
+    <v-col cols="auto">
+      <v-progress-circular indeterminate></v-progress-circular>
+    </v-col>
+  </v-row>
+
+  <template v-else>
+    <v-row>
+      <v-col>
+        <v-card :loading="user_loading" prepend-icon="mdi-account">
+          <template #title>
+            <v-card-title> {{ user?.display_name }} </v-card-title>
+          </template>
+          <template #append>
             <v-select
-              :items="
-                Array.from(Array(10).keys()).map(
-                  (x) => new Date().getFullYear() + x - 5
-                )
-              "
+              :items="yearItems"
               v-model="year"
-              label="Year"
+              :label="t('Year')"
+              hide-details
+              variant="outlined"
+              density="compact"
+              max-width="150px"
+              class="mr-2"
             />
-          </v-col>
-          <v-col
-            cols="auto"
-            v-if="current_user_id === user_id || user_id === 'self'"
+          </template>
+          <v-card-actions
+            v-if="user && (current_user_id === user_id || user_id === 'self')"
           >
-            <v-btn :to="{ name: 'new_entry' }" color="primary">
-              <v-icon left>mdi-plus</v-icon>
-              <span>{{ $t("Create entry") }}</span>
-            </v-btn>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-divider />
+            <v-row>
+              <v-col cols="auto">
+                <v-btn
+                  :to="{ name: 'new_entry' }"
+                  prepend-icon="mdi-calendar-plus"
+                  color="primary"
+                >
+                  {{ t("Create entry") }}
+                </v-btn>
+              </v-col>
+              <v-col cols="auto">
+                <CreateAllocation :user_id="user?._id" :year="year" />
+              </v-col>
+            </v-row>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
 
-      <v-card-text>
-        <p>
-          <Total :entries="entries" :allocations="allocations" />
-        </p>
-
-        <Calendar :entries="entries" />
-      </v-card-text>
-    </template>
-  </v-card>
+    <v-row>
+      <v-col>
+        <UserCard
+          :user="user"
+          :entries="entries"
+          :allocations="allocations"
+          v-if="user"
+        />
+      </v-col>
+    </v-row>
+  </template>
 </template>
 
-<script>
-// @ is an alias to /src
-import Calendar from "@/components/Calendar.vue"
-import Total from "@/components/Total.vue"
-import IdUtils from "@/mixins/IdUtils.js"
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
+import axios from "axios"
+import { useIdUtils } from "@/composables/useIdUtils"
 
-export default {
-  name: "UserEntries",
-  components: {
-    Calendar,
-    Total,
-  },
-  mixins: [IdUtils],
-  data() {
-    return {
-      year: Number(this.$route.query.year) || new Date().getFullYear(),
-      entries: [],
-      entries_loading: false,
-      user: null,
-      user_loading: false,
-      allocations: null,
-    }
-  },
-  mounted() {
-    this.get_entries()
-    this.get_user(this.user_id)
-  },
-  watch: {
-    user_id() {
-      this.get_entries()
-      this.get_user(this.user_id)
-    },
-    year(newVal) {
-      this.$router.replace({ query: { ...this.$route.query, year: newVal } })
-      this.get_entries()
-    },
-  },
-  methods: {
-    get_entries() {
-      this.entries_loading = true
-      const url = `/v2/users/${this.user_id}/entries`
-      const params = { year: this.year }
-      this.axios
-        .get(url, { params })
-        .then(({ data }) => {
-          this.allocations = data.allocations
-          this.entries = data.entries
-        })
-        .catch((error) => {
-          alert(`Failed to query items`)
-          console.error(error)
-        })
-        .finally(() => {
-          this.entries_loading = false
-        })
-    },
+import type { User, Entry, Allocations } from "@/types"
+import UserCard from "@/components/UserCard.vue"
+import CreateAllocation from "@/components/CreateAllocation.vue"
 
-    entries_of_month(month) {
-      return this.entries.filter((entry) => {
-        // NOTE: month start at 0
-        return new Date(entry.date).getMonth() + 1 === month
-      })
-    },
-    day_of_entry(entry) {
-      return new Date(entry.date).getDate()
-    },
-    get_user(user_id) {
-      this.user_loading = true
-      const url = `${process.env.VUE_APP_USER_MANAGER_API_URL}/v3/employees/${user_id}`
-      this.axios
-        .get(url)
-        .then(({ data }) => {
-          this.user = data
-        })
-        .catch((error) => {
-          console.error(error)
-        })
-        .finally(() => {
-          this.user_loading = false
-        })
-    },
-  },
-  computed: {
-    user_id() {
-      return this.$route.params.id
-    },
-  },
+const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
+const { current_user_id } = useIdUtils()
+
+const user_id = computed(() => String(route.params.id))
+const yearItems = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() + i - 5
+)
+const year = computed({
+  get: () => Number(route.query.year) || new Date().getFullYear(),
+  set: (val) => router.replace({ query: { ...route.query, year: val } }),
+})
+
+const entries = ref<Entry[]>([])
+const entries_loading = ref(false)
+const user = ref<User | null>(null)
+const allocations = ref<Allocations | null>(null)
+const user_loading = ref(false)
+function get_entries() {
+  entries_loading.value = true
+  const params = { year: year.value }
+  axios
+    .get<{ entries: Entry[]; allocations: Allocations }>(
+      `/v2/users/${user_id.value}/entries`,
+      { params }
+    )
+    .then(({ data }) => {
+      allocations.value = data.allocations
+      entries.value = data.entries
+    })
+    .catch((error) => {
+      alert(t("Failed to load data"))
+      console.error(error)
+    })
+    .finally(() => {
+      entries_loading.value = false
+    })
 }
+
+async function get_user(id: string) {
+  user_loading.value = true
+  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
+  try {
+    const { data } = await axios.get<User>(url)
+    user.value = data
+  } catch (error) {
+    console.error(error)
+    alert("Failed to query user")
+  } finally {
+    user_loading.value = false
+  }
+}
+
+watch(user_id, (id) => {
+  get_entries()
+  get_user(id)
+})
+
+watch(year, () => get_entries())
+
+onMounted(() => {
+  get_entries()
+  get_user(user_id.value)
+})
 </script>

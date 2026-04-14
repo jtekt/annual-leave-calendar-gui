@@ -1,32 +1,35 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto">
-    <v-card-title> Groups </v-card-title>
+  <v-card max-width="50rem" class="mx-auto" prepend-icon="mdi-account-group">
+    <template #title>{{ t("Groups") }}</template>
 
     <v-card-text>
-      <GroupPicker class="group_picker" @selection="select_group($event)" />
+      <GroupPicker
+        class="group_picker"
+        :groupManagerApiUrl="groupManagerApiUrl"
+        :accessToken="accessToken"
+        @selection="select_group($event)"
+      />
     </v-card-text>
   </v-card>
 </template>
 
-<script>
-import GroupPicker from "@moreillon/vue_group_picker"
-import IdUtils from "@/mixins/IdUtils.js"
+<script setup lang="ts">
+import { useRouter } from "vue-router"
+import { useI18n } from "vue-i18n"
+import { useIdUtils } from "@/composables/useIdUtils"
+import { getToken } from "@/composables/useAuth"
+import { GroupPicker } from "@moreillon/group-manager-vue-picker"
 
-export default {
-  name: "Entry",
-  components: {
-    GroupPicker,
-  },
-  mixins: [IdUtils],
-  data() {
-    return {}
-  },
-  methods: {
-    select_group(group) {
-      const group_id = this.get_id_of_item(group)
-      this.$router.push({ name: "group_entries", params: { id: group_id } })
-    },
-  },
+const { t } = useI18n()
+
+const router = useRouter()
+const { get_id_of_item } = useIdUtils()
+const groupManagerApiUrl = import.meta.env.VITE_GROUP_MANAGER_API_URL
+const accessToken = getToken()
+
+function select_group(group: Record<string, unknown>) {
+  const group_id = get_id_of_item(group)
+  router.push({ name: "group_entries", params: { id: group_id } })
 }
 </script>
 

@@ -9,8 +9,7 @@
       }"
       :key="`month_${month}`"
     >
-      <div class="month_header">{{ month }}月</div>
-
+      <div class="month_header">{{ t("month label", { month }) }}</div>
       <div class="entries_container">
         <router-link
           class="entry"
@@ -19,7 +18,6 @@
             color: passed_date(entry)
               ? colors.leaves.taken
               : colors.leaves.yotei,
-            opacity: passed_date(entry) ? 1 : 1,
           }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
@@ -42,47 +40,41 @@
   </div>
 </template>
 
-<script>
-import { colors, notTakenOpacity } from "../config"
+<script setup lang="ts">
+import { computed } from "vue"
+import { useRoute } from "vue-router"
+import { useI18n } from "vue-i18n"
+import { colors } from "@/config"
+import type { Entry } from "@/types"
 
-export default {
-  name: "Calendar",
-  props: {
-    entries: Array,
-  },
-  data() {
-    return {
-      colors,
-      notTakenOpacity,
-    }
-  },
-  methods: {
-    entries_of_month(month) {
-      return this.entries.filter(({ date, type }) => {
-        return (
-          new Date(date).getMonth() + 1 === month &&
-          ["有休", "前半休", "後半休"].includes(type)
-        )
-      })
-    },
-    day_of_entry(entry) {
-      return new Date(entry.date).getDate()
-    },
-    passed_date(entry) {
-      return new Date(entry.date) < new Date()
-    },
-  },
-  computed: {
-    current_month() {
-      return new Date().getMonth() + 1
-    },
-    current_year() {
-      return new Date().getFullYear()
-    },
-    year() {
-      return Number(this.$route.query.year) || new Date().getFullYear()
-    },
-  },
+const props = defineProps<{
+  entries: Entry[]
+}>()
+
+const { t } = useI18n()
+const route = useRoute()
+
+const current_month = computed(() => new Date().getMonth() + 1)
+const current_year = computed(() => new Date().getFullYear())
+const year = computed(
+  () => Number(route.query.year) || new Date().getFullYear()
+)
+
+function entries_of_month(month: number): Entry[] {
+  return props.entries.filter(({ date, type }) => {
+    return (
+      new Date(date).getMonth() + 1 === month &&
+      ["有休", "前半休", "後半休"].includes(type)
+    )
+  })
+}
+
+function day_of_entry(entry: Entry): number {
+  return new Date(entry.date).getDate()
+}
+
+function passed_date(entry: Entry): boolean {
+  return new Date(entry.date) < new Date()
 }
 </script>
 
@@ -90,6 +82,7 @@ export default {
 .calendar {
   display: flex;
   overflow-x: auto;
+  gap: 0.25em;
 }
 
 .month {
@@ -97,10 +90,8 @@ export default {
   flex-shrink: 0;
   flex-basis: 50px;
   min-height: 50px;
-
   border: 1px solid #aaaaaa;
   border-radius: 5px;
-  margin: 0.25em;
   padding: 0.25em;
   text-align: center;
 }
@@ -121,11 +112,11 @@ export default {
 .entry {
   text-decoration: none;
   font-weight: bold;
-  padding: 0.25em;
   display: inline-flex;
   align-items: flex-start;
   border: 1px solid transparent;
   border-radius: 0.25em;
+  padding-inline: 0.25em;
 }
 
 .month_header {
@@ -136,17 +127,6 @@ export default {
 
 .entry.refresh {
   border: 2px solid rgb(0, 119, 255);
-}
-
-.total {
-  border: 1px solid #444444;
-  margin: 0.25em;
-  padding: 0.25em;
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 0;
-  background-color: #ddddff;
-  text-align: center;
 }
 
 .half_indicator {
