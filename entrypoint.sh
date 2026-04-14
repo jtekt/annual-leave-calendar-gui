@@ -20,6 +20,8 @@ do
   sed -i 's|VITE_LOGIN_HINT_PLACEHOLDER|'${VITE_LOGIN_HINT}'|g' $file
   sed -i 's|VITE_HOMEPAGE_URL_PLACEHOLDER|'${VITE_HOMEPAGE_URL}'|g' $file
 
+  sed -i 's|VITE_MINIMUM_LEAVES_PLACEHOLDER|'${VITE_MINIMUM_LEAVES}'|g' $file
+
 
 done
 

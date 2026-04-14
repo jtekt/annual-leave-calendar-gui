@@ -14,11 +14,6 @@
         <router-link
           class="entry"
           :class="{ taken: passed_date(entry), refresh: entry.refresh }"
-          :style="{
-            color: passed_date(entry)
-              ? colors.leaves.taken
-              : colors.leaves.yotei,
-          }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
           :to="{ name: 'entry', params: { id: entry._id } }"
@@ -97,10 +92,10 @@ function passed_date(entry: Entry): boolean {
 }
 
 .month.ellapsed {
-  background-color: #eeeeee;
+  background-color: #aaaaaa33;
 }
 .month.current {
-  border-color: #444444;
+  border-width: 2px;
 }
 
 .entries_container {
@@ -117,16 +112,25 @@ function passed_date(entry: Entry): boolean {
   border: 1px solid transparent;
   border-radius: 0.25em;
   padding-inline: 0.25em;
+  color: inherit;
+}
+
+.entry.taken {
+  color: v-bind(colors.leaves.taken);
+}
+.entry:not(.taken) {
+  color: v-bind(colors.leaves.yotei);
 }
 
 .month_header {
   text-align: left;
-  color: #aaaaaa;
+  /* color: #aaaaaa; */
+  opacity: 0.5;
   font-size: 80%;
 }
 
 .entry.refresh {
-  border: 2px solid rgb(0, 119, 255);
+  border: 2px solid rgb(14, 205, 122);
 }
 
 .half_indicator {
