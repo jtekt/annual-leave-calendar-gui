@@ -116,6 +116,7 @@ function passed_date(entry: Entry): boolean {
   align-items: flex-start;
   border: 1px solid transparent;
   border-radius: 0.25em;
+  padding-inline: 0.25em;
 }
 
 .month_header {
