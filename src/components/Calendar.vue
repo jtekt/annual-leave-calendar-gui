@@ -116,10 +116,11 @@ function passed_date(entry: Entry): boolean {
 }
 
 .entry.taken {
-  color: v-bind(colors.leaves.taken);
+  /* color: v-bind(colors.leaves.taken); */
 }
 .entry:not(.taken) {
-  color: v-bind(colors.leaves.yotei);
+  /* color: v-bind(colors.leaves.yotei); */
+  opacity: 75%;
 }
 
 .month_header {

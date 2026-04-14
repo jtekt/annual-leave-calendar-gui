@@ -3,44 +3,32 @@
     <template v-if="allocations">
       <v-tooltip location="top" v-if="allocations.carried_over">
         <template #activator="{ props: tooltipProps }">
-          <div
-            v-bind="tooltipProps"
-            class="carriedOver allocation bar"
-            :style="{ width: `${carriedOverPercent}%` }"
-          >
+          <div v-bind="tooltipProps" class="carriedOver allocation bar">
             {{ allocations.carried_over }}
           </div>
         </template>
-        <span
-          >{{ t("Carried over days") }}: {{ allocations.carried_over }}</span
-        >
+        <span>
+          {{ t("Carried over days") }}: {{ allocations.carried_over }}
+        </span>
       </v-tooltip>
 
       <v-tooltip location="top" v-if="allocations.current_year_grants">
         <template #activator="{ props: tooltipProps }">
-          <div
-            v-bind="tooltipProps"
-            class="currentYear allocation bar"
-            :style="{ width: `${100 - carriedOverPercent}%` }"
-          >
+          <div v-bind="tooltipProps" class="currentYear allocation bar">
             {{ allocations.current_year_grants }}
           </div>
         </template>
-        <span
-          >{{ t("Current year grants days") }}:
-          {{ allocations.current_year_grants }}</span
-        >
+        <span>
+          {{ t("Current year grants days") }}:
+          {{ allocations.current_year_grants }}
+        </span>
       </v-tooltip>
     </template>
 
     <!-- If below minimum -->
     <v-tooltip v-if="!reserve && min" location="bottom">
       <template #activator="{ props: tooltipProps }">
-        <div
-          v-bind="tooltipProps"
-          class="min leaves bar"
-          :style="{ width: `${minPercent}%` }"
-        />
+        <div v-bind="tooltipProps" class="min leaves bar" />
       </template>
       <span>{{
         t("Must take this year", { n: min - total_taken - total_yotei })
@@ -50,14 +38,7 @@
     <template v-if="total_taken + total_yotei">
       <v-tooltip location="bottom" v-if="total_taken">
         <template #activator="{ props: tooltipProps }">
-          <div
-            v-bind="tooltipProps"
-            class="taken leaves bar"
-            :style="{
-              width: `${takenPercent}%`,
-              backgroundColor: colors.leaves.taken,
-            }"
-          >
+          <div v-bind="tooltipProps" class="taken leaves bar">
             {{ takenPercent > 10 ? total_taken : "" }}
           </div>
         </template>
@@ -66,15 +47,7 @@
 
       <v-tooltip location="bottom" v-if="total_yotei">
         <template #activator="{ props: tooltipProps }">
-          <div
-            v-bind="tooltipProps"
-            class="yotei leaves bar"
-            :style="{
-              width: `${yoteiPercent}%`,
-              left: `${takenPercent}%`,
-              backgroundColor: colors.leaves.yotei,
-            }"
-          >
+          <div v-bind="tooltipProps" class="yotei leaves bar">
             {{ yoteiPercent > 10 ? total_yotei : "" }}
           </div>
         </template>
@@ -185,14 +158,16 @@ const minPercent = computed(() => {
   font-size: 80%;
 }
 
-.carriedOver {
+.allocation.carriedOver {
   left: 0;
   background-color: v-bind("colors.allocations.carried_over");
+  width: v-bind(`${carriedOverPercent}%`);
 }
 
-.currentYear {
+.allocation.currentYear {
   right: 0;
   background-color: v-bind("colors.allocations.current_year_grants");
+  width: v-bind(`${100 - carriedOverPercent}%`);
 }
 
 .leaves {
@@ -208,20 +183,21 @@ const minPercent = computed(() => {
 
 .taken {
   left: 0;
-}
-
-.taken:last-child {
-  border-radius: 0.25em;
+  background-color: v-bind("colors.leaves.taken");
+  width: v-bind(`${takenPercent}%`);
 }
 
 .yotei {
-  position: absolute;
+  background-color: v-bind("colors.leaves.yotei");
+  width: v-bind(`${yoteiPercent}%`);
+  left: v-bind(`${takenPercent}%`);
 }
 
 .min {
   background-color: #ff000022;
   border: 1.5px dashed #ff0000aa;
   border-radius: 0.25em;
+  width: v-bind(`${minPercent}%`);
 }
 
 .taken,

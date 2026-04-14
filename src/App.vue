@@ -8,7 +8,7 @@
         }}</v-app-bar-title>
         <template #append>
           <LocaleSelector />
-          <!-- <ThemeToggler /> -->
+          <ThemeToggler />
           <v-btn icon="mdi-logout" @click="handleLogout" />
         </template>
       </v-app-bar>
@@ -51,7 +51,6 @@ const drawer = ref(true)
 const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
-const isAuthEnabled = computed(() => !!import.meta.env.VITE_IDENTIFICATION_URL)
 
 function handleLogout() {
   logout()
