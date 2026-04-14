@@ -1,7 +1,11 @@
 <template>
   <div class="total">
     <template v-if="allocations">
-      <v-tooltip location="top" :color="colors.allocations.carried_over">
+      <v-tooltip
+        location="top"
+        :color="colors.allocations.carried_over"
+        v-if="allocations.carried_over"
+      >
         <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
@@ -16,7 +20,11 @@
         >
       </v-tooltip>
 
-      <v-tooltip location="top" :color="colors.allocations.current_year_grants">
+      <v-tooltip
+        location="top"
+        :color="colors.allocations.current_year_grants"
+        v-if="allocations.current_year_grants"
+      >
         <template #activator="{ props: tooltipProps }">
           <div
             v-bind="tooltipProps"
@@ -60,7 +68,7 @@
               backgroundColor: colors.leaves.taken,
             }"
           >
-            {{ takenPercent > 20 ? total_taken : "" }}
+            {{ takenPercent > 10 ? total_taken : "" }}
           </div>
         </template>
         <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
@@ -81,7 +89,7 @@
               backgroundColor: colors.leaves.yotei,
             }"
           >
-            {{ yoteiPercent > 20 ? total_yotei : "" }}
+            {{ yoteiPercent > 10 ? total_yotei : "" }}
           </div>
         </template>
         <span> {{ t("Days planned this year") }}: {{ total_yotei }} </span>
@@ -199,15 +207,11 @@ const minPercent = computed(() => {
 .carriedOver {
   left: 0;
   background-color: v-bind("colors.allocations.carried_over");
-  border-top-left-radius: 0.25em;
-  border-bottom-left-radius: 0.25em;
 }
 
 .currentYear {
   right: 0;
   background-color: v-bind("colors.allocations.current_year_grants");
-  border-top-right-radius: 0.25em;
-  border-bottom-right-radius: 0.25em;
 }
 
 .leaves {
@@ -223,8 +227,6 @@ const minPercent = computed(() => {
 
 .taken {
   left: 0;
-  border-top-left-radius: 0.25em;
-  border-bottom-left-radius: 0.25em;
 }
 
 .taken:last-child {
@@ -233,14 +235,23 @@ const minPercent = computed(() => {
 
 .yotei {
   position: absolute;
-  border-top-right-radius: 0.25em;
-  border-bottom-right-radius: 0.25em;
 }
 
 .min {
   background-color: #ff000022;
   border: 1.5px dashed #ff0000aa;
   border-radius: 0.25em;
-  border-radius: 0.25em;
+}
+
+.taken,
+.bar:first-child {
+  border-top-left-radius: 0.25em;
+  border-bottom-left-radius: 0.25em;
+}
+
+.currentYear,
+.bar:last-child {
+  border-top-right-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
 }
 </style>
