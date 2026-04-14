@@ -53,5 +53,6 @@
   "No data": "データなし",
   "people count": "{n}人",
   "Max export limit": "最大: 500人",
-  "month label": "{month}月"
+  "month label": "{month}月",
+  "Register allocations": "割り当て登録"
 }

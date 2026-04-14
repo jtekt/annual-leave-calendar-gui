@@ -89,7 +89,7 @@ const total_future = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) > new Date()) {
       if (type === "有休") return total + 1
-      if (type === "前半休" || type === "後半休") return total + 0.5
+      if (["前半休", "後半休"].includes(type)) return total + 0.5
     }
     return total
   }, 0)
@@ -99,11 +99,23 @@ const total_taken = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) < new Date()) {
       if (type === "有休") return total + 1
-      if (type === "前半休" || type === "後半休") return total + 0.5
+      if (["前半休", "後半休"].includes(type)) return total + 0.5
     }
     return total
   }, 0)
 )
+
+const max = computed(() => {
+  if (props.reserve)
+    return Math.max(1, total_allocations.value, total_taken_and_future.value)
+  else
+    return Math.max(
+      1,
+      min,
+      total_allocations.value,
+      total_taken_and_future.value
+    )
+})
 
 const total_taken_and_future = computed(
   () => total_taken.value + total_future.value
@@ -111,29 +123,24 @@ const total_taken_and_future = computed(
 
 const carriedOverPercent = computed(() => {
   if (!props.allocations || !total_allocations.value) return 0
-  return (props.allocations.carried_over / total_allocations.value) * 100
+  return (props.allocations.carried_over / max.value) * 100
+})
+
+const currentYearGrantsPercent = computed(() => {
+  if (!props.allocations || !total_allocations.value) return 0
+  return (props.allocations.current_year_grants / max.value) * 100
 })
 
 const takenPercent = computed(() => {
-  let denominator = 1
-  if (total_allocations.value) denominator = total_allocations.value
-  else if (props.reserve) denominator = total_taken_and_future.value
-  else denominator = Math.max(total_taken_and_future.value, min)
-
-  return (total_taken.value / denominator) * 100
+  return (total_taken.value / max.value) * 100
 })
 
 const futurePercent = computed(() => {
-  let denominator = 1
-  if (total_allocations.value) denominator = total_allocations.value
-  else if (props.reserve) denominator = total_taken_and_future.value
-  else denominator = Math.max(total_taken_and_future.value, min)
-
-  return (total_future.value / denominator) * 100
+  return (total_future.value / max.value) * 100
 })
 
 const minPercent = computed(() => {
-  if (total_allocations.value) return (min / total_allocations.value) * 100
+  if (total_allocations.value) return (min / max.value) * 100
   else if (total_taken_and_future.value < min) return 100
   else return 0
 })
@@ -165,8 +172,8 @@ const minPercent = computed(() => {
 }
 
 .allocation.currentYear {
-  right: 0;
-  width: v-bind(`${100 - carriedOverPercent}%`);
+  left: v-bind(`${carriedOverPercent}%`);
+  width: v-bind(`${currentYearGrantsPercent}%`);
   background-color: v-bind("colors.allocations.current_year_grants");
   /* border-bottom: 5px solid v-bind("colors.allocations.current_year_grants"); */
 }
@@ -198,8 +205,10 @@ const minPercent = computed(() => {
 
 .min {
   border-radius: 0.25em;
+  left: 0;
   width: v-bind(`${minPercent}%`);
   border: 1.75px dashed #ff0000aa;
+  background-color: #ff000011;
   /* boder-top: 8px dashed #ff0000aa; */
 }
 

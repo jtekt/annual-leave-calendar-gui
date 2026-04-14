@@ -1,7 +1,7 @@
 export const colors = {
   leaves: {
     taken: "#666666",
-    future: "#888888",
+    future: "#777777",
   },
   allocations: {
     current_year_grants: "#a0d1e7",

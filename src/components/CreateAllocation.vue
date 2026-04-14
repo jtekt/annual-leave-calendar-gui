@@ -2,7 +2,7 @@
   <v-dialog v-model="dialog" max-width="30rem">
     <template v-slot:activator="{ props: dialogProps }">
       <v-btn v-bind="dialogProps" prepend-icon="mdi-plus">
-        {{ t("Create allocation") }}
+        {{ t("Register allocations") }}
       </v-btn>
     </template>
     <v-form @submit.prevent="submit">
