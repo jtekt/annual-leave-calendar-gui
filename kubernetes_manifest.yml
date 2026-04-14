@@ -32,6 +32,7 @@ spec:
           resources: {}
 
 ---
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -39,10 +40,9 @@ metadata:
 spec:
   ports:
     - port: 80
-      nodePort: 30515
   selector:
-    app: ${APPLICATION_NAME}-redirection
-  type: NodePort
+    app: ${APPLICATION_NAME}
+  type: ClusterIP
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -83,3 +83,15 @@ spec:
               value: https://leaves.jtektrnd.net
             - name: REDIRECTION_WARN
               value: "true"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${APPLICATION_NAME}-redirection
+spec:
+  ports:
+    - port: 80
+      nodePort: 30515
+  selector:
+    app: ${APPLICATION_NAME}-redirection
+  type: NodePort
