@@ -1,10 +1,11 @@
 <template>
   <v-row>
     <v-col>
-      <v-card prepend-icon="mdi-account-multiple">
+      <v-card prepend-icon="mdi-account-multiple" :loading="group_loading">
         <template #title>
           <v-card-title>
-            {{ group ? group.name : group_id }}
+            <v-progress-circular v-if="group_loading" indeterminate />
+            <span v-else> {{ group?.name || group_id }}</span>
           </v-card-title>
         </template>
         <!-- <template #subtitle>
@@ -78,18 +79,22 @@ const loading = ref(false)
 const all_loaded = ref(false)
 const sentinel = ref<HTMLDivElement | null>(null)
 let observer: IntersectionObserver | null = null
+const group_loading = ref(false)
 
-function get_group() {
+async function get_group() {
+  group_loading.value = true
   const url = `${import.meta.env.VITE_GROUP_MANAGER_API_URL}/v3/groups/${group_id.value}`
-  axios
-    .get<Group>(url)
-    .then(({ data }) => {
-      group.value = data
-    })
-    .catch((error) => {
-      if (error.response) console.error(error.response.data)
-      else console.error(error)
-    })
+
+  try {
+    const { data } = await axios.get<Group>(url)
+
+    group.value = data
+  } catch (error: unknown) {
+    console.error(error)
+    alert("Failed to query group")
+  } finally {
+    group_loading.value = false
+  }
 }
 
 function get_entries() {
