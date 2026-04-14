@@ -9,13 +9,15 @@
       }"
       :key="`month_${month}`"
     >
-      <div class="month_header">{{ t('month label', { month }) }}</div>
+      <div class="month_header">{{ t("month label", { month }) }}</div>
       <div class="entries_container">
         <router-link
           class="entry"
           :class="{ taken: passed_date(entry), refresh: entry.refresh }"
           :style="{
-            color: passed_date(entry) ? colors.leaves.taken : colors.leaves.yotei,
+            color: passed_date(entry)
+              ? colors.leaves.taken
+              : colors.leaves.yotei,
           }"
           v-for="entry in entries_of_month(month)"
           :key="entry._id"
@@ -80,6 +82,7 @@ function passed_date(entry: Entry): boolean {
 .calendar {
   display: flex;
   overflow-x: auto;
+  gap: 0.25em;
 }
 
 .month {
@@ -89,7 +92,6 @@ function passed_date(entry: Entry): boolean {
   min-height: 50px;
   border: 1px solid #aaaaaa;
   border-radius: 5px;
-  margin: 0.25em;
   padding: 0.25em;
   text-align: center;
 }
@@ -110,7 +112,6 @@ function passed_date(entry: Entry): boolean {
 .entry {
   text-decoration: none;
   font-weight: bold;
-  padding: 0.25em;
   display: inline-flex;
   align-items: flex-start;
   border: 1px solid transparent;

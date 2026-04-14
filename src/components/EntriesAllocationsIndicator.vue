@@ -11,7 +11,9 @@
             {{ allocations.carried_over }}
           </div>
         </template>
-        <span>{{ t("Carried over days") }}</span>
+        <span
+          >{{ t("Carried over days") }}: {{ allocations.carried_over }}</span
+        >
       </v-tooltip>
 
       <v-tooltip location="top" :color="colors.allocations.current_year_grants">
@@ -24,24 +26,28 @@
             {{ allocations.current_year_grants }}
           </div>
         </template>
-        <span>{{ t("Current year grants days") }}</span>
-      </v-tooltip>
-
-      <v-tooltip
-        v-if="!reserve"
-        location="bottom"
-        :color="colors.leaves.insufficient"
-      >
-        <template #activator="{ props: tooltipProps }">
-          <div
-            v-bind="tooltipProps"
-            class="min leaves bar"
-            :style="{ width: `${minPercent}%` }"
-          />
-        </template>
-        <span>{{ t("Must take this year", { n: min - total_taken - total_yotei }) }}</span>
+        <span
+          >{{ t("Current year grants days") }}:
+          {{ allocations.current_year_grants }}</span
+        >
       </v-tooltip>
     </template>
+    <v-tooltip
+      v-if="!reserve"
+      location="bottom"
+      :color="colors.leaves.insufficient"
+    >
+      <template #activator="{ props: tooltipProps }">
+        <div
+          v-bind="tooltipProps"
+          class="min leaves bar"
+          :style="{ width: `${minPercent}%` }"
+        />
+      </template>
+      <span>{{
+        t("Must take this year", { n: min - total_taken - total_yotei })
+      }}</span>
+    </v-tooltip>
 
     <template v-if="total_taken + total_yotei">
       <v-tooltip location="bottom" :color="colors.leaves.taken">
@@ -49,12 +55,15 @@
           <div
             v-bind="tooltipProps"
             class="taken leaves bar"
-            :style="{ width: `${takenPercent}%`, backgroundColor: colors.leaves.taken }"
+            :style="{
+              width: `${takenPercent}%`,
+              backgroundColor: colors.leaves.taken,
+            }"
           >
             {{ total_taken }}
           </div>
         </template>
-        <span>{{ t("Days taken this year") }}</span>
+        <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
       </v-tooltip>
 
       <v-tooltip location="bottom" :color="colors.leaves.yotei">
@@ -71,7 +80,7 @@
             {{ total_yotei }}
           </div>
         </template>
-        <span>{{ t("Days planned this year") }}</span>
+        <span>{{ t("Days planned this year") }}: {{ total_yotei }}</span>
       </v-tooltip>
     </template>
 
@@ -79,7 +88,8 @@
       v-if="
         allocations?.current_year_grants === undefined &&
         !allocations?.carried_over &&
-        !entries.length
+        !entries.length &&
+        reserve
       "
     >
       {{ t("No data") }}
@@ -133,8 +143,11 @@ const carriedOverPercent = computed(() => {
 })
 
 const takenPercent = computed(() => {
-  if (!props.allocations?.current_year_grants && !props.allocations?.carried_over) {
-    const denom = total_yotei.value + total_taken.value
+  if (
+    !props.allocations?.current_year_grants &&
+    !props.allocations?.carried_over
+  ) {
+    const denom = Math.max(total_yotei.value + total_taken.value, min)
     return denom ? (total_taken.value / denom) * 100 : 0
   }
   return total_allocations.value
@@ -143,7 +156,10 @@ const takenPercent = computed(() => {
 })
 
 const yoteiPercent = computed(() => {
-  if (!props.allocations?.current_year_grants && !props.allocations?.carried_over) {
+  if (
+    !props.allocations?.current_year_grants &&
+    !props.allocations?.carried_over
+  ) {
     const denom = total_yotei.value + total_taken.value
     return denom ? (total_yotei.value / denom) * 100 : 0
   }
@@ -152,9 +168,12 @@ const yoteiPercent = computed(() => {
     : 0
 })
 
-const minPercent = computed(() =>
-  total_allocations.value ? (min / total_allocations.value) * 100 : 0
-)
+const minPercent = computed(() => {
+  if (total_allocations.value) return (min / total_allocations.value) * 100
+  else if (total_yotei.value + total_taken.value < min) {
+    return 100
+  } else return 0
+})
 </script>
 
 <style scoped>
@@ -162,6 +181,7 @@ const minPercent = computed(() =>
   position: relative;
   height: 3em;
   text-align: center;
+  font-size: 80%;
 }
 
 .bar {
@@ -173,35 +193,45 @@ const minPercent = computed(() =>
   top: 0;
   bottom: 0;
   overflow: hidden;
+  font-size: 80%;
 }
 
 .carriedOver {
   left: 0;
   background-color: v-bind("colors.allocations.carried_over");
+  border-top-left-radius: 0.5em;
+  border-bottom-left-radius: 0.5em;
 }
 
 .currentYear {
   right: 0;
   background-color: v-bind("colors.allocations.current_year_grants");
+  border-top-right-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
 }
 
 .leaves {
   position: absolute;
-  top: 50%;
-  bottom: 0;
+  top: 40%;
+  bottom: 10%;
   overflow: hidden;
 }
 
 .taken {
   left: 0;
+  border-top-left-radius: 0.25em;
+  border-bottom-left-radius: 0.25em;
 }
 
 .yotei {
   position: absolute;
+  border-top-right-radius: 0.25em;
+  border-bottom-right-radius: 0.25em;
 }
 
 .min {
   background-color: #ff000099;
-  border-right: 2px solid v-bind("colors.leaves.insufficient");
+  border-radius: 0.25em;
+  border-radius: 0.25em;
 }
 </style>

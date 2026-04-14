@@ -30,11 +30,8 @@ export interface Allocations {
 }
 
 export interface Group {
+  name: string
   _id?: string
-  properties: {
-    name: string
-    _id?: string
-  }
 }
 
 export interface GroupItem {

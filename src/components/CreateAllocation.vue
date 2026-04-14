@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="dialog" max-width="30rem">
     <template v-slot:activator="{ props: dialogProps }">
-      <v-btn v-bind="dialogProps" color="primary" prepend-icon="mdi-plus">
+      <v-btn v-bind="dialogProps" prepend-icon="mdi-plus">
         {{ t("Create allocation") }}
       </v-btn>
     </template>
@@ -63,7 +63,9 @@
           <v-btn variant="text" color="primary" type="submit">
             {{ t("Create allocation") }}
           </v-btn>
-          <v-btn variant="text" @click="dialog = false">{{ t("Cancel") }}</v-btn>
+          <v-btn variant="text" @click="dialog = false">{{
+            t("Cancel")
+          }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-form>

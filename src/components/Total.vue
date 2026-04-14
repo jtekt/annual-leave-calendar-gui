@@ -1,17 +1,15 @@
 <template>
   <div class="total_indicator">
-    <v-row align="center" dense justify="space-around">
-      <v-col cols="auto">{{ t("Leaves short") }}</v-col>
-      <v-col cols="auto">{{ t("Reserve short") }}</v-col>
-    </v-row>
     <v-row dense align="center">
       <v-col>
+        <div class="legend">{{ t("Leaves short") }}</div>
         <EntriesAllocationsIndicator
           :entries="leaves"
           :allocations="allocations?.leaves"
         />
       </v-col>
       <v-col>
+        <div class="legend">{{ t("Reserve short") }}</div>
         <EntriesAllocationsIndicator
           :reserve="true"
           :entries="reserve"
@@ -49,5 +47,10 @@ const reserve = computed(() => props.entries.filter((e) => e.reserve))
   position: relative;
   height: 3em;
   color: white;
+}
+.legend {
+  font-size: 80%;
+  opacity: 80%;
+  text-align: center;
 }
 </style>

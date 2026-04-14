@@ -13,47 +13,51 @@
           </v-btn>
         </span>
       </template>
-      <span>{{ t('Max export limit') }}</span>
+      <span>{{ t("Max export limit") }}</span>
     </v-tooltip>
 
     <table id="export_table">
-      <tr>
-        <th>No</th>
-        <th>名前</th>
-        <th>1-6月r</th>
-        <th>7-12月r</th>
-        <template v-for="month in 12" :key="`header_${month}`">
-          <th>{{ month }}月</th>
-          <th v-if="month === 5 || month === 8">5日以上</th>
-        </template>
-      </tr>
-      <template v-for="(item, index) in items" :key="`user_${index}`">
+      <thead>
         <tr>
-          <td>{{ index + 1 }}</td>
-          <td>{{ item.user.display_name }}</td>
-          <td>
-            {{
-              refresh_entries_first_semester(item)
-                .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
-                .join(", ")
-            }}
-          </td>
-          <td>
-            {{
-              refresh_entries_second_semester(item)
-                .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
-                .join(", ")
-            }}
-          </td>
-          <template v-for="month in 12" :key="`user_${index}_month_${month}`">
-            <td>
-              {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
-            </td>
-            <td v-if="month === 5">{{ five_days_taken(item, month) }}</td>
-            <td v-if="month === 8">{{ five_days_taken(item, month) }}</td>
+          <th>No</th>
+          <th>名前</th>
+          <th>1-6月r</th>
+          <th>7-12月r</th>
+          <template v-for="month in 12" :key="`header_${month}`">
+            <th>{{ month }}月</th>
+            <th v-if="month === 5 || month === 8">5日以上</th>
           </template>
         </tr>
-      </template>
+      </thead>
+      <tbody>
+        <template v-for="(item, index) in items" :key="`user_${index}`">
+          <tr>
+            <td>{{ index + 1 }}</td>
+            <td>{{ item.user.display_name }}</td>
+            <td>
+              {{
+                refresh_entries_first_semester(item)
+                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
+                  .join(", ")
+              }}
+            </td>
+            <td>
+              {{
+                refresh_entries_second_semester(item)
+                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
+                  .join(", ")
+              }}
+            </td>
+            <template v-for="month in 12" :key="`user_${index}_month_${month}`">
+              <td>
+                {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
+              </td>
+              <td v-if="month === 5">{{ five_days_taken(item, month) }}</td>
+              <td v-if="month === 8">{{ five_days_taken(item, month) }}</td>
+            </template>
+          </tr>
+        </template>
+      </tbody>
     </table>
   </div>
 </template>

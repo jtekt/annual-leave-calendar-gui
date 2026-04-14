@@ -4,10 +4,18 @@
       <v-progress-circular indeterminate></v-progress-circular>
     </v-col>
   </v-row>
-  <v-card v-else prepend-icon="mdi-account">
-    <template v-slot:title> {{ user?.display_name || user_id }} </template>
 
-    <template v-slot:append>
+  <template v-else>
+    <v-toolbar class="mb-6" elevation="3">
+      <template v-if="current_user_id === user_id || user_id === 'self'">
+        <v-btn :to="{ name: 'new_entry' }" prepend-icon="mdi-calendar-plus">
+          {{ t("Create entry") }}
+        </v-btn>
+        <CreateAllocation :user_id="user?._id" :year="year" />
+      </template>
+
+      <v-spacer></v-spacer>
+
       <v-select
         :items="yearItems"
         v-model="year"
@@ -15,31 +23,18 @@
         hide-details
         variant="outlined"
         density="compact"
+        max-width="150px"
         class="mr-2"
       />
-      <v-btn
-        v-if="current_user_id === user_id || user_id === 'self'"
-        :to="{ name: 'new_entry' }"
-        color="primary"
-        prepend-icon="mdi-plus"
-      >
-        {{ t("Create entry") }}
-      </v-btn>
-    </template>
+    </v-toolbar>
 
-    <v-divider />
-
-    <v-card-text>
-      <v-row>
-        <v-spacer />
-        <v-col cols="6">
-          <Total :entries="entries" :allocations="allocations" />
-        </v-col>
-      </v-row>
-
-      <Calendar :entries="entries" />
-    </v-card-text>
-  </v-card>
+    <UserCard
+      :user="user"
+      :entries="entries"
+      :allocations="allocations"
+      v-if="user"
+    />
+  </template>
 </template>
 
 <script setup lang="ts">
@@ -48,9 +43,10 @@ import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 import { useIdUtils } from "@/composables/useIdUtils"
-import Calendar from "@/components/Calendar.vue"
-import Total from "@/components/Total.vue"
+
 import type { User, Entry, Allocations } from "@/types"
+import UserCard from "@/components/UserCard.vue"
+import CreateAllocation from "@/components/CreateAllocation.vue"
 
 const { t } = useI18n()
 const route = useRoute()

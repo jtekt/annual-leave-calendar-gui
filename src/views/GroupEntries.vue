@@ -1,51 +1,55 @@
 <template>
-  <v-card prepend-icon="mdi-account-multiple">
-    <template #title>
-      {{
-        group
-          ? `${group.properties.name} (${t("people count", { n: total })})`
-          : group_id
-      }}
-    </template>
-    <template #append>
-      <v-select
-        :items="yearItems"
-        v-model="year"
-        :label="t('Year')"
-        hide-details
-        variant="outlined"
-        density="compact"
-        class="mr-2"
-      />
-      <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
-    </template>
-    <v-divider />
+  <v-toolbar class="mb-6" elevation="3">
+    <v-toolbar-title>
+      {{ group ? group.name : group_id }}
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
+    <v-select
+      :items="yearItems"
+      v-model="year"
+      :label="t('Year')"
+      hide-details
+      variant="outlined"
+      density="compact"
+      class="mr-2"
+      max-width="150px"
+    />
+    <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
+  </v-toolbar>
 
-    <v-card-text>
-      <div
-        class="user_calendar_wrapper"
-        v-for="(item, index) in items"
-        :key="`user_${index}`"
-      >
-        <v-row>
-          <v-col>
-            <User :user="item.user" />
-          </v-col>
-          <v-col>
-            <Total :entries="item.entries" :allocations="item.allocations" />
-          </v-col>
-        </v-row>
-        <Calendar :entries="item.entries" />
-      </div>
-
-      <div ref="sentinel" style="height: 1px" />
-      <v-progress-circular
-        v-if="loading"
-        indeterminate
-        class="d-block mx-auto my-4"
+  <v-row v-for="(item, index) in items" :key="`user_${index}`">
+    <v-col>
+      <!-- <v-card>
+        <v-card-text>
+          <v-row>
+            <v-col>
+              <User :user="item.user" />
+            </v-col>
+            <v-col>
+              <Total :entries="item.entries" :allocations="item.allocations" />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <Calendar :entries="item.entries" />
+            </v-col>
+          </v-row>
+        </v-card-text>
+      </v-card> -->
+      <UserCard
+        :user="item.user"
+        :entries="item.entries"
+        :allocations="item.allocations"
       />
-    </v-card-text>
-  </v-card>
+    </v-col>
+  </v-row>
+
+  <div ref="sentinel" style="height: 1px" />
+  <v-progress-circular
+    v-if="loading"
+    indeterminate
+    class="d-block mx-auto my-4"
+  />
 </template>
 
 <script setup lang="ts">
@@ -58,6 +62,7 @@ import User from "@/components/User.vue"
 import Total from "@/components/Total.vue"
 import ExcelExportButton from "@/components/ExcelExportButton.vue"
 import type { Group, GroupItem } from "@/types"
+import UserCard from "@/components/UserCard.vue"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -82,7 +87,7 @@ const sentinel = ref<HTMLDivElement | null>(null)
 let observer: IntersectionObserver | null = null
 
 function get_group() {
-  const url = `${import.meta.env.VITE_GROUP_MANAGER_API_URL}/groups/${group_id.value}`
+  const url = `${import.meta.env.VITE_GROUP_MANAGER_API_URL}/v3/groups/${group_id.value}`
   axios
     .get<Group>(url)
     .then(({ data }) => {

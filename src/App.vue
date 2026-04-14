@@ -3,7 +3,9 @@
     <template v-if="!isLoginRoute">
       <v-app-bar :color="colors.app_bar">
         <v-app-bar-nav-icon @click="drawer = !drawer" />
-        <v-app-bar-title class="text-white">{{ t("App title") }}</v-app-bar-title>
+        <v-app-bar-title class="text-white">{{
+          t("App title")
+        }}</v-app-bar-title>
         <template #append>
           <LocaleSelector />
           <ThemeToggle />
@@ -22,7 +24,6 @@
             exact
           />
         </v-list>
-
       </v-navigation-drawer>
     </template>
 
@@ -61,18 +62,18 @@ const nav = computed(() => [
   {
     title: t("Create entry"),
     to: { name: "new_entry" },
-    icon: "mdi-plus",
+    icon: "mdi-calendar-plus",
   },
   {
     title: t("My entries"),
     to: { name: "user_entries", params: { id: "self" } },
     icon: "mdi-account",
   },
-  {
-    title: t("My allocations"),
-    to: { name: "user_allocations", params: { id: "self" } },
-    icon: "mdi-account",
-  },
+  // {
+  //   title: t("My allocations"),
+  //   to: { name: "user_allocations", params: { id: "self" } },
+  //   icon: "mdi-account",
+  // },
   {
     title: t("Groups"),
     to: { name: "groups" },
