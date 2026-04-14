@@ -67,7 +67,7 @@
     <v-row>
       <v-col>
         <UserCard
-          :user="null"
+          :user="user"
           :entries="entries"
           :allocations="allocations"
           v-if="user"
