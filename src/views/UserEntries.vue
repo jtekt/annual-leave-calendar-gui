@@ -38,7 +38,12 @@
                 </v-btn>
               </v-col>
               <v-col cols="auto">
-                <CreateAllocation :user_id="user?._id" :year="year" />
+                <CreateAllocation
+                  :user_id="user?._id"
+                  :year="year"
+                  :exist="allocations"
+                  @createAllocation="get_entries"
+                />
               </v-col>
             </v-row>
           </v-card-actions>

@@ -14,6 +14,7 @@
       <CreateAllocation
         :user_id="user_id"
         :year="year"
+        :exist="allocations"
         @createAllocation="get_allocations"
       />
     </template>
@@ -58,7 +59,10 @@ const route = useRoute()
 const router = useRouter()
 
 const user_id = computed(() => String(route.params.id))
-const yearItems = Array.from({ length: 10 }, (_, i) => new Date().getFullYear() + i - 5)
+const yearItems = Array.from(
+  { length: 10 },
+  (_, i) => new Date().getFullYear() + i - 5
+)
 const year = computed({
   get: () => Number(route.query.year) || new Date().getFullYear(),
   set: (val) => router.replace({ query: { ...route.query, year: val } }),

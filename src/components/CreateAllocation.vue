@@ -73,14 +73,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue"
+import { watch, ref } from "vue"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
-import type { AllocationData } from "@/types"
+import type { AllocationData, Allocations } from "@/types"
 
 const props = defineProps<{
   user_id: string
   year: number
+  exist?: Allocations | null
 }>()
 
 const emit = defineEmits<{
@@ -93,6 +94,16 @@ const loading = ref(false)
 
 const leaves = ref<AllocationData>({ carried_over: 0, current_year_grants: 0 })
 const reserve = ref<AllocationData>({ carried_over: 0, current_year_grants: 0 })
+watch(dialog, (open) => {
+  if (open && props.exist) {
+    leaves.value = { ...props.exist.leaves }
+    reserve.value = { ...props.exist.reserve }
+  }
+  if (open && !props.exist) {
+    leaves.value = { carried_over: 0, current_year_grants: 0 }
+    reserve.value = { carried_over: 0, current_year_grants: 0 }
+  }
+})
 
 function submit() {
   loading.value = true
