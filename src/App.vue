@@ -69,7 +69,7 @@ const nav = computed(() => [
     icon: "mdi-account",
   },
   {
-    title: t("My allocations"),
+    title: t("Register allocations"),
     to: { name: "user_allocations", params: { id: "self" } },
     icon: "mdi-calendar",
   },

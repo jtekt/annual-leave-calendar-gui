@@ -21,34 +21,50 @@
     <v-divider />
 
     <v-card-text>
-      <v-table>
-        <thead>
-          <tr>
-            <th>{{ t("Type") }}</th>
-            <th>{{ t("Carried over") }}</th>
-            <th>{{ t("Current year grants") }}</th>
-          </tr>
-        </thead>
-        <tbody v-if="allocations">
-          <tr>
-            <td>{{ t("Leaves") }}</td>
-            <td>{{ allocations?.leaves?.carried_over }}</td>
-            <td>{{ allocations?.leaves?.current_year_grants }}</td>
-          </tr>
-          <tr>
-            <td>{{ t("Reserve") }}</td>
-            <td>{{ allocations?.reserve?.carried_over }}</td>
-            <td>{{ allocations?.reserve?.current_year_grants }}</td>
-          </tr>
-        </tbody>
-        <tbody v-else>
-          <tr>
-            <td colspan="3" class="text-center">
-              {{ t("No Allocations") }}
-            </td>
-          </tr>
-        </tbody>
-      </v-table>
+      <div v-if="allocations" class="mx-auto">
+        <v-row class="text-subtitle-2 font-weight-bold pb-3">
+          <v-col cols="4">
+            {{ t("Type") }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ t("Carried over") }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ t("Current year grants") }}
+          </v-col>
+        </v-row>
+
+        <v-divider />
+
+        <v-row class="py-3 align-center">
+          <v-col cols="4" class="font-weight-medium">
+            {{ t("Leaves") }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ allocations.leaves.carried_over }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ allocations.leaves.current_year_grants }}
+          </v-col>
+        </v-row>
+
+        <v-divider />
+
+        <v-row class="py-3 align-center">
+          <v-col cols="4" class="font-weight-medium">
+            {{ t("Reserve") }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ allocations.reserve.carried_over }}
+          </v-col>
+          <v-col cols="4" class="text-center">
+            {{ allocations.reserve.current_year_grants }}
+          </v-col>
+        </v-row>
+      </div>
+      <div v-else class="text-center py-8 text-medium-emphasis">
+        {{ t("No Allocations") }}
+      </div>
     </v-card-text>
   </v-card>
 </template>
@@ -79,47 +95,49 @@ const allocations_loading = ref(false)
 const user = ref<User | null>(null)
 const allocations = ref<Allocations | null>(null)
 
-function get_user(id: string) {
-  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
-  axios
-    .get<User>(url)
-    .then(({ data }) => {
-      user.value = data
-    })
-    .catch((error) => console.error(error))
+async function get_user() {
+  try {
+    const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id.value}`
+    const { data } = await axios.get<User>(url)
+    user.value = data
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-function get_allocations() {
-  console.log(year.value)
+async function get_allocations() {
   allocations_loading.value = true
-  const params = { year: year.value }
-  axios
-    .get<Array<Allocations>>(`/v1/users/${user_id.value}/allocations`, {
-      params,
-    })
-    .then(({ data }) => {
-      if (data.length > 0) {
-        allocations.value = {
-          leaves: data[0].leaves,
-          reserve: data[0].reserve,
-        }
-      } else {
-        allocations.value = null
+  try {
+    const params = { year: year.value }
+
+    const { data } = await axios.get<Array<Allocations>>(
+      `/v1/users/${user_id.value}/allocations`,
+      { params }
+    )
+    if (data.length > 0) {
+      allocations.value = {
+        leaves: data[0].leaves,
+        reserve: data[0].reserve,
       }
-    })
-    .catch((error) => console.error(error))
-    .finally(() => (allocations_loading.value = false))
+    } else {
+      allocations.value = null
+    }
+  } catch (error) {
+    console.error(error)
+  } finally {
+    allocations_loading.value = false
+  }
 }
 
 watch(user_id, (id) => {
   get_allocations()
-  get_user(id)
+  get_user()
 })
 
 watch(year, () => get_allocations())
 
 onMounted(() => {
   get_allocations()
-  get_user(user_id.value)
+  get_user()
 })
 </script>
