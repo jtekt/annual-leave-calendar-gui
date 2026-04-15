@@ -68,11 +68,11 @@ const nav = computed(() => [
     to: { name: "user_entries", params: { id: "self" } },
     icon: "mdi-account",
   },
-  // {
-  //   title: t("My allocations"),
-  //   to: { name: "user_allocations", params: { id: "self" } },
-  //   icon: "mdi-account",
-  // },
+  {
+    title: t("My allocations"),
+    to: { name: "user_allocations", params: { id: "self" } },
+    icon: "mdi-calendar",
+  },
   {
     title: t("Groups"),
     to: { name: "groups" },

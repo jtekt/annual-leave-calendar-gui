@@ -29,7 +29,7 @@
             <th>{{ t("Current year grants") }}</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody v-if="allocations">
           <tr>
             <td>{{ t("Leaves") }}</td>
             <td>{{ allocations?.leaves?.carried_over }}</td>
@@ -39,6 +39,13 @@
             <td>{{ t("Reserve") }}</td>
             <td>{{ allocations?.reserve?.carried_over }}</td>
             <td>{{ allocations?.reserve?.current_year_grants }}</td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr>
+            <td colspan="3" class="text-center">
+              {{ t("No Allocations") }}
+            </td>
           </tr>
         </tbody>
       </v-table>
@@ -83,6 +90,7 @@ function get_user(id: string) {
 }
 
 function get_allocations() {
+  console.log(year.value)
   allocations_loading.value = true
   const params = { year: year.value }
   axios
@@ -90,9 +98,13 @@ function get_allocations() {
       params,
     })
     .then(({ data }) => {
-      allocations.value = {
-        leaves: data[0].leaves,
-        reserve: data[0].reserve,
+      if (data.length > 0) {
+        allocations.value = {
+          leaves: data[0].leaves,
+          reserve: data[0].reserve,
+        }
+      } else {
+        allocations.value = null
       }
     })
     .catch((error) => console.error(error))

@@ -55,5 +55,6 @@
   "Max export limit": "Max: 500 people",
   "month label": "{month}",
   "Register allocation": "Register allocations",
-  "Register allocations": "Register allocations"
+  "Register allocations": "Register allocations",
+  "No Allocations": "No Allocations"
 }
