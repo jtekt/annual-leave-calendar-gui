@@ -99,10 +99,6 @@ watch(dialog, (open) => {
     leaves.value = { ...props.exist.leaves }
     reserve.value = { ...props.exist.reserve }
   }
-  if (open && !props.exist) {
-    leaves.value = { carried_over: 0, current_year_grants: 0 }
-    reserve.value = { carried_over: 0, current_year_grants: 0 }
-  }
 })
 
 function submit() {
