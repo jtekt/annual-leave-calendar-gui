@@ -1,5 +1,5 @@
 <template>
-  <div class="total_indicator">
+  <v-card variant="outlined" class="px-2 py-1">
     <v-row dense align="center">
       <v-col>
         <div class="legend">{{ t("Leaves short") }}</div>
@@ -17,7 +17,7 @@
         />
       </v-col>
     </v-row>
-  </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">

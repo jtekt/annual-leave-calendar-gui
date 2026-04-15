@@ -1,38 +1,40 @@
 <template>
-  <div class="calendar">
-    <div
-      class="month"
-      v-for="month in 12"
-      :class="{
-        ellapsed: current_month > month || current_year > year,
-        current: current_month === month && current_year === year,
-      }"
-      :key="`month_${month}`"
-    >
-      <div class="month_header">{{ t("month label", { month }) }}</div>
-      <div class="entries_container">
-        <router-link
-          class="entry"
-          :class="{ taken: passed_date(entry), refresh: entry.refresh }"
-          v-for="entry in entries_of_month(month)"
-          :key="entry._id"
-          :to="{ name: 'entry', params: { id: entry._id } }"
-        >
-          {{ day_of_entry(entry) }}
-          <span
-            class="half_indicator"
-            v-if="(entry.am && !entry.pm) || entry.type === '前半休'"
-            >am</span
+  <v-row dense>
+    <v-col v-for="month in 12" :key="`month_${month}`" cols="2" sm="1">
+      <v-card
+        variant="outlined"
+        class="month"
+        height="100%"
+        :class="{
+          ellapsed: current_month > month || current_year > year,
+          current: current_month === month && current_year === year,
+        }"
+      >
+        <div class="month_header">{{ t("month label", { month }) }}</div>
+        <div class="entries_container">
+          <router-link
+            class="entry"
+            :class="{ taken: passed_date(entry), refresh: entry.refresh }"
+            v-for="entry in entries_of_month(month)"
+            :key="entry._id"
+            :to="{ name: 'entry', params: { id: entry._id } }"
           >
-          <span
-            class="half_indicator"
-            v-if="(entry.pm && !entry.am) || entry.type === '後半休'"
-            >pm</span
-          >
-        </router-link>
-      </div>
-    </div>
-  </div>
+            {{ day_of_entry(entry) }}
+            <span
+              class="half_indicator"
+              v-if="(entry.am && !entry.pm) || entry.type === '前半休'"
+              >am</span
+            >
+            <span
+              class="half_indicator"
+              v-if="(entry.pm && !entry.am) || entry.type === '後半休'"
+              >pm</span
+            >
+          </router-link>
+        </div>
+      </v-card>
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -74,19 +76,8 @@ function passed_date(entry: Entry): boolean {
 </script>
 
 <style scoped>
-.calendar {
-  display: flex;
-  overflow-x: auto;
-  gap: 0.25em;
-}
-
 .month {
-  flex-grow: 1;
-  flex-shrink: 0;
-  flex-basis: 50px;
-  min-height: 50px;
-  border: 1px solid #aaaaaa;
-  border-radius: 5px;
+  min-height: 3em;
   padding: 0.25em;
   text-align: center;
 }
@@ -120,7 +111,7 @@ function passed_date(entry: Entry): boolean {
 }
 .entry:not(.taken) {
   /* color: v-bind(colors.leaves.future); */
-  opacity: 75%;
+  opacity: 50%;
 }
 
 .month_header {
