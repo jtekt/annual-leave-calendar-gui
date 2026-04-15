@@ -1,75 +1,68 @@
 <template>
-  <v-dialog v-model="dialog" max-width="30rem">
-    <template v-slot:activator="{ props: dialogProps }">
-      <v-btn v-bind="dialogProps" prepend-icon="mdi-plus">
-        {{ t("Register allocations") }}
-      </v-btn>
-    </template>
-    <v-form @submit.prevent="submit">
-      <v-card>
-        <v-card-title>{{ t("Create allocation") }}</v-card-title>
-        <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :label="t('Leaves')"
-                type="number"
-                min="0"
-                step="0.5"
-                v-model.number="leaves.carried_over"
-                :hint="t('Carried over')"
-                persistent-hint
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                :label="t('Leaves')"
-                type="number"
-                min="0"
-                step="0.5"
-                v-model.number="leaves.current_year_grants"
-                :hint="t('Current year grants')"
-                persistent-hint
-              />
-            </v-col>
-          </v-row>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :label="t('Reserve')"
-                type="number"
-                min="0"
-                step="0.5"
-                v-model.number="reserve.carried_over"
-                :hint="t('Carried over')"
-                persistent-hint
-              />
-            </v-col>
-            <v-col>
-              <v-text-field
-                :label="t('Reserve')"
-                type="number"
-                min="0"
-                step="0.5"
-                v-model.number="reserve.current_year_grants"
-                :hint="t('Current year grants')"
-                persistent-hint
-              />
-            </v-col>
-          </v-row>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn variant="text" color="primary" type="submit">
-            {{ t("Create allocation") }}
-          </v-btn>
-          <v-btn variant="text" @click="dialog = false">{{
-            t("Cancel")
-          }}</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-form>
-  </v-dialog>
+  <v-form @submit.prevent="submit">
+    <v-card elevation="0" class="pa-4">
+      <v-card-text>
+        <v-row>
+          <v-col>
+            <v-text-field
+              :label="t('Leaves')"
+              type="number"
+              min="0"
+              step="0.5"
+              v-model.number="leaves.carried_over"
+              :hint="t('Carried over')"
+              persistent-hint
+            />
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              :label="t('Leaves')"
+              type="number"
+              min="0"
+              step="0.5"
+              v-model.number="leaves.current_year_grants"
+              :hint="t('Current year grants')"
+              persistent-hint
+            />
+          </v-col>
+        </v-row>
+
+        <v-row>
+          <v-col>
+            <v-text-field
+              :label="t('Reserve')"
+              type="number"
+              min="0"
+              step="0.5"
+              v-model.number="reserve.carried_over"
+              :hint="t('Carried over')"
+              persistent-hint
+            />
+          </v-col>
+
+          <v-col>
+            <v-text-field
+              :label="t('Reserve')"
+              type="number"
+              min="0"
+              step="0.5"
+              v-model.number="reserve.current_year_grants"
+              :hint="t('Current year grants')"
+              persistent-hint
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+
+      <v-card-actions class="mt-6">
+        <v-spacer />
+        <v-btn variant="flat" color="primary" type="submit">
+          {{ t("Create allocation") }}
+        </v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-form>
 </template>
 
 <script setup lang="ts">
@@ -89,21 +82,24 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const dialog = ref(false)
 const loading = ref(false)
 
 const leaves = ref<AllocationData>({ carried_over: 0, current_year_grants: 0 })
 const reserve = ref<AllocationData>({ carried_over: 0, current_year_grants: 0 })
-watch(dialog, (open) => {
-  if (open && props.exist) {
-    leaves.value = { ...props.exist.leaves }
-    reserve.value = { ...props.exist.reserve }
-  }
-  if (open && !props.exist) {
-    leaves.value = { carried_over: 0, current_year_grants: 0 }
-    reserve.value = { carried_over: 0, current_year_grants: 0 }
-  }
-})
+
+watch(
+  () => props.exist,
+  (val) => {
+    if (val) {
+      leaves.value = { ...val.leaves }
+      reserve.value = { ...val.reserve }
+    } else {
+      leaves.value = { carried_over: 0, current_year_grants: 0 }
+      reserve.value = { carried_over: 0, current_year_grants: 0 }
+    }
+  },
+  { immediate: true }
+)
 
 function submit() {
   loading.value = true
@@ -118,12 +114,6 @@ function submit() {
     .catch((error) => {
       console.error(error)
       alert(t("Error while creating allocation"))
-    })
-    .finally(() => {
-      loading.value = false
-      leaves.value = { carried_over: 0, current_year_grants: 0 }
-      reserve.value = { carried_over: 0, current_year_grants: 0 }
-      dialog.value = false
     })
 }
 </script>

@@ -1,72 +1,36 @@
 <template>
-  <v-card :loading="allocations_loading" prepend-icon="mdi-account">
-    <template #title>{{ user?.display_name || user_id }}</template>
-    <template #append>
-      <v-select
-        :items="yearItems"
-        v-model="year"
-        :label="t('Year')"
-        hide-details
-        variant="outlined"
-        density="compact"
-        class="mr-2"
-      />
-      <CreateAllocation
-        :user_id="user_id"
-        :year="year"
-        :exist="allocations"
-        @createAllocation="get_allocations"
-      />
-    </template>
-    <v-divider />
+  <v-container class="py-8" max-width="900">
+    <v-card class="mx-auto">
+      <v-card-title class="d-flex align-center text-h5 font-weight-bold">
+        <v-icon icon="mdi-calendar-check" class="mr-3" size="28" />
+        {{ t("Register allocations") }}
+      </v-card-title>
 
-    <v-card-text>
-      <div v-if="allocations" class="mx-auto">
-        <v-row class="text-subtitle-2 font-weight-bold pb-3">
-          <v-col cols="4">
-            {{ t("Type") }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ t("Carried over") }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ t("Current year grants") }}
+      <v-divider />
+
+      <v-card-text>
+        <v-row>
+          <v-col cols="12">
+            <div style="max-width: 260px; margin-left: 65%; margin-top: 4%">
+              <v-select
+                :items="yearItems"
+                v-model="year"
+                :label="t('Year')"
+                variant="outlined"
+                density="comfortable"
+              />
+            </div>
           </v-col>
         </v-row>
-
-        <v-divider />
-
-        <v-row class="py-3 align-center">
-          <v-col cols="4" class="font-weight-medium">
-            {{ t("Leaves") }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ allocations.leaves.carried_over }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ allocations.leaves.current_year_grants }}
-          </v-col>
-        </v-row>
-
-        <v-divider />
-
-        <v-row class="py-3 align-center">
-          <v-col cols="4" class="font-weight-medium">
-            {{ t("Reserve") }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ allocations.reserve.carried_over }}
-          </v-col>
-          <v-col cols="4" class="text-center">
-            {{ allocations.reserve.current_year_grants }}
-          </v-col>
-        </v-row>
-      </div>
-      <div v-else class="text-center py-8 text-medium-emphasis">
-        {{ t("No Allocations") }}
-      </div>
-    </v-card-text>
-  </v-card>
+        <CreateAllocation
+          :user_id="user_id"
+          :year="year"
+          :exist="allocations"
+          @createAllocation="get_allocations"
+        />
+      </v-card-text>
+    </v-card>
+  </v-container>
 </template>
 
 <script setup lang="ts">
