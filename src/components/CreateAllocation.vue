@@ -60,6 +60,18 @@
         <v-btn variant="flat" color="primary" type="submit">
           {{ t("Create allocation") }}
         </v-btn>
+        <v-btn
+          variant="flat"
+          color="primary"
+          class="mr-4"
+          :to="{
+            name: 'user_entries',
+            params: { id: user_id },
+            query: { year },
+          }"
+        >
+          {{ t("My entries") }}
+        </v-btn>
       </v-card-actions>
     </v-card>
   </v-form>
