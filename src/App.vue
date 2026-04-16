@@ -79,6 +79,11 @@ const nav = computed(() => [
     icon: "mdi-account-multiple",
   },
   {
+    title: t("User search"),
+    to: { name: "user_search" },
+    icon: "mdi-account-search",
+  },
+  {
     title: t("About"),
     to: { name: "about" },
     icon: "mdi-information-outline",
