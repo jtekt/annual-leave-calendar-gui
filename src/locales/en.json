@@ -57,5 +57,11 @@
   "Register allocation": "Register allocations",
   "Register allocations": "Register allocations",
   "Allocations": "Allocations",
-  "Error while getting allocation": "Error while getting allocation"
+  "Error while getting allocation": "Error while getting allocation",
+  "User search": "User search",
+  "Employee number": "Employee number",
+  "Name": "Name",
+  "Role": "Role",
+  "E-mail": "E-mail",
+  "Search": "Search"
 }

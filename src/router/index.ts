@@ -51,6 +51,11 @@ const routes = [
     name: "user_allocations",
     component: () => import("../views/Allocations.vue"),
   },
+  {
+    path: "/users/search",
+    name: "user_search",
+    component: () => import("../views/UserSearch.vue"),
+  },
 ]
 
 const router = createRouter({
