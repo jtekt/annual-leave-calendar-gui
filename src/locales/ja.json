@@ -55,5 +55,6 @@
   "Max export limit": "最大: 500人",
   "month label": "{month}月",
   "Register allocations": "割り当て登録",
+  "Error while getting allocation": "割り当ての取得中にエラーが発生しました",
   "Allocations": "割り当て"
 }
