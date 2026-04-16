@@ -77,7 +77,6 @@ import { useIdUtils } from "@/composables/useIdUtils"
 
 import type { User, Entry, Allocations } from "@/types"
 import UserCard from "@/components/UserCard.vue"
-import CreateAllocation from "@/components/CreateAllocation.vue"
 
 const { t } = useI18n()
 const route = useRoute()

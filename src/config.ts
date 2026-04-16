@@ -4,7 +4,7 @@ export const colors = {
     future: "#888888",
   },
   allocations: {
-    current_year_grants: "#a0d1e7",
-    carried_over: "#6fb6da",
+    current_year_grants: "#539dcf",
+    carried_over: "#5877c5",
   },
 }
