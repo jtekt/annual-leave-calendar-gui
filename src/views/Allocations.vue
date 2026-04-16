@@ -75,7 +75,7 @@
       <v-card-actions>
         <v-spacer />
         <v-btn variant="flat" color="primary" type="submit">
-          {{ t("Create allocation") }}
+          {{ t("Register allocations") }}
         </v-btn>
       </v-card-actions>
     </v-form>
