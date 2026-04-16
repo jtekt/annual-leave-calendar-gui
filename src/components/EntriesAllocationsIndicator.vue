@@ -24,8 +24,10 @@
     <div>
       <template v-if="total_allocations">
         <div class="text-h6">{{ t("Allocations") }}</div>
-        <div>{{ t("Carried over days") }}: {{ allocations.carried_over }}</div>
-        <div>
+        <div :style="{ color: colors.allocations.carried_over }">
+          {{ t("Carried over days") }}: {{ allocations.carried_over }}
+        </div>
+        <div :style="{ color: colors.allocations.current_year_grants }">
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
         </div>
