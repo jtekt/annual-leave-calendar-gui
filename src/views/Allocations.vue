@@ -114,11 +114,13 @@ import type { AllocationData, Allocations } from "@/types"
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+
 const snackbar = ref({
   show: false,
   message: "",
   color: "red",
 })
+
 const user_id = computed(() => String(route.params.id))
 const yearItems = Array.from(
   { length: 10 },
@@ -152,7 +154,7 @@ async function get_allocations() {
     console.error(error)
     snackbar.value = {
       show: true,
-      message: t("Error while getting entry"),
+      message: t("Error while getting allocation"),
       color: "red",
     }
   }
@@ -184,7 +186,7 @@ async function submit() {
     })
     snackbar.value = {
       show: true,
-      message: t("Entry saved"),
+      message: t("Allocation saved"),
       color: "green",
     }
     get_allocations()
@@ -192,7 +194,7 @@ async function submit() {
     console.error(error)
     snackbar.value = {
       show: true,
-      message: t("Error while updating entry"),
+      message: t("Error while updating Allocation"),
       color: "red",
     }
   }
