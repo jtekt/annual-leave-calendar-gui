@@ -11,26 +11,24 @@
         }"
       >
         <div class="month_header">{{ t("month label", { month }) }}</div>
-        <div class="entries_container">
-          <router-link
-            class="entry"
-            :class="{ taken: passed_date(entry), refresh: entry.refresh }"
-            v-for="entry in entries_of_month(month)"
-            :key="entry._id"
-            :to="{ name: 'entry', params: { id: entry._id } }"
-          >
-            {{ day_of_entry(entry) }}
-            <span
-              class="half_indicator"
-              v-if="(entry.am && !entry.pm) || entry.type === '前半休'"
-              >am</span
-            >
-            <span
-              class="half_indicator"
-              v-if="(entry.pm && !entry.am) || entry.type === '後半休'"
-              >pm</span
-            >
-          </router-link>
+        <div class="day-grid">
+          <div
+            v-for="n in first_day_offset(month)"
+            :key="`offset_${n}`"
+            class="day-cell offset"
+          />
+          <component
+            :is="entry_for_day(month, day) ? 'router-link' : 'div'"
+            v-for="day in days_in_month(month)"
+            :key="`day_${day}`"
+            :to="
+              entry_for_day(month, day)
+                ? { name: 'entry', params: { id: entry_for_day(month, day)!._id } }
+                : undefined
+            "
+            class="day-cell"
+            :class="day_cell_class(month, day)"
+          />
         </div>
       </v-card>
     </v-col>
@@ -41,7 +39,6 @@
 import { computed } from "vue"
 import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
-import { colors } from "@/config"
 import type { Entry } from "@/types"
 
 const props = defineProps<{
@@ -66,67 +63,117 @@ function entries_of_month(month: number): Entry[] {
   })
 }
 
-function day_of_entry(entry: Entry): number {
-  return new Date(entry.date).getDate()
+function days_in_month(month: number): number {
+  return new Date(year.value, month, 0).getDate()
 }
 
-function passed_date(entry: Entry): boolean {
-  return new Date(entry.date) < new Date()
+function first_day_offset(month: number): number {
+  const day = new Date(year.value, month - 1, 1).getDay()
+  return (day + 6) % 7 // Monday-start: Sun=6, Mon=0, ..., Sat=5
+}
+
+function entry_for_day(month: number, day: number): Entry | undefined {
+  return entries_of_month(month).find((e) => new Date(e.date).getDate() === day)
+}
+
+function is_future_day(month: number, day: number): boolean {
+  if (year.value !== current_year.value) return year.value > current_year.value
+  if (month !== current_month.value) return month > current_month.value
+  return day >= new Date().getDate()
+}
+
+function day_cell_class(month: number, day: number): Record<string, boolean> {
+  const isFuture = is_future_day(month, day)
+
+  const entry = entry_for_day(month, day)
+  if (!entry) return { "future-day": isFuture }
+
+  const isAm = (entry.am && !entry.pm) || entry.type === "前半休"
+  const isPm = (entry.pm && !entry.am) || entry.type === "後半休"
+
+  return {
+    "has-entry": true,
+    "am-half": isAm,
+    "pm-half": isPm,
+    "future-day": isFuture,
+    "refresh-entry": !!entry.refresh,
+  }
 }
 </script>
 
 <style scoped>
 .month {
-  min-height: 3em;
   padding: 0.25em;
-  text-align: center;
 }
 
 .month.ellapsed {
   background-color: #aaaaaa33;
 }
+
 .month.current {
   border-width: 2px;
 }
 
-.entries_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.entry {
-  text-decoration: none;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: flex-start;
-  border: 1px solid transparent;
-  border-radius: 0.25em;
-  padding-inline: 0.25em;
-  color: inherit;
-}
-
-.entry.taken {
-  /* color: v-bind(colors.leaves.taken); */
-}
-.entry:not(.taken) {
-  /* color: v-bind(colors.leaves.future); */
-  opacity: 50%;
-}
-
 .month_header {
   text-align: left;
-  /* color: #aaaaaa; */
   opacity: 0.5;
   font-size: 80%;
 }
 
-.entry.refresh {
-  border: 2px solid rgb(14, 205, 122);
+.day-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+  margin-top: 2px;
 }
 
-.half_indicator {
-  font-size: 75%;
-  margin-left: 0.25em;
+.day-cell {
+  --empty-bg: rgba(128, 128, 128, 0.45);
+  aspect-ratio: 1;
+  border-radius: 1px;
+  background-color: var(--empty-bg);
+}
+
+.day-cell.offset {
+  background-color: transparent;
+}
+
+.day-cell.future-day {
+  --empty-bg: rgba(128, 128, 128, 0.07);
+}
+
+.day-cell.future-day:not(.has-entry) {
+  background-color: var(--empty-bg);
+}
+
+.day-cell.has-entry {
+  background-color: rgb(var(--v-theme-primary));
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.day-cell.has-entry.am-half {
+  background: linear-gradient(
+    to bottom right,
+    rgb(var(--v-theme-primary)) 50%,
+    var(--empty-bg) 50%
+  );
+}
+
+.day-cell.has-entry.pm-half {
+  background: linear-gradient(
+    to bottom right,
+    var(--empty-bg) 50%,
+    rgb(var(--v-theme-primary)) 50%
+  );
+}
+
+.day-cell.has-entry.future-day {
+  opacity: 0.4;
+}
+
+.day-cell.has-entry.refresh-entry {
+  outline: 1px solid rgb(14, 205, 122);
+  outline-offset: -1px;
 }
 </style>
