@@ -1,60 +1,40 @@
 <template>
-  <div class="total">
-    <template v-if="allocations">
-      <v-tooltip location="top" v-if="allocations.carried_over">
-        <template #activator="{ props: tooltipProps }">
-          <div v-bind="tooltipProps" class="carriedOver allocation bar">
-            {{ allocations.carried_over }}
+  <v-tooltip location="bottom">
+    <template v-slot:activator="{ props }">
+      <div class="wrapper" v-bind="props">
+        <div class="allocations" v-if="total_allocations">
+          <div class="carried_over">
+            <span>{{ allocations.carried_over }}</span>
           </div>
-        </template>
-        <span>
-          {{ t("Carried over days") }}: {{ allocations.carried_over }}
-        </span>
-      </v-tooltip>
-
-      <v-tooltip location="top" v-if="allocations.current_year_grants">
-        <template #activator="{ props: tooltipProps }">
-          <div v-bind="tooltipProps" class="currentYear allocation bar">
-            {{ allocations.current_year_grants }}
+          <div class="current_year_grants">
+            <span>{{ allocations.current_year_grants }}</span>
           </div>
-        </template>
-        <span>
+        </div>
+        <div class="leaves">
+          <div class="taken" v-if="taken">
+            <span v-if="taken_percent > 10">{{ taken }}</span>
+          </div>
+          <div class="future" v-if="future">
+            <span v-if="future_percent > 10">{{ future }}</span>
+          </div>
+          <div class="missing" v-if="!reserve && missing_percent > 0"></div>
+        </div>
+      </div>
+    </template>
+    <div>
+      <template v-if="total_allocations">
+        <div class="text-h6">Allocations</div>
+        <div>{{ t("Carried over days") }}: {{ allocations.carried_over }}</div>
+        <div>
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
-        </span>
-      </v-tooltip>
-    </template>
-
-    <!-- If below minimum -->
-    <v-tooltip v-if="!reserve && min" location="bottom">
-      <template #activator="{ props: tooltipProps }">
-        <div v-bind="tooltipProps" class="min leaves bar" />
+        </div>
       </template>
-      <span>{{
-        t("Must take this year", { n: min - total_taken - total_future })
-      }}</span>
-    </v-tooltip>
-
-    <template v-if="total_taken + total_future">
-      <v-tooltip location="bottom" v-if="total_taken">
-        <template #activator="{ props: tooltipProps }">
-          <div v-bind="tooltipProps" class="taken leaves bar">
-            {{ takenPercent > 10 ? total_taken : "" }}
-          </div>
-        </template>
-        <span>{{ t("Days taken this year") }}: {{ total_taken }}</span>
-      </v-tooltip>
-
-      <v-tooltip location="bottom" v-if="total_future">
-        <template #activator="{ props: tooltipProps }">
-          <div v-bind="tooltipProps" class="future leaves bar">
-            {{ futurePercent > 10 ? total_future : "" }}
-          </div>
-        </template>
-        <span> {{ t("Days planned this year") }}: {{ total_future }} </span>
-      </v-tooltip>
-    </template>
-  </div>
+      <div class="text-h6">Leaves</div>
+      <div>{{ t("Days taken this year") }}: {{ taken }}</div>
+      <div>{{ t("Days planned this year") }}: {{ future }}</div>
+    </div>
+  </v-tooltip>
 </template>
 
 <script setup lang="ts">
@@ -75,17 +55,13 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const allocationsExist = computed(
-  () =>
-    props.allocations?.current_year_grants || props.allocations?.carried_over
-)
-
 const total_allocations = computed(() => {
-  if (!allocationsExist.value) return 0
-  return props.allocations.current_year_grants + props.allocations.carried_over
+  if (!props.allocations) return 0
+  const { current_year_grants = 0, carried_over = 0 } = props.allocations
+  return current_year_grants + carried_over
 })
 
-const total_future = computed(() =>
+const future = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) > new Date()) {
       if (type === "有休") return total + 1
@@ -95,7 +71,7 @@ const total_future = computed(() =>
   }, 0)
 )
 
-const total_taken = computed(() =>
+const taken = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) < new Date()) {
       if (type === "有休") return total + 1
@@ -107,121 +83,132 @@ const total_taken = computed(() =>
 
 const max = computed(() => {
   if (props.reserve)
-    return Math.max(1, total_allocations.value, total_taken_and_future.value)
-  else
-    return Math.max(
-      1,
-      min,
-      total_allocations.value,
-      total_taken_and_future.value
-    )
+    return Math.max(1, total_allocations.value, total_entries.value)
+  else return Math.max(1, min, total_allocations.value, total_entries.value)
 })
 
-const total_taken_and_future = computed(
-  () => total_taken.value + total_future.value
+const total_entries = computed(() => taken.value + future.value)
+
+const carried_over_percent = computed(
+  () => (100 * props.allocations?.carried_over || 0) / max.value
+)
+const current_year_grants_percent = computed(
+  () => (100 * props.allocations?.current_year_grants || 0) / max.value
 )
 
-const carriedOverPercent = computed(() => {
-  if (!props.allocations || !total_allocations.value) return 0
-  return (props.allocations.carried_over / max.value) * 100
-})
-
-const currentYearGrantsPercent = computed(() => {
-  if (!props.allocations || !total_allocations.value) return 0
-  return (props.allocations.current_year_grants / max.value) * 100
-})
-
-const takenPercent = computed(() => {
-  return (total_taken.value / max.value) * 100
-})
-
-const futurePercent = computed(() => {
-  return (total_future.value / max.value) * 100
-})
-
-const minPercent = computed(() => {
-  if (total_allocations.value) return (min / max.value) * 100
-  else if (total_taken_and_future.value < min) return 100
-  else return 0
-})
+const entries_percent = computed(() => (100 * total_entries.value) / max.value)
+const taken_percent = computed(() => (100 * taken.value) / max.value)
+const future_percent = computed(() => (100 * future.value) / max.value)
+const missing_percent = computed(
+  () => (100 * (min - total_entries.value)) / max.value
+)
 </script>
 
 <style scoped>
-.total {
+.wrapper {
+  height: 30px;
   position: relative;
-  height: 3em;
-  text-align: center;
+
   font-size: 80%;
+  margin-bottom: 1em;
 }
 
-.allocation {
+.allocations {
   position: absolute;
   top: 0;
-  /* bottom: 55%; */
-  bottom: 0;
-  overflow: hidden;
-  font-size: 80%;
-  color: black;
-}
-
-.allocation.carriedOver {
   left: 0;
-  width: v-bind(`${carriedOverPercent}%`);
-  background-color: v-bind("colors.allocations.carried_over");
-  /* border-bottom: 5px solid v-bind("colors.allocations.carried_over"); */
+  bottom: 0;
+  right: 0;
+  font-size: 80%;
 }
 
-.allocation.currentYear {
-  left: v-bind(`${carriedOverPercent}%`);
-  width: v-bind(`${currentYearGrantsPercent}%`);
-  background-color: v-bind("colors.allocations.current_year_grants");
-  /* border-bottom: 5px solid v-bind("colors.allocations.current_year_grants"); */
+.allocations > div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+}
+
+.allocations span {
+  position: absolute;
+  bottom: -1rem;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.carried_over {
+  border: 3px solid v-bind(colors.allocations.carried_over);
+  background-color: v-bind(`${colors.allocations.carried_over}22`);
+
+  color: v-bind(colors.allocations.carried_over);
+  left: 0;
+  width: v-bind(`${carried_over_percent}%`);
+}
+
+.current_year_grants {
+  border: 3px solid v-bind(colors.allocations.current_year_grants);
+  background-color: v-bind(`${colors.allocations.current_year_grants}22`);
+  color: v-bind(colors.allocations.current_year_grants);
+  left: v-bind(`${carried_over_percent}%`);
+  width: v-bind(`${current_year_grants_percent}%`);
+}
+
+.wrapper > div > div:not(:last-child) {
+  border-right: 0;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.wrapper > div > div:not(:first-child) {
+  border-left: 0;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
 }
 
 .leaves {
   position: absolute;
-  top: 40%;
+  top: 5px;
+  left: 5px;
+  bottom: 5px;
+  right: 5px;
+  color: #fff;
+}
+
+.leaves > div {
+  position: absolute;
+  top: 0;
   bottom: 0;
-  overflow: hidden;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
 }
 
 .taken {
   left: 0;
-  width: v-bind(`${takenPercent}%`);
-  background-color: v-bind("colors.leaves.taken");
-  /* border-top: 8px solid v-bind("colors.leaves.taken"); */
+  width: v-bind(`${taken_percent}%`);
+  background-color: v-bind(colors.leaves.taken);
+  /* color: v-bind(colors.leaves.taken); */
 }
 
 .future {
-  width: v-bind(`${futurePercent}%`);
-  left: v-bind(`${takenPercent}%`);
-  background-color: v-bind("colors.leaves.future");
-  /* border-top: 8px solid v-bind("colors.leaves.future"); */
+  left: v-bind(`${taken_percent}%`);
+  width: v-bind(`${future_percent}%`);
+  background-color: v-bind(colors.leaves.future);
+  /* color: v-bind(colors.leaves.future); */
 }
 
-.min {
-  border-radius: 0.25em;
-  left: 0;
-  width: v-bind(`${minPercent}%`);
-  border: 1.75px dashed #ff0000aa;
-  background-color: #ff000011;
-  /* boder-top: 8px dashed #ff0000aa; */
+.missing {
+  left: v-bind(`${taken_percent + future_percent}%`);
+  width: v-bind(`${missing_percent}%`);
+  border: 1.5px dashed #c00000;
 }
 
-/* This gets messy */
-.taken,
-.bar:first-child {
-  border-top-left-radius: 0.25em;
-  border-bottom-left-radius: 0.25em;
-}
+/* .leaves span {
+  position: absolute;
+  top: -1.75em;
+  left: 50%;
+  transform: translateX(-50%);
 
-.currentYear,
-.bar:last-child {
-  border-top-right-radius: 0.25em;
-  border-bottom-right-radius: 0.25em;
-}
+} */
 </style>
