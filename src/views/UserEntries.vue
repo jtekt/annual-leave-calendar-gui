@@ -38,12 +38,16 @@
                 </v-btn>
               </v-col>
               <v-col cols="auto">
-                <CreateAllocation
-                  :user_id="user?._id"
-                  :year="year"
-                  :exist="allocations"
-                  @createAllocation="get_entries"
-                />
+                <v-btn
+                  :to="{
+                    name: 'user_allocations',
+                    params: { id: user_id },
+                    query: { year },
+                  }"
+                  prepend-icon="mdi-plus"
+                >
+                  {{ t("Register allocations") }}
+                </v-btn>
               </v-col>
             </v-row>
           </v-card-actions>
