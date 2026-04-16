@@ -106,7 +106,7 @@ const missing_percent = computed(
 
 <style scoped>
 .wrapper {
-  height: 30px;
+  height: 2.5em;
   position: relative;
 
   font-size: 80%;
@@ -127,18 +127,20 @@ const missing_percent = computed(
   top: 0;
   bottom: 0;
   border-radius: 5px;
+  border-style: solid;
+  border-width: 2px;
 }
 
 .allocations span {
   position: absolute;
-  bottom: -1rem;
+  bottom: -1.5em;
   left: 50%;
   transform: translateX(-50%);
 }
 
 .carried_over {
-  border: 3px solid v-bind(colors.allocations.carried_over);
-  background-color: v-bind(`${colors.allocations.carried_over}22`);
+  border-color: v-bind(colors.allocations.carried_over);
+  background-color: v-bind(`${colors.allocations.carried_over}11`);
 
   color: v-bind(colors.allocations.carried_over);
   left: 0;
@@ -146,8 +148,8 @@ const missing_percent = computed(
 }
 
 .current_year_grants {
-  border: 3px solid v-bind(colors.allocations.current_year_grants);
-  background-color: v-bind(`${colors.allocations.current_year_grants}22`);
+  border-color: v-bind(colors.allocations.current_year_grants);
+  background-color: v-bind(`${colors.allocations.current_year_grants}11`);
   color: v-bind(colors.allocations.current_year_grants);
   left: v-bind(`${carried_over_percent}%`);
   width: v-bind(`${current_year_grants_percent}%`);
@@ -167,10 +169,10 @@ const missing_percent = computed(
 
 .leaves {
   position: absolute;
-  top: 5px;
-  left: 5px;
-  bottom: 5px;
-  right: 5px;
+  top: 4px;
+  left: 4px;
+  bottom: 4px;
+  right: 4px;
   color: #fff;
 }
 
@@ -202,6 +204,7 @@ const missing_percent = computed(
   left: v-bind(`${taken_percent + future_percent}%`);
   width: v-bind(`${missing_percent}%`);
   border: 1.5px dashed #c00000;
+  background-color: #c0000011;
 }
 
 /* .leaves span {
