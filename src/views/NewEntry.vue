@@ -58,7 +58,13 @@ const type = ref("有休")
 const entries = ref<Entry[]>([])
 
 const entryDates = computed(() =>
-  entries.value.map((e) => e.date.substring(0, 10))
+  entries.value.map((e) => {
+    const d = new Date(e.date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  })
 )
 
 const types = computed(() => [
