@@ -73,6 +73,7 @@
         </v-row>
       </v-card-text>
       <v-card-actions>
+        <v-spacer />
         <v-btn variant="flat" color="primary" type="submit">
           {{ t("Create allocation") }}
         </v-btn>
@@ -170,11 +171,6 @@ async function submit() {
     })
   } catch (error) {
     console.error(error)
-    snackbar.value = {
-      show: true,
-      message: t("Error while updating Allocation"),
-      color: "red",
-    }
   }
 }
 </script>

@@ -55,7 +55,5 @@
   "Max export limit": "Max: 500 people",
   "month label": "{month}",
   "Register allocation": "Register allocations",
-  "Error while getting allocation": "Error while getting allocation",
-  "Allocation saved": "Allocation saved",
-  "Error while updating Allocation": "Error while updating Allocation"
+  "Error while getting allocation": "Error while getting allocation"
 }
