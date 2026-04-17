@@ -23,7 +23,10 @@
             :key="`day_${day}`"
             :to="
               entry_for_day(month, day)
-                ? { name: 'entry', params: { id: entry_for_day(month, day)!._id } }
+                ? {
+                    name: 'entry',
+                    params: { id: entry_for_day(month, day)!._id },
+                  }
                 : undefined
             "
             class="day-cell"

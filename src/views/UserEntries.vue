@@ -40,11 +40,11 @@
               <v-col cols="auto">
                 <v-btn
                   :to="{
-                    name: 'user_allocations',
+                    name: 'register_allocations',
                     params: { id: user_id },
                     query: { year },
                   }"
-                  prepend-icon="mdi-plus"
+                  prepend-icon="mdi-calendar-outline"
                 >
                   {{ t("Register allocations") }}
                 </v-btn>

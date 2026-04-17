@@ -97,35 +97,34 @@ async function get_group() {
   }
 }
 
-function get_entries() {
+async function get_entries() {
   if (loading.value || all_loaded.value) return
-  loading.value = true
-  const url = `/groups/${group_id.value}/entries`
-  const params = { year: year.value, limit: 10, skip: items.value.length }
-
-  axios
-    .get<{ items: GroupItem[]; total: number }>(url, { params })
-    .then(({ data }) => {
-      items.value = items.value.concat(data.items)
-      total.value = data.total
-      if (items.value.length >= total.value) {
-        all_loaded.value = true
-      }
-    })
-    .catch((error) => {
-      console.error(error)
+  try {
+    loading.value = true
+    const url = `/groups/${group_id.value}/entries`
+    const params = { year: year.value, limit: 10, skip: items.value.length }
+    const { data } = await axios.get<{ items: GroupItem[]; total: number }>(
+      url,
+      { params }
+    )
+    items.value = items.value.concat(data.items)
+    total.value = data.total
+    if (items.value.length >= total.value) {
       all_loaded.value = true
-    })
-    .finally(() => {
-      loading.value = false
-    })
+    }
+  } catch (error) {
+    console.error(error)
+    all_loaded.value = true
+  } finally {
+    loading.value = false
+  }
 }
 
-function reset() {
+async function reset() {
   items.value = []
   total.value = 0
   all_loaded.value = false
-  get_entries()
+  await get_entries()
 }
 
 function setup_observer() {

@@ -48,8 +48,13 @@ const routes = [
   },
   {
     path: "/users/:id/allocations",
-    name: "user_allocations",
+    name: "register_allocations",
     component: () => import("../views/Allocations.vue"),
+  },
+  {
+    path: "/users/search",
+    name: "user_search",
+    component: () => import("../views/UserSearch.vue"),
   },
 ]
 

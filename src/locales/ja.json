@@ -56,5 +56,11 @@
   "month label": "{month}月",
   "Register allocations": "割り当て登録",
   "Error while getting allocation": "割り当ての取得中にエラーが発生しました",
-  "Allocations": "割り当て"
+  "Allocations": "割り当て",
+  "User search": "ユーザー検索",
+  "Employee number": "社員番号",
+  "Name": "名前",
+  "Role": "役職",
+  "E-mail": "メールアドレス",
+  "Search": "検索"
 }

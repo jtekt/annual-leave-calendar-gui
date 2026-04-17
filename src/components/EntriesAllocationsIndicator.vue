@@ -24,10 +24,10 @@
     <div>
       <template v-if="total_allocations">
         <div class="text-h6">{{ t("Allocations") }}</div>
-        <div :style="{ color: colors.allocations.carried_over }">
+        <div style="color: rgb(var(--v-theme-allocations-carried-over))">
           {{ t("Carried over days") }}: {{ allocations.carried_over }}
         </div>
-        <div :style="{ color: colors.allocations.current_year_grants }">
+        <div style="color: rgb(var(--v-theme-allocations-current-year))">
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
         </div>
@@ -42,7 +42,6 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
-import { colors } from "@/config"
 import type { Entry, AllocationData } from "@/types"
 
 const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
@@ -141,18 +140,18 @@ const missing_percent = computed(
 }
 
 .carried_over {
-  border-color: v-bind(colors.allocations.carried_over);
-  background-color: v-bind(`${colors.allocations.carried_over}11`);
-
-  color: v-bind(colors.allocations.carried_over);
   left: 0;
   width: v-bind(`${carried_over_percent}%`);
+
+  border-color: rgb(var(--v-theme-allocations-carried-over));
+  color: rgb(var(--v-theme-allocations-carried-over));
+  background-color: rgba(var(--v-theme-allocations-carried-over), 0.1);
 }
 
 .current_year_grants {
-  border-color: v-bind(colors.allocations.current_year_grants);
-  background-color: v-bind(`${colors.allocations.current_year_grants}11`);
-  color: v-bind(colors.allocations.current_year_grants);
+  border-color: rgb(var(--v-theme-allocations-current-year));
+  color: rgb(var(--v-theme-allocations-current-year));
+  background-color: rgba(var(--v-theme-allocations-current-year), 0.1);
   left: v-bind(`${carried_over_percent}%`);
   width: v-bind(`${current_year_grants_percent}%`);
 }
@@ -191,15 +190,13 @@ const missing_percent = computed(
 .taken {
   left: 0;
   width: v-bind(`${taken_percent}%`);
-  background-color: v-bind(colors.leaves.taken);
-  /* color: v-bind(colors.leaves.taken); */
+  background-color: rgb(var(--v-theme-leaves-taken));
 }
 
 .future {
   left: v-bind(`${taken_percent}%`);
   width: v-bind(`${future_percent}%`);
-  background-color: v-bind(colors.leaves.future);
-  /* color: v-bind(colors.leaves.future); */
+  background-color: rgb(var(--v-theme-leaves-future));
 }
 
 .missing {

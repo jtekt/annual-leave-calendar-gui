@@ -29,6 +29,7 @@
           <v-col>
             <v-btn
               :disabled="!date"
+              :loading="loading"
               type="submit"
               prepend-icon="mdi-plus"
               block
@@ -52,13 +53,20 @@ import type { Entry } from "@/types"
 
 const { t } = useI18n()
 const router = useRouter()
+const loading = ref(false)
 
 const date = ref<string | null>(null)
 const type = ref("有休")
 const entries = ref<Entry[]>([])
 
 const entryDates = computed(() =>
-  entries.value.map((e) => e.date.substring(0, 10))
+  entries.value.map((e) => {
+    const d = new Date(e.date)
+    const year = d.getFullYear()
+    const month = String(d.getMonth() + 1).padStart(2, "0")
+    const day = String(d.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  })
 )
 
 const types = computed(() => [
@@ -67,30 +75,33 @@ const types = computed(() => [
   { title: t("Afternoon"), value: "後半休" },
 ])
 
-function get_entries() {
-  const params = { year: new Date().getFullYear() }
-  axios
-    .get<Entry[]>("/users/self/entries", { params })
-    .then(({ data }) => {
-      entries.value = data
-    })
-    .catch((error) => console.error(error))
+async function get_entries() {
+  try {
+    const params = { year: new Date().getFullYear() }
+    const { data } = await axios.get<Entry[]>("/users/self/entries", { params })
+    entries.value = data
+  } catch (error) {
+    console.error(error)
+  }
 }
 
-function submit() {
-  const body = {
-    date: Array.isArray(date.value) ? date.value[0] : date.value,
-    type: type.value,
+async function submit() {
+  try {
+    loading.value = true
+    const body = {
+      date: Array.isArray(date.value) ? date.value[0] : date.value,
+      type: type.value,
+    }
+    const { data } = await axios.post<{ _id: string }>(
+      "/users/self/entries",
+      body
+    )
+    router.push({ name: "entry", params: { id: data._id } })
+  } catch (error) {
+    console.error(error)
+  } finally {
+    loading.value = false
   }
-  axios
-    .post<{ _id: string }>("/users/self/entries", body)
-    .then(({ data }) => {
-      router.push({ name: "entry", params: { id: data._id } })
-    })
-    .catch((error) => {
-      alert(error.response?.data ?? t("Error while creating entry"))
-      console.error(error)
-    })
 }
 
 onMounted(() => get_entries())
