@@ -41,7 +41,6 @@
 import { computed } from "vue"
 import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
-import { colors } from "@/config"
 import type { Entry } from "@/types"
 
 const props = defineProps<{
@@ -106,11 +105,7 @@ function passed_date(entry: Entry): boolean {
   color: inherit;
 }
 
-.entry.taken {
-  /* color: v-bind(colors.leaves.taken); */
-}
 .entry:not(.taken) {
-  /* color: v-bind(colors.leaves.future); */
   opacity: 50%;
 }
 
