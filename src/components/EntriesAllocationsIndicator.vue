@@ -33,8 +33,12 @@
         </div>
       </template>
       <div class="text-h6">{{ t("Leaves") }}</div>
-      <div>{{ t("Days taken this year") }}: {{ taken }}</div>
-      <div>{{ t("Days planned this year") }}: {{ future }}</div>
+      <div style="color: rgb(var(--v-theme-primary))">
+        {{ t("Days taken this year") }}: {{ taken }}
+      </div>
+      <div style="color: rgb(var(--v-theme-secondary))">
+        {{ t("Days planned this year") }}: {{ future }}
+      </div>
     </div>
   </v-tooltip>
 </template>
@@ -107,7 +111,7 @@ const missing_percent = computed(
 
 <style scoped>
 .wrapper {
-  height: 2.5em;
+  height: 1.5em;
   position: relative;
 
   font-size: 80%;
@@ -174,7 +178,7 @@ const missing_percent = computed(
   left: 4px;
   bottom: 4px;
   right: 4px;
-  color: #fff;
+  /* color: #fff; */
 }
 
 .leaves > div {
@@ -190,13 +194,15 @@ const missing_percent = computed(
 .taken {
   left: 0;
   width: v-bind(`${taken_percent}%`);
-  background-color: rgb(var(--v-theme-leaves-taken));
+  background-color: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-primary));
 }
 
 .future {
   left: v-bind(`${taken_percent}%`);
   width: v-bind(`${future_percent}%`);
-  background-color: rgb(var(--v-theme-leaves-future));
+  background-color: rgb(var(--v-theme-secondary));
+  color: rgb(var(--v-theme-secondary));
 }
 
 .missing {
@@ -206,11 +212,10 @@ const missing_percent = computed(
   background-color: #c0000011;
 }
 
-/* .leaves span {
+.leaves span {
   position: absolute;
-  top: -1.75em;
+  top: -1.7em;
   left: 50%;
   transform: translateX(-50%);
-
-} */
+}
 </style>
