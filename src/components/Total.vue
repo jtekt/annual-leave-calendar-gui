@@ -1,23 +1,21 @@
 <template>
-  <v-card variant="outlined" class="px-2 py-1">
-    <v-row dense align="center">
-      <v-col>
-        <div class="legend">{{ t("Leaves short") }}</div>
-        <EntriesAllocationsIndicator
-          :entries="leaves"
-          :allocations="allocations?.leaves"
-        />
-      </v-col>
-      <v-col>
-        <div class="legend">{{ t("Reserve short") }}</div>
-        <EntriesAllocationsIndicator
-          :reserve="true"
-          :entries="reserve"
-          :allocations="allocations?.reserve"
-        />
-      </v-col>
-    </v-row>
-  </v-card>
+  <v-row dense align="center">
+    <v-col>
+      <div class="legend">{{ t("Leaves short") }}</div>
+      <EntriesAllocationsIndicator
+        :entries="leaves"
+        :allocations="allocations?.leaves"
+      />
+    </v-col>
+    <v-col>
+      <div class="legend">{{ t("Reserve short") }}</div>
+      <EntriesAllocationsIndicator
+        :reserve="true"
+        :entries="reserve"
+        :allocations="allocations?.reserve"
+      />
+    </v-col>
+  </v-row>
 </template>
 
 <script setup lang="ts">
@@ -52,6 +50,6 @@ const reserve = computed(() => props.entries.filter((e) => e.reserve))
   font-size: 80%;
   opacity: 80%;
   text-align: center;
-  margin-bottom: 0.25em;
+  margin-bottom: 1em;
 }
 </style>

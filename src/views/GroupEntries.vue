@@ -12,19 +12,17 @@
           <v-icon>mdi-account</v-icon>x{{ total }}
         </template> -->
         <template #append>
-          <v-select
-            :items="yearItems"
-            v-model="year"
-            :label="t('Year')"
-            hide-details
-            variant="outlined"
-            density="compact"
-            class="mr-2"
-            max-width="150px"
-          />
+          <v-row justify="end" dense>
+            <v-col cols="auto">
+              <CalendarDisplayToggle class="mr-2" />
+            </v-col>
+            <v-col cols="auto">
+              <YearSelector />
+            </v-col>
+          </v-row>
         </template>
         <v-card-actions>
-          <ExcelExportButton :total="total" :year="year" :group_id="group_id" />
+          <ExcelExportButton :total="total" :group_id="group_id" />
         </v-card-actions>
       </v-card>
     </v-col>
@@ -50,27 +48,22 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue"
-import { useRoute, useRouter } from "vue-router"
+import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 
 import ExcelExportButton from "@/components/ExcelExportButton.vue"
 import type { Group, GroupItem } from "@/types"
 import UserCard from "@/components/UserCard.vue"
+import CalendarDisplayToggle from "@/components/CalendarDisplayToggle.vue"
+import YearSelector from "@/components/YearSelector.vue"
+import { useYear } from "@/composables/useYear"
 
 const { t } = useI18n()
 const route = useRoute()
-const router = useRouter()
 
 const group_id = computed(() => String(route.params.id))
-const yearItems = Array.from(
-  { length: 10 },
-  (_, i) => new Date().getFullYear() + i - 5
-)
-const year = computed({
-  get: () => Number(route.query.year) || new Date().getFullYear(),
-  set: (val) => router.replace({ query: { ...route.query, year: val } }),
-})
+const { year } = useYear()
 
 const items = ref<GroupItem[]>([])
 const total = ref(0)

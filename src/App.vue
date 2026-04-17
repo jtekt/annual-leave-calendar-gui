@@ -61,12 +61,6 @@ function handleLogout() {
 
 const nav = computed(() => [
   {
-    title: t("My entries"),
-    to: { name: "user_entries", params: { id: "self" } },
-    icon: "mdi-account",
-  },
-  { divider: true },
-  {
     title: t("Create entry"),
     to: { name: "new_entry" },
     icon: "mdi-calendar-plus",
@@ -77,6 +71,11 @@ const nav = computed(() => [
     icon: "mdi-calendar-outline",
   },
   { divider: true },
+  {
+    title: t("My entries"),
+    to: { name: "user_entries", params: { id: "self" } },
+    icon: "mdi-account",
+  },
   {
     title: t("User search"),
     to: { name: "user_search" },

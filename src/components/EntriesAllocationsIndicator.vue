@@ -2,11 +2,14 @@
   <v-tooltip location="bottom">
     <template v-slot:activator="{ props }">
       <div class="wrapper" v-bind="props">
-        <div class="allocations" v-if="total_allocations">
-          <div class="carried_over">
+        <div v-if="total_allocations" class="allocations">
+          <div v-if="allocations.carried_over" class="carried_over">
             <span>{{ allocations.carried_over }}</span>
           </div>
-          <div class="current_year_grants">
+          <div
+            v-if="allocations.current_year_grants"
+            class="current_year_grants"
+          >
             <span>{{ allocations.current_year_grants }}</span>
           </div>
         </div>
@@ -21,20 +24,31 @@
         </div>
       </div>
     </template>
+    <!-- Tooltip content -->
     <div>
       <template v-if="total_allocations">
         <div class="text-h6">{{ t("Allocations") }}</div>
-        <div style="color: rgb(var(--v-theme-allocations-carried-over))">
+        <div
+          v-if="allocations.carried_over"
+          style="color: rgb(var(--v-theme-allocations-carried-over))"
+        >
           {{ t("Carried over days") }}: {{ allocations.carried_over }}
         </div>
-        <div style="color: rgb(var(--v-theme-allocations-current-year))">
+        <div
+          v-if="allocations.current_year_grants"
+          style="color: rgb(var(--v-theme-allocations-current-year))"
+        >
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
         </div>
       </template>
       <div class="text-h6">{{ t("Leaves") }}</div>
-      <div>{{ t("Days taken this year") }}: {{ taken }}</div>
-      <div>{{ t("Days planned this year") }}: {{ future }}</div>
+      <div style="color: rgb(var(--v-theme-primary))">
+        {{ t("Days taken this year") }}: {{ taken }}
+      </div>
+      <div style="color: rgb(var(--v-theme-secondary))">
+        {{ t("Days planned this year") }}: {{ future }}
+      </div>
     </div>
   </v-tooltip>
 </template>
@@ -107,7 +121,7 @@ const missing_percent = computed(
 
 <style scoped>
 .wrapper {
-  height: 2.5em;
+  height: 1.5em;
   position: relative;
 
   font-size: 80%;
@@ -129,7 +143,7 @@ const missing_percent = computed(
   bottom: 0;
   border-radius: 5px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1.5px;
 }
 
 .allocations span {
@@ -174,7 +188,7 @@ const missing_percent = computed(
   left: 4px;
   bottom: 4px;
   right: 4px;
-  color: #fff;
+  /* color: #fff; */
 }
 
 .leaves > div {
@@ -190,13 +204,15 @@ const missing_percent = computed(
 .taken {
   left: 0;
   width: v-bind(`${taken_percent}%`);
-  background-color: rgb(var(--v-theme-leaves-taken));
+  background-color: rgb(var(--v-theme-primary));
+  color: rgb(var(--v-theme-primary));
 }
 
 .future {
   left: v-bind(`${taken_percent}%`);
   width: v-bind(`${future_percent}%`);
-  background-color: rgb(var(--v-theme-leaves-future));
+  background-color: rgb(var(--v-theme-secondary));
+  color: rgb(var(--v-theme-secondary));
 }
 
 .missing {
@@ -206,11 +222,10 @@ const missing_percent = computed(
   background-color: #c0000011;
 }
 
-/* .leaves span {
+.leaves span {
   position: absolute;
-  top: -1.75em;
+  top: -1.7em;
   left: 50%;
   transform: translateX(-50%);
-
-} */
+}
 </style>

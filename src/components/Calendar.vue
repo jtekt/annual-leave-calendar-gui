@@ -11,27 +11,17 @@
         }"
       >
         <div class="month_header">{{ t("month label", { month }) }}</div>
-        <div class="entries_container">
-          <router-link
-            class="entry"
-            :class="{ taken: passed_date(entry), refresh: entry.refresh }"
-            v-for="entry in entries_of_month(month)"
-            :key="entry._id"
-            :to="{ name: 'entry', params: { id: entry._id } }"
-          >
-            {{ day_of_entry(entry) }}
-            <span
-              class="half_indicator"
-              v-if="(entry.am && !entry.pm) || entry.type === '前半休'"
-              >am</span
-            >
-            <span
-              class="half_indicator"
-              v-if="(entry.pm && !entry.am) || entry.type === '後半休'"
-              >pm</span
-            >
-          </router-link>
-        </div>
+
+        <MonthDayGrid
+          v-if="calendarDisplayMode === 'grid'"
+          :entries="entries_of_month(month)"
+          :month="month"
+        />
+        <MonthDayEntries
+          v-else
+          :entries="entries_of_month(month)"
+          :month="month"
+        />
       </v-card>
     </v-col>
   </v-row>
@@ -39,22 +29,23 @@
 
 <script setup lang="ts">
 import { computed } from "vue"
-import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
 import type { Entry } from "@/types"
+import MonthDayGrid from "@/components/MonthDayGrid.vue"
+import MonthDayEntries from "@/components/MonthDayEntries.vue"
+import { useCalendarDisplayMode } from "@/composables/useCalendarDisplayMode"
+import { useYear } from "@/composables/useYear"
 
 const props = defineProps<{
   entries: Entry[]
 }>()
 
 const { t } = useI18n()
-const route = useRoute()
+const { mode: calendarDisplayMode } = useCalendarDisplayMode()
+const { year } = useYear()
 
 const current_month = computed(() => new Date().getMonth() + 1)
 const current_year = computed(() => new Date().getFullYear())
-const year = computed(
-  () => Number(route.query.year) || new Date().getFullYear()
-)
 
 function entries_of_month(month: number): Entry[] {
   return props.entries.filter(({ date, type }) => {
@@ -64,64 +55,24 @@ function entries_of_month(month: number): Entry[] {
     )
   })
 }
-
-function day_of_entry(entry: Entry): number {
-  return new Date(entry.date).getDate()
-}
-
-function passed_date(entry: Entry): boolean {
-  return new Date(entry.date) < new Date()
-}
 </script>
 
 <style scoped>
 .month {
-  min-height: 3em;
   padding: 0.25em;
-  text-align: center;
 }
 
 .month.ellapsed {
   background-color: #aaaaaa33;
 }
+
 .month.current {
   border-width: 2px;
 }
 
-.entries_container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.entry {
-  text-decoration: none;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: flex-start;
-  border: 1px solid transparent;
-  border-radius: 0.25em;
-  padding-inline: 0.25em;
-  color: inherit;
-}
-
-.entry:not(.taken) {
-  opacity: 50%;
-}
-
 .month_header {
   text-align: left;
-  /* color: #aaaaaa; */
   opacity: 0.5;
   font-size: 80%;
-}
-
-.entry.refresh {
-  border: 2px solid rgb(14, 205, 122);
-}
-
-.half_indicator {
-  font-size: 75%;
-  margin-left: 0.25em;
 }
 </style>

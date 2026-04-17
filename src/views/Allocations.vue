@@ -4,16 +4,7 @@
       {{ t("Register allocations") }}
     </template>
     <template #append>
-      <v-select
-        :items="yearItems"
-        v-model="year"
-        :label="t('Year')"
-        hide-details
-        variant="outlined"
-        density="compact"
-        max-width="150px"
-        class="mr-2"
-      />
+      <YearSelector class="mr-2" />
     </template>
     <v-card-text v-if="!ready" class="text-center py-6">
       <v-progress-circular indeterminate />
@@ -93,10 +84,13 @@ import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 import type { AllocationData, Allocations } from "@/types"
+import { useYear } from "@/composables/useYear"
+import YearSelector from "@/components/YearSelector.vue"
 
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const { year } = useYear()
 const loading = ref(false)
 const ready = ref(false)
 const snackbar = ref({
@@ -106,14 +100,6 @@ const snackbar = ref({
 })
 
 const user_id = computed(() => String(route.params.id))
-const yearItems = Array.from(
-  { length: 10 },
-  (_, i) => new Date().getFullYear() + i - 5
-)
-const year = computed({
-  get: () => Number(route.query.year) || new Date().getFullYear(),
-  set: (val) => router.replace({ query: { ...route.query, year: val } }),
-})
 
 const leaves = ref<AllocationData | null>(null)
 const reserve = ref<AllocationData | null>(null)

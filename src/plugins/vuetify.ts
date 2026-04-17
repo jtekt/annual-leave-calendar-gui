@@ -16,17 +16,17 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          primary: "#c00000",
+          primary: "#b00000",
+          secondary: "#a25959",
           background: "#f5f5f5",
           "allocations-current-year": "#539dcf",
           "allocations-carried-over": "#5877c5",
-          "leaves-taken": "#666666",
-          "leaves-future": "#888888",
         },
       },
       dark: {
         colors: {
-          primary: "#c00000",
+          primary: "#b00000",
+          secondary: "#a25959",
           "allocations-current-year": "#539dcf",
           "allocations-carried-over": "#5877c5",
           "leaves-taken": "#666666",
