@@ -44,7 +44,7 @@
                     params: { id: user_id },
                     query: { year },
                   }"
-                  prepend-icon="mdi-plus"
+                  prepend-icon="mdi-calendar-outline"
                 >
                   {{ t("Register allocations") }}
                 </v-btn>
