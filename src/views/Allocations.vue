@@ -74,7 +74,13 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="flat" color="primary" type="submit">
+        <v-btn
+          variant="flat"
+          color="primary"
+          type="submit"
+          :loading="loading"
+          :disabled="loading"
+        >
           {{ t("Register allocations") }}
         </v-btn>
       </v-card-actions>
@@ -94,6 +100,7 @@ import type { AllocationData, Allocations } from "@/types"
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const loading = ref(false)
 
 const snackbar = ref({
   show: false,
@@ -159,6 +166,7 @@ onMounted(get_allocations)
 
 async function submit() {
   try {
+    loading.value = true
     await axios.post(`/v1/users/${user_id.value}/allocations`, {
       year: year.value,
       leaves: leaves.value,
@@ -171,6 +179,8 @@ async function submit() {
     })
   } catch (error) {
     console.error(error)
+  } finally {
+    loading.value = false
   }
 }
 </script>

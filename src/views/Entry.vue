@@ -7,7 +7,13 @@
   >
     <template #title>{{ entry ? format_date(entry.date) : "" }}</template>
     <template v-if="editable" #append>
-      <v-btn color="#c00000" @click="delete_entry" prepend-icon="mdi-delete">
+      <v-btn
+        color="#c00000"
+        @click="delete_entry"
+        prepend-icon="mdi-delete"
+        :loading="entry_loading"
+        :disabled="entry_loading"
+      >
         {{ t("Schedule delete") }}
       </v-btn>
     </template>
@@ -30,7 +36,7 @@
         <v-row>
           <v-col>
             <v-select
-              :disabled="!editable"
+              :disabled="!editable || entry_loading"
               :items="types"
               v-model="entry.type"
               :label="t('Type')"
@@ -44,7 +50,7 @@
           <v-col>
             <v-checkbox
               :label="t('Refresh')"
-              :disabled="!editable"
+              :disabled="!editable || entry_loading"
               v-model="entry.refresh"
               @update:model-value="update_entry"
               hide-details
@@ -53,7 +59,7 @@
           <v-col>
             <v-checkbox
               :label="t('Reserve')"
-              :disabled="!editable"
+              :disabled="!editable || entry_loading"
               v-model="entry.reserve"
               @update:model-value="update_entry"
               hide-details
@@ -109,76 +115,75 @@ function format_date(date: string) {
   return new Date(date).toLocaleString("ja-JP", options)
 }
 
-function get_user(user_id: string) {
-  user_loading.value = true
-  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
-  axios
-    .get<UserType>(url)
-    .then(({ data }) => {
-      user.value = data
-    })
-    .catch((error) => console.error(error))
-    .finally(() => (user_loading.value = false))
+async function get_user(user_id: string) {
+  try {
+    user_loading.value = true
+    const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+    const { data } = await axios.get<UserType>(url)
+    user.value = data
+  } catch (error) {
+    console.error(error)
+  } finally {
+    user_loading.value = false
+  }
+}
+async function get_entry() {
+  try {
+    entry_loading.value = true
+    const entry_id = route.params.id
+    const { data } = await axios.get<Entry>(`/entries/${entry_id}`)
+    entry.value = data
+    await get_user(data.user_id)
+  } catch (error) {
+    snackbar.value = {
+      show: true,
+      message: t("Error while getting entry"),
+      color: "red",
+    }
+    console.error(error)
+  } finally {
+    entry_loading.value = false
+  }
 }
 
-function get_entry() {
-  entry_loading.value = true
-  const entry_id = route.params.id
-  axios
-    .get<Entry>(`/entries/${entry_id}`)
-    .then(({ data }) => {
-      entry.value = data
-      get_user(data.user_id)
-    })
-    .catch((error) => {
-      snackbar.value = {
-        show: true,
-        message: t("Error while getting entry"),
-        color: "red",
-      }
-      console.error(error)
-    })
-    .finally(() => (entry_loading.value = false))
-}
-
-function update_entry() {
+async function update_entry() {
   if (!entry.value) return
-  entry_loading.value = true
-  axios
-    .put(`/entries/${entry.value._id}`, entry.value)
-    .then(() => {
-      snackbar.value = { show: true, message: t("Entry saved"), color: "green" }
-    })
-    .catch((error) => {
-      console.error(error)
-      snackbar.value = {
-        show: true,
-        message: t("Error while updating entry"),
-        color: "red",
-      }
-    })
-    .finally(() => (entry_loading.value = false))
+  try {
+    entry_loading.value = true
+    await axios.put(`/entries/${entry.value._id}`, entry.value)
+    snackbar.value = { show: true, message: t("Entry saved"), color: "green" }
+  } catch (error) {
+    console.error(error)
+    snackbar.value = {
+      show: true,
+      message: t("Error while updating entry"),
+      color: "red",
+    }
+  } finally {
+    entry_loading.value = false
+  }
 }
 
-function delete_entry() {
+async function delete_entry() {
   if (!entry.value) return
   if (!confirm(t("Delete entry confirmation"))) return
-  axios
-    .delete(`/entries/${entry.value._id}`)
-    .then(() => {
-      router.push({
-        name: "user_entries",
-        params: { id: entry.value!.user_id },
-      })
+  try {
+    entry_loading.value = true
+    await axios.delete(`/entries/${entry.value._id}`)
+    router.push({
+      name: "user_entries",
+      params: { id: entry.value.user_id },
     })
-    .catch((error) => {
-      snackbar.value = {
-        show: true,
-        message: t("Error while deleting entry"),
-        color: "red",
-      }
-      console.error(error)
-    })
+  } catch (error) {
+    snackbar.value = {
+      show: true,
+      message: t("Error while deleting entry"),
+      color: "red",
+    }
+    console.error(error)
+  } finally {
+    entry_loading.value = false
+  }
 }
 
 onMounted(() => get_entry())

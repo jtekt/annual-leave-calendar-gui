@@ -124,36 +124,35 @@ function five_days_taken(item: GroupItem, month: number): string {
   return count > 5 ? "〇" : "×"
 }
 
-function excel_export() {
-  excel_exporting.value = true
-  const params = { year: props.year }
-  axios
-    .get<{ items: GroupItem[]; total: number }>(
+async function excel_export() {
+  try {
+    excel_exporting.value = true
+    const params = { year: props.year }
+    const { data } = await axios.get<{ items: GroupItem[]; total: number }>(
       `/groups/${props.group_id}/entries`,
       { params }
     )
-    .then(({ data }) => {
-      if (data.total !== data.items.length)
-        throw new Error(
-          "The number of people for Excel exporting is limited to 500."
-        )
-      items.value = data.items
-      setTimeout(() => {
-        const workbook = utils.book_new()
-        const ws = utils.table_to_sheet(
-          document.getElementById("export_table")!,
-          { raw: true }
-        )
-        utils.book_append_sheet(workbook, ws, "Sheet1")
-        writeFile(workbook, `nenkyuu_calendar_${props.group_id}_export.xlsx`)
-        excel_exporting.value = false
-      }, 100)
-    })
-    .catch((error) => {
-      console.error(error)
-      alert(error?.message ?? t("Failed to load data"))
+    if (data.total !== data.items.length) {
+      throw new Error(
+        "The number of people for Excel exporting is limited to 500."
+      )
+    }
+    items.value = data.items
+    setTimeout(() => {
+      const workbook = utils.book_new()
+      const ws = utils.table_to_sheet(
+        document.getElementById("export_table")!,
+        { raw: true }
+      )
+      utils.book_append_sheet(workbook, ws, "Sheet1")
+      writeFile(workbook, `nenkyuu_calendar_${props.group_id}_export.xlsx`)
       excel_exporting.value = false
-    })
+    }, 100)
+  } catch (error) {
+    console.error(error)
+    alert(error?.message ?? t("Failed to load data"))
+    excel_exporting.value = false
+  }
 }
 </script>
 
