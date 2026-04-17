@@ -70,7 +70,7 @@ const nav = computed(() => [
   },
   {
     title: t("Register allocations"),
-    to: { name: "user_allocations", params: { id: "self" } },
+    to: { name: "register_allocations", params: { id: "self" } },
     icon: "mdi-calendar",
   },
   {
