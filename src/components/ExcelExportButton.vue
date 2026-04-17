@@ -68,12 +68,14 @@ import { useI18n } from "vue-i18n"
 import axios from "axios"
 import { utils, writeFile } from "xlsx"
 import type { GroupItem, Entry } from "@/types"
+import { useYear } from "@/composables/useYear"
 
 const props = defineProps<{
   total: number
   group_id: string
-  year: number
 }>()
+
+const { year } = useYear()
 
 const { t } = useI18n()
 const items = ref<GroupItem[]>([])
@@ -127,7 +129,7 @@ function five_days_taken(item: GroupItem, month: number): string {
 async function excel_export() {
   try {
     excel_exporting.value = true
-    const params = { year: props.year }
+    const params = { year: year.value }
     const { data } = await axios.get<{ items: GroupItem[]; total: number }>(
       `/groups/${props.group_id}/entries`,
       { params }

@@ -16,7 +16,7 @@ export default createVuetify({
     themes: {
       light: {
         colors: {
-          primary: "#a00000",
+          primary: "#b00000",
           secondary: "#a25959",
           background: "#f5f5f5",
           "allocations-current-year": "#539dcf",
@@ -25,7 +25,7 @@ export default createVuetify({
       },
       dark: {
         colors: {
-          primary: "#c00000",
+          primary: "#b00000",
           secondary: "#a25959",
           "allocations-current-year": "#539dcf",
           "allocations-carried-over": "#5877c5",

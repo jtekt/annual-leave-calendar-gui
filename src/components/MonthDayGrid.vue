@@ -23,41 +23,33 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import type { Entry } from "@/types"
+import { useYear } from "@/composables/useYear"
 
 const props = defineProps<{
   entries: Entry[]
   month: number
-  year: number
 }>()
 
+const { year } = useYear()
 const current_month = new Date().getMonth() + 1
 const current_year = new Date().getFullYear()
 const today = new Date().getDate()
 
-const month_entries = computed(() =>
-  props.entries.filter(({ date, type }) => {
-    return (
-      new Date(date).getMonth() + 1 === props.month &&
-      ["有休", "前半休", "後半休"].includes(type)
-    )
-  })
-)
-
 const days_in_month = computed(() =>
-  new Date(props.year, props.month, 0).getDate()
+  new Date(year.value, props.month, 0).getDate()
 )
 
 const first_day_offset = computed(() => {
-  const day = new Date(props.year, props.month - 1, 1).getDay()
+  const day = new Date(year.value, props.month - 1, 1).getDay()
   return (day + 6) % 7 // Monday-start: Sun=6, Mon=0, ..., Sat=5
 })
 
 function entry_for_day(day: number): Entry | undefined {
-  return month_entries.value.find((e) => new Date(e.date).getDate() === day)
+  return props.entries.find((e) => new Date(e.date).getDate() === day)
 }
 
 function is_future_day(day: number): boolean {
-  if (props.year !== current_year) return props.year > current_year
+  if (year.value !== current_year) return year.value > current_year
   if (props.month !== current_month) return props.month > current_month
   return day >= today
 }
