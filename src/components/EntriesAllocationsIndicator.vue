@@ -2,11 +2,14 @@
   <v-tooltip location="bottom">
     <template v-slot:activator="{ props }">
       <div class="wrapper" v-bind="props">
-        <div class="allocations" v-if="total_allocations">
-          <div class="carried_over">
+        <div v-if="total_allocations" class="allocations">
+          <div v-if="allocations.carried_over" class="carried_over">
             <span>{{ allocations.carried_over }}</span>
           </div>
-          <div class="current_year_grants">
+          <div
+            v-if="allocations.current_year_grants"
+            class="current_year_grants"
+          >
             <span>{{ allocations.current_year_grants }}</span>
           </div>
         </div>
@@ -21,13 +24,20 @@
         </div>
       </div>
     </template>
+    <!-- Tooltip content -->
     <div>
       <template v-if="total_allocations">
         <div class="text-h6">{{ t("Allocations") }}</div>
-        <div style="color: rgb(var(--v-theme-allocations-carried-over))">
+        <div
+          v-if="allocations.carried_over"
+          style="color: rgb(var(--v-theme-allocations-carried-over))"
+        >
           {{ t("Carried over days") }}: {{ allocations.carried_over }}
         </div>
-        <div style="color: rgb(var(--v-theme-allocations-current-year))">
+        <div
+          v-if="allocations.current_year_grants"
+          style="color: rgb(var(--v-theme-allocations-current-year))"
+        >
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
         </div>
@@ -133,7 +143,7 @@ const missing_percent = computed(
   bottom: 0;
   border-radius: 5px;
   border-style: solid;
-  border-width: 2px;
+  border-width: 1.5px;
 }
 
 .allocations span {
