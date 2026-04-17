@@ -28,7 +28,7 @@
         <v-row>
           <v-col>
             <v-btn
-              :disabled="!date || loading"
+              :disabled="!date"
               :loading="loading"
               type="submit"
               prepend-icon="mdi-plus"

@@ -15,14 +15,16 @@
 
       <v-navigation-drawer v-model="drawer">
         <v-list nav>
-          <v-list-item
-            v-for="(item, index) in nav"
-            :key="`nav_item_${index}`"
-            :to="item.to"
-            :prepend-icon="item.icon"
-            :title="item.title"
-            exact
-          />
+          <template v-for="(item, index) in nav" :key="index">
+            <v-divider v-if="item.divider" />
+            <v-list-item
+              v-else
+              :to="item.to"
+              :prepend-icon="item.icon"
+              :title="item.title"
+              exact
+            />
+          </template>
         </v-list>
       </v-navigation-drawer>
     </template>
@@ -59,30 +61,33 @@ function handleLogout() {
 
 const nav = computed(() => [
   {
+    title: t("My entries"),
+    to: { name: "user_entries", params: { id: "self" } },
+    icon: "mdi-account",
+  },
+  { divider: true },
+  {
     title: t("Create entry"),
     to: { name: "new_entry" },
     icon: "mdi-calendar-plus",
   },
   {
-    title: t("My entries"),
-    to: { name: "user_entries", params: { id: "self" } },
-    icon: "mdi-account",
-  },
-  {
     title: t("Register allocations"),
     to: { name: "register_allocations", params: { id: "self" } },
-    icon: "mdi-calendar",
+    icon: "mdi-calendar-outline",
+  },
+  { divider: true },
+  {
+    title: t("User search"),
+    to: { name: "user_search" },
+    icon: "mdi-account-search",
   },
   {
     title: t("Groups"),
     to: { name: "groups" },
     icon: "mdi-account-multiple",
   },
-  {
-    title: t("User search"),
-    to: { name: "user_search" },
-    icon: "mdi-account-search",
-  },
+  { divider: true },
   {
     title: t("About"),
     to: { name: "about" },
