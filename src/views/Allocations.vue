@@ -15,7 +15,10 @@
         class="mr-2"
       />
     </template>
-    <v-form @submit.prevent="submit">
+    <v-card-text v-if="!ready" class="text-center py-6">
+      <v-progress-circular indeterminate />
+    </v-card-text>
+    <v-form v-else-if="leaves && reserve" @submit.prevent="submit">
       <v-card-text>
         <div class="text-subtitle-1 font-weight-medium mb-4">
           {{ t("Leaves") }}
@@ -74,13 +77,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn
-          variant="flat"
-          color="primary"
-          type="submit"
-          :loading="loading"
-          :disabled="loading"
-        >
+        <v-btn variant="flat" color="primary" type="submit" :loading="loading">
           {{ t("Register allocations") }}
         </v-btn>
       </v-card-actions>
@@ -101,7 +98,7 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const loading = ref(false)
-
+const ready = ref(false)
 const snackbar = ref({
   show: false,
   message: "",
@@ -118,25 +115,31 @@ const year = computed({
   set: (val) => router.replace({ query: { ...route.query, year: val } }),
 })
 
-const allocations = ref<Allocations | null>(null)
-
-const leaves = ref<AllocationData>({
-  carried_over: 0,
-  current_year_grants: 0,
-})
-
-const reserve = ref<AllocationData>({
-  carried_over: 0,
-  current_year_grants: 0,
-})
+const leaves = ref<AllocationData | null>(null)
+const reserve = ref<AllocationData | null>(null)
 
 async function get_allocations() {
   try {
+    ready.value = false
+
     const { data } = await axios.get<Array<Allocations>>(
       `/v1/users/${user_id.value}/allocations`,
       { params: { year: year.value } }
     )
-    allocations.value = data.length ? data[0] : null
+
+    if (data.length) {
+      leaves.value = { ...data[0].leaves }
+      reserve.value = { ...data[0].reserve }
+    } else {
+      leaves.value = {
+        carried_over: 0,
+        current_year_grants: 0,
+      }
+      reserve.value = {
+        carried_over: 0,
+        current_year_grants: 0,
+      }
+    }
   } catch (error) {
     console.error(error)
     snackbar.value = {
@@ -144,22 +147,10 @@ async function get_allocations() {
       message: t("Error while getting allocation"),
       color: "red",
     }
+  } finally {
+    ready.value = true
   }
 }
-
-watch(
-  allocations,
-  (val) => {
-    if (val) {
-      leaves.value = { ...val.leaves }
-      reserve.value = { ...val.reserve }
-    } else {
-      leaves.value = { carried_over: 0, current_year_grants: 0 }
-      reserve.value = { carried_over: 0, current_year_grants: 0 }
-    }
-  },
-  { immediate: true }
-)
 
 watch(year, get_allocations)
 onMounted(get_allocations)
