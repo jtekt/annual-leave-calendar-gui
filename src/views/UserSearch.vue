@@ -6,16 +6,18 @@
           {{ t("User search") }}
         </template>
         <v-card-text>
-          <v-row>
-            <v-col>
-              <v-text-field
-                v-model="query"
-                :label="t('Search')"
-                append-inner-icon="mdi-magnify"
-                @update:model-value="query_users"
-              />
-            </v-col>
-          </v-row>
+          <v-form @submit.prevent="query_users">
+            <v-row>
+              <v-col>
+                <v-text-field
+                  v-model="query"
+                  :label="t('Search')"
+                  append-inner-icon="mdi-magnify"
+                  @click:append-inner="query_users"
+                />
+              </v-col>
+            </v-row>
+          </v-form>
           <v-data-table-server
             :loading="employees_loading"
             :headers="headers"
