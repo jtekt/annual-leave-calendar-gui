@@ -18,11 +18,19 @@ export default createVuetify({
         colors: {
           primary: "#c00000",
           background: "#f5f5f5",
+          "allocations-current-year": "#539dcf",
+          "allocations-carried-over": "#5877c5",
+          "leaves-taken": "#666666",
+          "leaves-future": "#888888",
         },
       },
       dark: {
         colors: {
           primary: "#c00000",
+          "allocations-current-year": "#539dcf",
+          "allocations-carried-over": "#5877c5",
+          "leaves-taken": "#666666",
+          "leaves-future": "#888888",
         },
       },
     },
