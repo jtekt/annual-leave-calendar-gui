@@ -1,5 +1,5 @@
 <template>
-  <v-tooltip location="bottom">
+  <v-tooltip location="bottom" theme="dark">
     <template v-slot:activator="{ props }">
       <div class="wrapper" v-bind="props">
         <div v-if="total_allocations" class="allocations">
