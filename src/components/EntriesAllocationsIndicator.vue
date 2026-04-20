@@ -79,8 +79,8 @@ const total_allocations = computed(() => {
 const future = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) > new Date()) {
-      if (type === "有休") return total + 1
       if (["前半休", "後半休"].includes(type)) return total + 0.5
+      else return total + 1
     }
     return total
   }, 0)
@@ -89,7 +89,6 @@ const future = computed(() =>
 const taken = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) < new Date()) {
-      if (type === "有休") return total + 1
       if (["前半休", "後半休"].includes(type)) return total + 0.5
     }
     return total

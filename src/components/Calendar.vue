@@ -48,11 +48,8 @@ const current_month = computed(() => new Date().getMonth() + 1)
 const current_year = computed(() => new Date().getFullYear())
 
 function entries_of_month(month: number): Entry[] {
-  return props.entries.filter(({ date, type }) => {
-    return (
-      new Date(date).getMonth() + 1 === month &&
-      ["有休", "前半休", "後半休"].includes(type)
-    )
+  return props.entries.filter(({ date }) => {
+    return new Date(date).getMonth() + 1 === month
   })
 }
 </script>
