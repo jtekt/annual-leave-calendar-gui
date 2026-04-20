@@ -88,10 +88,15 @@ async function get_entries() {
 async function submit() {
   try {
     loading.value = true
+
+    const pickedDate = Array.isArray(date.value) ? date.value[0] : date.value
+    const formattedDate = `${pickedDate.getFullYear()}-${pickedDate.getMonth() + 1}-${pickedDate.getDate()}`
+
     const body = {
-      date: Array.isArray(date.value) ? date.value[0] : date.value,
+      date: formattedDate,
       type: type.value,
     }
+
     const { data } = await axios.post<{ _id: string }>(
       "/users/self/entries",
       body
