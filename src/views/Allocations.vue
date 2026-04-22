@@ -1,85 +1,98 @@
 <template>
-  <v-card max-width="30rem" class="mx-auto" prepend-icon="mdi-calendar">
+  <v-card max-width="50em" class="mx-auto" prepend-icon="mdi-calendar">
     <template #title>
       {{ t("Register allocations") }}
     </template>
     <template #append>
-      <YearSelector class="mr-2" />
+      <YearSelector />
     </template>
     <v-card-text v-if="!ready" class="text-center py-6">
       <v-progress-circular indeterminate />
     </v-card-text>
     <v-form v-else-if="leaves && reserve" @submit.prevent="submit">
       <v-card-text>
-        <div class="text-subtitle-1 font-weight-medium mb-4">
-          {{ t("Leaves") }}
-        </div>
         <v-row>
-          <v-col cols="6">
-            <div class="field-carried">
-              <v-text-field
-                :label="t('Carried over')"
-                v-model.number="leaves.carried_over"
-                type="number"
-                min="0"
-                step="0.5"
-                variant="plain"
-                hide-details
-              />
+          <v-col>
+            <div class="text-center text-subtitle-1 font-weight-medium mb-2">
+              {{ t("Leaves") }}
             </div>
+            <v-row dense>
+              <v-col>
+                <div class="field-carried">
+                  <v-text-field
+                    :label="t('Carried over')"
+                    v-model.number="leaves.carried_over"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    variant="plain"
+                    hide-details
+                  />
+                </div>
+              </v-col>
+
+              <v-col>
+                <div class="field-current">
+                  <v-text-field
+                    :label="t('Current year grants')"
+                    v-model.number="leaves.current_year_grants"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    variant="plain"
+                    hide-details
+                  />
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
 
-          <v-col cols="6">
-            <div class="field-current">
-              <v-text-field
-                :label="t('Current year grants')"
-                v-model.number="leaves.current_year_grants"
-                type="number"
-                min="0"
-                step="0.5"
-                variant="plain"
-                hide-details
-              />
+          <v-col>
+            <div class="text-center text-subtitle-1 font-weight-medium mb-2">
+              {{ t("Reserve") }}
             </div>
-          </v-col>
-        </v-row>
-        <div class="text-subtitle-1 font-weight-medium mt-6 mb-4">
-          {{ t("Reserve") }}
-        </div>
-        <v-row>
-          <v-col cols="6">
-            <div class="field-carried">
-              <v-text-field
-                :label="t('Carried over')"
-                v-model.number="reserve.carried_over"
-                type="number"
-                min="0"
-                step="0.5"
-                variant="plain"
-                hide-details
-              />
-            </div>
-          </v-col>
+            <v-row dense>
+              <v-col>
+                <div class="field-carried">
+                  <v-text-field
+                    :label="t('Carried over')"
+                    v-model.number="reserve.carried_over"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    variant="plain"
+                    hide-details
+                  />
+                </div>
+              </v-col>
 
-          <v-col cols="6">
-            <div class="field-current">
-              <v-text-field
-                :label="t('Current year grants')"
-                v-model.number="reserve.current_year_grants"
-                type="number"
-                min="0"
-                step="0.5"
-                variant="plain"
-                hide-details
-              />
-            </div>
+              <v-col cols="6">
+                <div class="field-current">
+                  <v-text-field
+                    :label="t('Current year grants')"
+                    v-model.number="reserve.current_year_grants"
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    variant="plain"
+                    hide-details
+                  />
+                </div>
+              </v-col>
+            </v-row>
           </v-col>
         </v-row>
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn variant="flat" color="primary" type="submit" :loading="loading">
-          {{ t("Register allocations") }}
+        <v-btn
+          variant="flat"
+          color="primary"
+          type="submit"
+          :loading="loading"
+          prepend-icon="mdi-content-save"
+        >
+          {{ t("Register") }}
         </v-btn>
       </v-card-actions>
     </v-form>
