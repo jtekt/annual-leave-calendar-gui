@@ -15,54 +15,64 @@
           {{ t("Leaves") }}
         </div>
         <v-row>
-          <v-col>
-            <v-text-field
-              :label="t('Carried over')"
-              v-model.number="leaves.carried_over"
-              type="number"
-              min="0"
-              step="0.5"
-              variant="outlined"
-              hide-details
-            />
+          <v-col cols="6">
+            <div class="field-carried">
+              <v-text-field
+                :label="t('Carried over')"
+                v-model.number="leaves.carried_over"
+                type="number"
+                min="0"
+                step="0.5"
+                variant="plain"
+                hide-details
+              />
+            </div>
           </v-col>
-          <v-col>
-            <v-text-field
-              :label="t('Current year grants')"
-              v-model.number="leaves.current_year_grants"
-              type="number"
-              min="0"
-              step="0.5"
-              variant="outlined"
-              hide-details
-            />
+
+          <v-col cols="6">
+            <div class="field-current">
+              <v-text-field
+                :label="t('Current year grants')"
+                v-model.number="leaves.current_year_grants"
+                type="number"
+                min="0"
+                step="0.5"
+                variant="plain"
+                hide-details
+              />
+            </div>
           </v-col>
         </v-row>
         <div class="text-subtitle-1 font-weight-medium mt-6 mb-4">
           {{ t("Reserve") }}
         </div>
         <v-row>
-          <v-col>
-            <v-text-field
-              :label="t('Carried over')"
-              v-model.number="reserve.carried_over"
-              type="number"
-              min="0"
-              step="0.5"
-              variant="outlined"
-              hide-details
-            />
+          <v-col cols="6">
+            <div class="field-carried">
+              <v-text-field
+                :label="t('Carried over')"
+                v-model.number="reserve.carried_over"
+                type="number"
+                min="0"
+                step="0.5"
+                variant="plain"
+                hide-details
+              />
+            </div>
           </v-col>
-          <v-col>
-            <v-text-field
-              :label="t('Current year grants')"
-              v-model.number="reserve.current_year_grants"
-              type="number"
-              min="0"
-              step="0.5"
-              variant="outlined"
-              hide-details
-            />
+
+          <v-col cols="6">
+            <div class="field-current">
+              <v-text-field
+                :label="t('Current year grants')"
+                v-model.number="reserve.current_year_grants"
+                type="number"
+                min="0"
+                step="0.5"
+                variant="plain"
+                hide-details
+              />
+            </div>
           </v-col>
         </v-row>
       </v-card-text>
@@ -161,3 +171,29 @@ async function submit() {
   }
 }
 </script>
+
+<style scoped>
+.field-carried {
+  border: 2px solid rgb(var(--v-theme-allocations-carried-over));
+  background-color: rgba(var(--v-theme-allocations-carried-over), 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.field-current {
+  border: 2px solid rgb(var(--v-theme-allocations-current-year));
+  background-color: rgba(var(--v-theme-allocations-current-year), 0.08);
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.field-carried :deep(.v-label) {
+  color: rgb(var(--v-theme-allocations-carried-over));
+  font-weight: 550;
+}
+
+.field-current :deep(.v-label) {
+  color: rgb(var(--v-theme-allocations-current-year));
+  font-weight: 550;
+}
+</style>
