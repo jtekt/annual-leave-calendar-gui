@@ -90,6 +90,7 @@ const taken = computed(() =>
   props.entries.reduce((total, { type, date }) => {
     if (new Date(date) < new Date()) {
       if (["前半休", "後半休"].includes(type)) return total + 0.5
+      else return total + 1
     }
     return total
   }, 0)
