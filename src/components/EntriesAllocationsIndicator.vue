@@ -27,7 +27,9 @@
     <!-- Tooltip content -->
     <div>
       <template v-if="total_allocations">
-        <div class="text-h6">{{ t("Allocations") }}</div>
+        <div class="text-h6">
+          {{ t("Allocations") }}: {{ total_allocations }}
+        </div>
         <div
           v-if="allocations.carried_over"
           style="color: rgb(var(--v-theme-allocations-carried-over))"
@@ -42,7 +44,7 @@
           {{ allocations.current_year_grants }}
         </div>
       </template>
-      <div class="text-h6">{{ t("Leaves") }}</div>
+      <div class="text-h6">{{ t("Leaves") }}: {{ total_entries }}</div>
       <div style="color: rgb(var(--v-theme-primary))">
         {{ t("Days taken this year") }}: {{ taken }}
       </div>
