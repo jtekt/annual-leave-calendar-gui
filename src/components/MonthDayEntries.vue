@@ -40,19 +40,6 @@ function passed_date(entry: Entry): boolean {
 </script>
 
 <style scoped>
-.month {
-  min-height: 3em;
-  padding: 0.25em;
-  text-align: center;
-}
-
-.month.ellapsed {
-  background-color: #aaaaaa33;
-}
-.month.current {
-  border-width: 2px;
-}
-
 .entries_container {
   display: flex;
   flex-direction: column;
@@ -67,11 +54,11 @@ function passed_date(entry: Entry): boolean {
   border: 1px solid transparent;
   border-radius: 0.25em;
   padding-inline: 0.25em;
-  color: inherit;
+  color: rgb(var(--v-theme-primary));
 }
 
 .entry:not(.taken) {
-  opacity: 50%;
+  color: rgb(var(--v-theme-secondary));
 }
 
 .month_header {
