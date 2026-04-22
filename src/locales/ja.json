@@ -63,5 +63,6 @@
   "Role": "役職",
   "E-mail": "メールアドレス",
   "Search": "検索",
-  "Register": "登録"
+  "Register": "登録",
+  "Error while registering allocation": "割り当ての登録中にエラーが発生しました"
 }

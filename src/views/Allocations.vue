@@ -179,6 +179,11 @@ async function submit() {
     })
   } catch (error) {
     console.error(error)
+    snackbar.value = {
+      show: true,
+      message: t("Error while registering allocation"),
+      color: "red",
+    }
   } finally {
     loading.value = false
   }

@@ -64,5 +64,6 @@
   "Role": "Role",
   "E-mail": "E-mail",
   "Search": "Search",
-  "Register": "Register"
+  "Register": "Register",
+  "Error while registering allocation": "Error while registering allocation"
 }
