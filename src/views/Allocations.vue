@@ -1,23 +1,28 @@
 <template>
-  <v-card max-width="50em" class="mx-auto" prepend-icon="mdi-calendar">
-    <template #title>
-      {{ t("Register allocations") }}
-    </template>
-    <template #append>
-      <YearSelector />
-    </template>
-    <v-card-text v-if="!ready" class="text-center py-6">
+  <v-row>
+    <v-col>
+      <v-card prepend-icon="mdi-calendar">
+        <template #title>
+          {{ t("Register allocations") }}
+        </template>
+        <template #append>
+          <YearSelector />
+        </template>
+      </v-card>
+    </v-col>
+  </v-row>
+  <v-row justify="center" v-if="!ready">
+    <v-col cols="auto">
       <v-progress-circular indeterminate />
-    </v-card-text>
-    <v-form v-else-if="leaves && reserve" @submit.prevent="submit">
-      <v-card-text>
-        <v-row>
-          <v-col>
-            <div class="text-center text-subtitle-1 font-weight-medium mb-2">
-              {{ t("Leaves") }}
-            </div>
-            <v-row dense>
-              <v-col>
+    </v-col>
+  </v-row>
+  <v-form v-else @submit.prevent="submit">
+    <v-row>
+      <v-col>
+        <v-card :title="t('Leaves')">
+          <v-card-text>
+            <v-row>
+              <v-col cols="6">
                 <div class="field-carried">
                   <v-text-field
                     :label="t('Carried over')"
@@ -31,7 +36,7 @@
                 </div>
               </v-col>
 
-              <v-col>
+              <v-col cols="6">
                 <div class="field-current">
                   <v-text-field
                     :label="t('Current year grants')"
@@ -45,14 +50,14 @@
                 </div>
               </v-col>
             </v-row>
-          </v-col>
-
-          <v-col>
-            <div class="text-center text-subtitle-1 font-weight-medium mb-2">
-              {{ t("Reserve") }}
-            </div>
-            <v-row dense>
-              <v-col>
+          </v-card-text>
+        </v-card>
+      </v-col>
+      <v-col>
+        <v-card :title="t('Reserve')">
+          <v-card-text>
+            <v-row>
+              <v-col cols="6">
                 <div class="field-carried">
                   <v-text-field
                     :label="t('Carried over')"
@@ -80,26 +85,21 @@
                 </div>
               </v-col>
             </v-row>
-          </v-col>
-        </v-row>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn
-          variant="flat"
-          color="primary"
-          type="submit"
-          :loading="loading"
-          prepend-icon="mdi-content-save"
-        >
+          </v-card-text>
+        </v-card>
+      </v-col>
+    </v-row>
+    <v-row justify="center">
+      <v-col cols="auto">
+        <v-btn color="primary" type="submit" :loading="loading">
           {{ t("Register") }}
         </v-btn>
-      </v-card-actions>
-    </v-form>
-    <v-snackbar v-model="snackbar.show" :color="snackbar.color">
-      {{ snackbar.message }}
-    </v-snackbar>
-  </v-card>
+      </v-col>
+    </v-row>
+  </v-form>
+  <v-snackbar v-model="snackbar.show" :color="snackbar.color">
+    {{ snackbar.message }}
+  </v-snackbar>
 </template>
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
