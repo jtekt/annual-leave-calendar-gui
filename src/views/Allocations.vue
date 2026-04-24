@@ -22,7 +22,7 @@
         <v-card :title="t('Leaves')">
           <v-card-text>
             <v-row>
-              <v-col cols="6">
+              <v-col>
                 <div class="field-carried">
                   <v-text-field
                     :label="t('Carried over')"
@@ -36,7 +36,7 @@
                 </div>
               </v-col>
 
-              <v-col cols="6">
+              <v-col>
                 <div class="field-current">
                   <v-text-field
                     :label="t('Current year grants')"
@@ -57,7 +57,7 @@
         <v-card :title="t('Reserve')">
           <v-card-text>
             <v-row>
-              <v-col cols="6">
+              <v-col>
                 <div class="field-carried">
                   <v-text-field
                     :label="t('Carried over')"
@@ -71,7 +71,7 @@
                 </div>
               </v-col>
 
-              <v-col cols="6">
+              <v-col>
                 <div class="field-current">
                   <v-text-field
                     :label="t('Current year grants')"
