@@ -29,11 +29,12 @@ spec:
               value: https://employees-api.jtektrnd.net/v3/auth/login
             - name: VITE_IDENTIFICATION_URL
               value: https://employees-api.jtektrnd.net/v3/users/self
+            - name: VITE_APPS_URL
+              value: https://apps.jtektrnd.net
             - name: VITE_MINIMUM_LEAVES
               value: "5"
           resources: {}
 
----
 ---
 apiVersion: v1
 kind: Service
