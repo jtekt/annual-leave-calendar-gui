@@ -55,10 +55,12 @@
       </div>
       <div class="legend_target" v-if="target && !reserve">
         <div class="text-h6">{{ t("Leave target") }}: {{ target }}</div>
-        <div v-if="min">{{ t("Absolute minimum leaves") }}: {{ min }}</div>
-        <div v-if="allocations?.target">
-          {{ t("User defined leave target") }}: {{ allocations?.target }}
-        </div>
+        <template v-if="min && allocations?.target">
+          <div v-if="min">{{ t("Absolute minimum leaves") }}: {{ min }}</div>
+          <div v-if="allocations?.target">
+            {{ t("User defined leave target") }}: {{ allocations?.target }}
+          </div>
+        </template>
       </div>
     </div>
   </v-tooltip>
