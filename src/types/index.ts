@@ -22,6 +22,7 @@ export interface Entry {
 export interface AllocationData {
   carried_over: number
   current_year_grants: number
+  target?: number
 }
 
 export interface Allocations {

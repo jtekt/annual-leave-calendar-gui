@@ -20,6 +20,18 @@
     <v-row>
       <v-col>
         <v-card :title="t('Leaves')">
+          <template #append>
+            <v-text-field
+              :label="t('Leave target')"
+              v-model.number="leaves.target"
+              type="number"
+              min="0"
+              step="0.5"
+              hide-details
+              density="compact"
+              width="20ch"
+            />
+          </template>
           <v-card-text>
             <v-row>
               <v-col>
@@ -55,6 +67,14 @@
       </v-col>
       <v-col>
         <v-card :title="t('Reserve')">
+          <!-- DIRTY Making  sure size matches with left card-->
+          <template #append>
+            <v-text-field
+              style="visibility: hidden"
+              hide-details
+              density="compact"
+            />
+          </template>
           <v-card-text>
             <v-row>
               <v-col>
@@ -89,6 +109,7 @@
         </v-card>
       </v-col>
     </v-row>
+
     <v-row justify="center">
       <v-col cols="auto">
         <v-btn color="primary" type="submit" :loading="loading">

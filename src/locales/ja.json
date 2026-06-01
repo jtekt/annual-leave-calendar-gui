@@ -64,5 +64,10 @@
   "E-mail": "メールアドレス",
   "Search": "検索",
   "Register": "登録",
-  "Error while registering allocation": "割り当ての登録中にエラーが発生しました"
+  "Error while registering allocation": "割り当ての登録中にエラーが発生しました",
+  "Target": "目標日数",
+  "Leave target": "有休目標日数",
+  "User defined": "ユーザー設定目標日数",
+  "Absolute minimum leaves": "絶対最小日数",
+  "User defined leave target": "ユーザ設定目標日数"
 }
