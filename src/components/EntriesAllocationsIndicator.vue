@@ -53,7 +53,7 @@
           {{ allocations.current_year_grants }}
         </div>
       </div>
-      <div class="legend_target" v-if="target">
+      <div class="legend_target" v-if="target && !reserve">
         <div class="text-h6">{{ t("Leave target") }}: {{ target }}</div>
         <div v-if="min">{{ t("Absolute minimum leaves") }}: {{ min }}</div>
         <div v-if="allocations?.target">
