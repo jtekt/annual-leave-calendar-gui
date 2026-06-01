@@ -25,8 +25,17 @@
       </div>
     </template>
     <!-- Tooltip content -->
-    <div>
-      <template v-if="total_allocations">
+    <div class="tooltip">
+      <div>
+        <div class="text-h6">{{ t("Leaves") }}: {{ total_entries }}</div>
+        <div style="color: rgb(var(--v-theme-primary))">
+          {{ t("Days taken this year") }}: {{ taken }}
+        </div>
+        <div style="color: rgb(var(--v-theme-secondary))">
+          {{ t("Days planned this year") }}: {{ future }}
+        </div>
+      </div>
+      <div v-if="total_allocations">
         <div class="text-h6">
           {{ t("Allocations") }}: {{ total_allocations }}
         </div>
@@ -43,13 +52,13 @@
           {{ t("Current year grants days") }}:
           {{ allocations.current_year_grants }}
         </div>
-      </template>
-      <div class="text-h6">{{ t("Leaves") }}: {{ total_entries }}</div>
-      <div style="color: rgb(var(--v-theme-primary))">
-        {{ t("Days taken this year") }}: {{ taken }}
       </div>
-      <div style="color: rgb(var(--v-theme-secondary))">
-        {{ t("Days planned this year") }}: {{ future }}
+      <div class="legend_target" v-if="target">
+        <div class="text-h6">{{ t("Leave target") }}: {{ target }}</div>
+        <div v-if="min">{{ t("Absolute minimum leaves") }}: {{ min }}</div>
+        <div v-if="allocations?.target">
+          {{ t("User defined leave target") }}: {{ allocations?.target }}
+        </div>
       </div>
     </div>
   </v-tooltip>
@@ -62,8 +71,6 @@ import type { Entry, AllocationData } from "@/types"
 
 const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
 
-const min = Number(VITE_MINIMUM_LEAVES)
-
 const props = defineProps<{
   entries: Entry[]
   allocations?: AllocationData
@@ -71,6 +78,10 @@ const props = defineProps<{
 }>()
 
 const { t } = useI18n()
+
+const min = Number(VITE_MINIMUM_LEAVES)
+
+const target = computed(() => Math.max(min, props.allocations?.target || 0, 0))
 
 const total_allocations = computed(() => {
   if (!props.allocations) return 0
@@ -101,7 +112,13 @@ const taken = computed(() =>
 const max = computed(() => {
   if (props.reserve)
     return Math.max(1, total_allocations.value, total_entries.value)
-  else return Math.max(1, min, total_allocations.value, total_entries.value)
+  else
+    return Math.max(
+      1,
+      target.value,
+      total_allocations.value,
+      total_entries.value
+    )
 })
 
 const total_entries = computed(() => taken.value + future.value)
@@ -117,7 +134,7 @@ const entries_percent = computed(() => (100 * total_entries.value) / max.value)
 const taken_percent = computed(() => (100 * taken.value) / max.value)
 const future_percent = computed(() => (100 * future.value) / max.value)
 const missing_percent = computed(
-  () => (100 * (min - total_entries.value)) / max.value
+  () => (100 * (target.value - total_entries.value)) / max.value
 )
 </script>
 
@@ -229,5 +246,18 @@ const missing_percent = computed(
   top: -1.7em;
   left: 50%;
   transform: translateX(-50%);
+}
+
+.tooltip {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+.legend_target {
+  border: 2px dashed #c00000;
+  background-color: #c0000011;
+  border-radius: 0.25em;
+  padding: 0.25em;
 }
 </style>
