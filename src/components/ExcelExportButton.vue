@@ -21,12 +21,12 @@
         <tr>
           <th>No</th>
           <th>名前</th>
-          <th>1-6月r</th>
-          <th>7-12月r</th>
-          <template v-for="month in 12" :key="`header_${month}`">
-            <th>{{ month }}月</th>
-            <th v-if="month === 5 || month === 8">5日以上</th>
-          </template>
+          <th>繰り越し日数</th>
+          <th>当年度付与日数</th>
+          <th>有休目標日数</th>
+          <th>5日以上</th>
+          <th>有休目標日数以上</th>
+          <th v-for="month in 12" :key="`header_${month}`">{{ month }}月</th>
         </tr>
       </thead>
       <tbody>
@@ -34,27 +34,16 @@
           <tr>
             <td>{{ index + 1 }}</td>
             <td>{{ item.user.display_name }}</td>
+            <td>{{ item.allocations?.leaves.carried_over }}</td>
+            <td>{{ item.allocations?.leaves.current_year_grants }}</td>
+            <td>{{ item.allocations?.leaves.target }}</td>
+            <td>{{ meet_target_days(item, 5) }}</td>
             <td>
-              {{
-                refresh_entries_first_semester(item)
-                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
-                  .join(", ")
-              }}
+              {{ meet_target_days(item, item.allocations?.leaves.target) }}
             </td>
-            <td>
-              {{
-                refresh_entries_second_semester(item)
-                  .map((e) => `${month_of_entry(e)}/${day_of_entry(e)}`)
-                  .join(", ")
-              }}
+            <td v-for="month in 12" :key="`user_${index}_month_${month}`">
+              {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
             </td>
-            <template v-for="month in 12" :key="`user_${index}_month_${month}`">
-              <td>
-                {{ entries_of_month(item, month).map(day_of_entry).join(", ") }}
-              </td>
-              <td v-if="month === 5">{{ five_days_taken(item, month) }}</td>
-              <td v-if="month === 8">{{ five_days_taken(item, month) }}</td>
-            </template>
           </tr>
         </template>
       </tbody>
@@ -99,31 +88,20 @@ function day_of_entry(entry: Entry): string | number {
   return day
 }
 
-function month_of_entry(entry: Entry): number {
-  return new Date(entry.date).getMonth() + 1
+function count_entries(item: GroupItem): number {
+  return item.entries.reduce((total, { type }) => {
+    if (type === "有休") return total + 1
+    if (type === "前半休" || type === "後半休") return total + 0.5
+    return total
+  }, 0)
 }
 
-function refresh_entries_first_semester(item: GroupItem): Entry[] {
-  return item.entries
-    .filter((e) => e.refresh)
-    .filter((e) => month_of_entry(e) <= 6)
-}
-
-function refresh_entries_second_semester(item: GroupItem): Entry[] {
-  return item.entries
-    .filter((e) => e.refresh)
-    .filter((e) => month_of_entry(e) > 6)
-}
-
-function five_days_taken(item: GroupItem, month: number): string {
-  const count = item.entries
-    .filter((e) => month_of_entry(e) <= month)
-    .reduce((total, { type }) => {
-      if (type === "有休") return total + 1
-      if (type === "前半休" || type === "後半休") return total + 0.5
-      return total
-    }, 0)
-  return count > 5 ? "〇" : "×"
+function meet_target_days(
+  item: GroupItem,
+  target_days: number | undefined
+): string {
+  if (target_days) return count_entries(item) >= target_days ? "〇" : "×"
+  else return ""
 }
 
 async function excel_export() {
