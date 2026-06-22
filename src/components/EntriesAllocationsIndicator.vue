@@ -70,6 +70,7 @@
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import type { Entry, AllocationData } from "@/types"
+import { reduceTotal } from "../utils"
 
 const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
 
@@ -91,25 +92,9 @@ const total_allocations = computed(() => {
   return current_year_grants + carried_over
 })
 
-const future = computed(() =>
-  props.entries.reduce((total, { type, date }) => {
-    if (new Date(date) > new Date()) {
-      if (["前半休", "後半休"].includes(type)) return total + 0.5
-      else return total + 1
-    }
-    return total
-  }, 0)
-)
+const future = computed(() => props.entries.reduce(reduceTotal("future"), 0))
 
-const taken = computed(() =>
-  props.entries.reduce((total, { type, date }) => {
-    if (new Date(date) < new Date()) {
-      if (["前半休", "後半休"].includes(type)) return total + 0.5
-      else return total + 1
-    }
-    return total
-  }, 0)
-)
+const taken = computed(() => props.entries.reduce(reduceTotal("past"), 0))
 
 const max = computed(() => {
   if (props.reserve)
