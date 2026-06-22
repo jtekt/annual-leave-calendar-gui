@@ -58,6 +58,7 @@ import axios from "axios"
 import { utils, writeFile } from "xlsx"
 import type { GroupItem, Entry } from "@/types"
 import { useYear } from "@/composables/useYear"
+import { reduceTotal } from "../utils"
 
 const props = defineProps<{
   total: number
@@ -89,11 +90,7 @@ function day_of_entry(entry: Entry): string | number {
 }
 
 function count_entries(item: GroupItem): number {
-  return item.entries.reduce((total, { type }) => {
-    if (type === "有休") return total + 1
-    if (type === "前半休" || type === "後半休") return total + 0.5
-    return total
-  }, 0)
+  return item.entries.reduce(reduceTotal(), 0)
 }
 
 function meet_target_days(
