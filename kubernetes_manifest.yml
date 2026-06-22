@@ -51,6 +51,12 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ${APPLICATION_NAME}
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: 年休カレンダー
+    gethomepage.dev/icon: https://gitlab.jtektrnd.net/uploads/-/system/project/avatar/328/calendar-beach-rounded-bg.png
+    gethomepage.dev/group: 業務アプリ
+    gethomepage.dev/pod-selector: app=annual-leave-calendar-gui
 spec:
   rules:
     - host: leaves.jtektrnd.net
