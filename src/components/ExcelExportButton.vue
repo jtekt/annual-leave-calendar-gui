@@ -89,15 +89,12 @@ function day_of_entry(entry: Entry): string | number {
   return day
 }
 
-function count_entries(item: GroupItem): number {
-  return item.entries.reduce(reduceTotal(), 0)
-}
-
 function meet_target_days(
   item: GroupItem,
   target_days: number | undefined
 ): string {
-  if (target_days) return count_entries(item) >= target_days ? "〇" : "×"
+  if (target_days)
+    return item.entries.reduce(reduceTotal(), 0) >= target_days ? "〇" : "×"
   else return ""
 }
 
