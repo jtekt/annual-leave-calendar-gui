@@ -2,7 +2,7 @@
   <v-app>
     <template v-if="!isLoginRoute">
       <v-app-bar :color="colors.app_bar">
-        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <v-app-bar-nav-icon @click="drawer = !drawer" v-if="session" />
         <v-app-bar-title>Leaves calendar</v-app-bar-title>
         <template #append>
           <LocaleSelector />
@@ -12,7 +12,7 @@
         </template>
       </v-app-bar>
 
-      <v-navigation-drawer v-model="drawer">
+      <v-navigation-drawer v-if="session" v-model="drawer">
         <v-list nav>
           <template v-for="(item, index) in nav" :key="index">
             <v-divider v-if="item.divider" />
