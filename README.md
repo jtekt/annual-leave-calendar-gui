@@ -13,3 +13,5 @@ This is the GUI for 年休カレンダー, an application to keep track of annua
 | VITE_GROUP_MANAGER_API_URL    | URL of the group management service API |
 | VITE_LOGIN_URL                | URL for login                           |
 | VITE_IDENTIFICATION_URL       | URL to query current user info          |
+| VITE_OIDC_CLIENT_ID           | Custom ID field to use save in DB       |
+| VITE_OIDC_AUTHORITY           | URL for OIDC login                      |

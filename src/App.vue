@@ -2,17 +2,17 @@
   <v-app>
     <template v-if="!isLoginRoute">
       <v-app-bar :color="colors.app_bar">
-        <v-app-bar-nav-icon @click="drawer = !drawer" />
+        <v-app-bar-nav-icon @click="drawer = !drawer" v-if="session" />
         <v-app-bar-title>Leaves calendar</v-app-bar-title>
         <template #append>
           <LocaleSelector />
           <ThemeToggler />
           <v-btn v-if="VITE_APPS_URL" :href="VITE_APPS_URL" icon="mdi-apps" />
-          <v-btn icon="mdi-logout" @click="handleLogout" />
+          <v-btn v-if="session" icon="mdi-logout" @click="logout" />
         </template>
       </v-app-bar>
 
-      <v-navigation-drawer v-model="drawer">
+      <v-navigation-drawer v-if="session" v-model="drawer">
         <v-list nav>
           <template v-for="(item, index) in nav" :key="index">
             <v-divider v-if="item.divider" />
@@ -40,25 +40,23 @@
 import { ref, computed } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
-import { useAuth } from "@/composables/useAuth"
 import LocaleSelector from "./components/LocaleSelector.vue"
 import ThemeToggler from "./components/ThemeToggler.vue"
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
-const { logout } = useAuth()
+import { useAxiosAuth } from "@/composables/useAxiosAuth"
+import { useAuth } from "@jtekt/vuetify-auth"
 
+useAxiosAuth()
+
+const { session, logout } = useAuth()
 const drawer = ref(true)
 const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
 
 const { VITE_APPS_URL } = import.meta.env
-
-function handleLogout() {
-  logout()
-  router.push({ name: "login" })
-}
 
 const nav = computed(() => [
   {
