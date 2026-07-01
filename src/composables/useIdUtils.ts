@@ -1,11 +1,11 @@
 import { computed } from "vue"
-import { useCurrentUser } from "@/composables/useCurrentUser"
 import type { User } from "@/types"
+import { useAuth } from "@jtekt/vuetify-auth"
 
 type IdentifiableItem = Pick<User, "_id" | "properties" | "identity">
 
 export function useIdUtils() {
-  const { current_user } = useCurrentUser()
+  const { session } = useAuth()
 
   function get_id_of_item(item: IdentifiableItem): string {
     let id: string | undefined = item._id ?? item.properties?._id
@@ -13,7 +13,11 @@ export function useIdUtils() {
     if (!id) {
       console.warn("Item does not have an _id:", item)
       const identity = item.identity
-      if (typeof identity === "object" && identity !== null && "low" in identity) {
+      if (
+        typeof identity === "object" &&
+        identity !== null &&
+        "low" in identity
+      ) {
         id = String(identity.low)
       } else {
         id = String(identity)
@@ -24,8 +28,7 @@ export function useIdUtils() {
   }
 
   const current_user_id = computed<string | undefined>(() => {
-    if (!current_user.value) return undefined
-    return get_id_of_item(current_user.value)
+    return session.value?.user.id
   })
 
   return { get_id_of_item, current_user_id }
