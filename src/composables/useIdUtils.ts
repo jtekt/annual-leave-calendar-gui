@@ -6,7 +6,6 @@ type IdentifiableItem = Pick<User, "_id" | "properties" | "identity">
 
 export function useIdUtils() {
   const { session } = useAuth()
-  // const { current_user } = useCurrentUser()
 
   function get_id_of_item(item: IdentifiableItem): string {
     let id: string | undefined = item._id ?? item.properties?._id
