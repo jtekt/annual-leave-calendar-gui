@@ -6,7 +6,7 @@
       <GroupPicker
         class="group_picker"
         :groupManagerApiUrl="groupManagerApiUrl"
-        :accessToken="accessToken"
+        :accessToken="session?.accessToken"
         @selection="select_group($event)"
       />
     </v-card-text>
@@ -17,15 +17,15 @@
 import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import { useIdUtils } from "@/composables/useIdUtils"
-import { getToken } from "@/composables/useAuth"
 import { GroupPicker } from "@moreillon/group-manager-vue-picker"
+import { useAuth } from "@jtekt/vuetify-auth"
 
+const { session } = useAuth()
 const { t } = useI18n()
 
 const router = useRouter()
 const { get_id_of_item } = useIdUtils()
 const groupManagerApiUrl = import.meta.env.VITE_GROUP_MANAGER_API_URL
-const accessToken = getToken()
 
 function select_group(group: Record<string, unknown>) {
   const group_id = get_id_of_item(group)
