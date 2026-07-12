@@ -12,7 +12,7 @@ declare module "*.vue" {
 interface ImportMetaEnv {
   readonly VITE_NENKYUU_CALENDAR_API_URL?: string
   readonly VITE_LOGIN_URL?: string
-  readonly VITE_IDENTIFICATION_URL?: string
+  readonly VITE_AUTH_IDENTIFICATION_URL?: string
   readonly VITE_LOGIN_HINT?: string
   readonly VITE_APPS_URL?: string
   readonly VITE_USER_MANAGER_API_URL?: string

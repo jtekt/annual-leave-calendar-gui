@@ -21,7 +21,7 @@
         <v-list-item :title="t('Login URL')" :subtitle="VITE_LOGIN_URL" />
         <v-list-item
           :title="t('Identification URL')"
-          :subtitle="VITE_IDENTIFICATION_URL"
+          :subtitle="VITE_AUTH_IDENTIFICATION_URL"
         />
         <v-list-item
           :title="t('Group manager API URL')"
@@ -43,7 +43,7 @@ const {
   VITE_GROUP_MANAGER_API_URL,
   VITE_USER_MANAGER_API_URL,
   VITE_LOGIN_URL,
-  VITE_IDENTIFICATION_URL,
+  VITE_AUTH_IDENTIFICATION_URL,
 } = import.meta.env
 
 const version = pjson.version
