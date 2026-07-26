@@ -17,7 +17,7 @@
 import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import { useIdUtils } from "@/composables/useIdUtils"
-import { GroupPicker } from "@moreillon/group-manager-vue-picker"
+import { GroupPicker } from "@jtekt/group-manager-vue-picker"
 import { useAuth } from "@jtekt/vuetify-auth"
 
 const { session } = useAuth()

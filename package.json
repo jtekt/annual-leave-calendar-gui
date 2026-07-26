@@ -11,9 +11,9 @@
     "lint": "eslint --ext .ts,.vue src/"
   },
   "dependencies": {
-    "@jtekt/vuetify-auth": "^0.2.0",
+    "@jtekt/group-manager-vue-picker": "latest",
+    "@jtekt/vuetify-auth": "^0.3.2",
     "@mdi/font": "^7.2.96",
-    "@moreillon/group-manager-vue-picker": "latest",
     "axios": "^1.4.0",
     "core-js": "^3.22.6",
     "vue": "^3.3.4",
