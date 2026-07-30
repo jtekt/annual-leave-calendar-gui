@@ -3,6 +3,9 @@ import * as components from "vuetify/components"
 import * as directives from "vuetify/directives"
 import "vuetify/styles"
 import "@mdi/font/css/materialdesignicons.css"
+import { useI18n } from "vue-i18n";
+import i18n from "./i18n";
+import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n"
 
 export default createVuetify({
   components,
@@ -34,5 +37,8 @@ export default createVuetify({
         },
       },
     },
+  },
+  locale: {
+    adapter: createVueI18nAdapter({ i18n, useI18n }),
   },
 })
