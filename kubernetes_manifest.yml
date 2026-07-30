@@ -33,7 +33,7 @@ spec:
               value: https://apps.jtektrnd.net
             - name: VITE_MINIMUM_LEAVES
               value: "5"
-            - name: VITE_AUTH_ENRICMENT_ID_FIELD
+            - name: VITE_AUTH_ENRICHMENT_ID_FIELD
               value: _id
             - name: VITE_OIDC_AUTHORITY
               value: https://keycloak.jtektrnd.net/realms/jtekt
