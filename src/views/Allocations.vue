@@ -16,22 +16,10 @@
       <v-progress-circular indeterminate />
     </v-col>
   </v-row>
-  <v-form v-else @submit.prevent="submit">
+  <v-form v-else ref="form" @submit.prevent="submit">
     <v-row>
       <v-col>
-        <v-card :title="t('Leaves')">
-          <template #append>
-            <v-text-field
-              :label="t('Leave target')"
-              v-model.number="leaves.target"
-              type="number"
-              min="0"
-              step="0.5"
-              hide-details
-              density="compact"
-              width="20ch"
-            />
-          </template>
+        <v-card :title="t('Leaves')" height="100%">
           <v-card-text>
             <v-row>
               <v-col>
@@ -62,19 +50,32 @@
                 </div>
               </v-col>
             </v-row>
+
+            <v-row>
+              <v-col>
+                <v-text-field
+                  :label="`${t('Leave target')} (${t('Absolute minimum leaves')}: ${VITE_MINIMUM_LEAVES})`"
+                  v-model.number="leaves.target"
+                  type="number"
+                  :min="VITE_MINIMUM_LEAVES"
+                  step="0.5"
+                  density="compact"
+                  :rules="[
+                    (v) =>
+                      (!v && v !== 0) ||
+                      Number(VITE_MINIMUM_LEAVES) <= v ||
+                      t('Must be minimum days or more', {
+                        min_days: VITE_MINIMUM_LEAVES,
+                      }),
+                  ]"
+                />
+              </v-col>
+            </v-row>
           </v-card-text>
         </v-card>
       </v-col>
       <v-col>
-        <v-card :title="t('Reserve')">
-          <!-- DIRTY Making  sure size matches with left card-->
-          <template #append>
-            <v-text-field
-              style="visibility: hidden"
-              hide-details
-              density="compact"
-            />
-          </template>
+        <v-card :title="t('Reserve')" height="100%">
           <v-card-text>
             <v-row>
               <v-col>
@@ -130,6 +131,9 @@ import axios from "axios"
 import type { AllocationData, Allocations } from "@/types"
 import { useYear } from "@/composables/useYear"
 import YearSelector from "@/components/YearSelector.vue"
+import cleanDeep from "clean-deep"
+
+const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
 
 const { t } = useI18n()
 const route = useRoute()
@@ -137,6 +141,7 @@ const router = useRouter()
 const { year } = useYear()
 const loading = ref(false)
 const ready = ref(false)
+const form = ref()
 const snackbar = ref({
   show: false,
   message: "",
@@ -186,11 +191,14 @@ watch(year, get_allocations)
 onMounted(get_allocations)
 
 async function submit() {
+  const { valid } = await form.value.validate()
+  if (!valid) return
+
   try {
     loading.value = true
     await axios.post(`/v1/users/${user_id.value}/allocations`, {
       year: year.value,
-      leaves: leaves.value,
+      leaves: cleanDeep(leaves.value),
       reserve: reserve.value,
     })
     router.push({

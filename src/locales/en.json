@@ -67,5 +67,6 @@
   "Register": "Register",
   "Error while registering allocation": "Error while registering allocation",
   "Target": "Leave target",
-  "Leave target": "Leave target"
+  "Leave target": "Leave target",
+  "Must be minimum days or more": "Must be minimum: {min_days} days or more"
 }
