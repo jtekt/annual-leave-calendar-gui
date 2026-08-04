@@ -69,5 +69,6 @@
   "Leave target": "有休目標日数",
   "User defined": "ユーザー設定目標日数",
   "Absolute minimum leaves": "絶対最小日数",
-  "User defined leave target": "ユーザ設定目標日数"
+  "User defined leave target": "ユーザ設定目標日数",
+  "Must be minimum days or more": "最小日数:{min_days}日以上にしてください"
 }
