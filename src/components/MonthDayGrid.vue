@@ -85,7 +85,7 @@ function day_cell_class(day: number): Record<string, boolean> {
 }
 
 .day-cell {
-  --empty-bg: rgba(128, 128, 128, 0.45);
+  --empty-bg: rgba(128, 128, 128, 0.3);
   aspect-ratio: 1;
   border-radius: 1px;
   background-color: var(--empty-bg);
@@ -110,8 +110,12 @@ function day_cell_class(day: number): Record<string, boolean> {
   text-decoration: none;
 }
 
+/* Non-counting types (e.g. 振休): filled with the regular text colour, so they
+   stay off the red taken/planned palette while still reading as a filled entry
+   against the lighter grey empty cells. */
 .day-cell.has-entry.excluded-entry {
-  --entry-bg: rgba(128, 128, 128, 0.7);
+  --entry-bg: rgba(var(--v-theme-on-surface), 0.85);
+  background-color: var(--entry-bg);
 }
 
 .day-cell.has-entry.am-half {

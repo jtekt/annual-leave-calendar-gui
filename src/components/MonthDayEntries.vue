@@ -66,9 +66,11 @@ function passed_date(entry: Entry): boolean {
   color: rgb(var(--v-theme-secondary));
 }
 
+/* Non-counting types (e.g. 振休): the regular text colour, dimmed, so it stays
+   off the red taken/planned palette and does not clash with past-day entries. */
 .entry.excluded,
 .entry.excluded:not(.taken) {
-  color: rgba(var(--v-theme-on-surface), 0.5);
+  color: rgba(var(--v-theme-on-surface), 0.85);
 }
 
 .month_header {
