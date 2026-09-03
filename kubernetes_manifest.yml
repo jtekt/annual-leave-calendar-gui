@@ -33,6 +33,14 @@ spec:
               value: https://apps.jtektrnd.net
             - name: VITE_MINIMUM_LEAVES
               value: "5"
+            - name: VITE_LEAVE_TYPES_FULL_DAY
+              value: 有休
+            - name: VITE_LEAVE_TYPES_MORNING
+              value: 前半休
+            - name: VITE_LEAVE_TYPES_AFTERNOON
+              value: 後半休
+            - name: VITE_LEAVE_TYPES_EXCLUDED
+              value: 振休
             - name: VITE_AUTH_ENRICHMENT_ID_FIELD
               value: _id
             - name: VITE_OIDC_AUTHORITY

@@ -23,6 +23,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import type { Entry } from "@/types"
+import { leaveTypeHalf, isExcludedLeaveType } from "@/leaveTypes"
 import { useYear } from "@/composables/useYear"
 
 const props = defineProps<{
@@ -60,8 +61,9 @@ function day_cell_class(day: number): Record<string, boolean> {
 
   if (!entry) return { "future-day": isFuture }
 
-  const isAm = (entry.am && !entry.pm) || entry.type === "前半休"
-  const isPm = (entry.pm && !entry.am) || entry.type === "後半休"
+  const half = leaveTypeHalf(entry.type)
+  const isAm = (entry.am && !entry.pm) || half === "am"
+  const isPm = (entry.pm && !entry.am) || half === "pm"
 
   return {
     "has-entry": true,
@@ -69,6 +71,7 @@ function day_cell_class(day: number): Record<string, boolean> {
     "pm-half": isPm,
     "future-day": isFuture,
     "refresh-entry": !!entry.refresh,
+    "excluded-entry": isExcludedLeaveType(entry.type),
   }
 }
 </script>
@@ -101,15 +104,20 @@ function day_cell_class(day: number): Record<string, boolean> {
 }
 
 .day-cell.has-entry {
-  background-color: rgb(var(--v-theme-primary));
+  --entry-bg: rgb(var(--v-theme-primary));
+  background-color: var(--entry-bg);
   cursor: pointer;
   text-decoration: none;
+}
+
+.day-cell.has-entry.excluded-entry {
+  --entry-bg: rgba(128, 128, 128, 0.7);
 }
 
 .day-cell.has-entry.am-half {
   background: linear-gradient(
     to bottom right,
-    rgb(var(--v-theme-primary)) 50%,
+    var(--entry-bg) 50%,
     var(--empty-bg) 50%
   );
 }
@@ -118,7 +126,7 @@ function day_cell_class(day: number): Record<string, boolean> {
   background: linear-gradient(
     to bottom right,
     var(--empty-bg) 50%,
-    rgb(var(--v-theme-primary)) 50%
+    var(--entry-bg) 50%
   );
 }
 

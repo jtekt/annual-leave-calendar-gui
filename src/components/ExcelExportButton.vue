@@ -57,6 +57,7 @@ import { useI18n } from "vue-i18n"
 import axios from "axios"
 import { utils, writeFile } from "xlsx"
 import type { GroupItem, Entry } from "@/types"
+import { leaveTypeHalf, isCountedLeaveType } from "@/leaveTypes"
 import { useYear } from "@/composables/useYear"
 import { reduceTotal } from "../utils"
 
@@ -76,16 +77,16 @@ const export_disabled = computed(() => props.total === 0 || props.total > 500)
 function entries_of_month(item: GroupItem, month: number): Entry[] {
   return item.entries.filter(({ date, type }) => {
     return (
-      new Date(date).getMonth() + 1 === month &&
-      ["有休", "前半休", "後半休"].includes(type)
+      new Date(date).getMonth() + 1 === month && isCountedLeaveType(type)
     )
   })
 }
 
 function day_of_entry(entry: Entry): string | number {
   const day = new Date(entry.date).getDate()
-  if (entry.type === "前半休") return `${day}am`
-  if (entry.type === "後半休") return `${day}pm`
+  const half = leaveTypeHalf(entry.type)
+  if (half === "am") return `${day}am`
+  if (half === "pm") return `${day}pm`
   return day
 }
 
