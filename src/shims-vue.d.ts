@@ -21,6 +21,10 @@ interface ImportMetaEnv {
   readonly VITE_API_URL?: string
   readonly VITE_I18N_LOCALE?: string
   readonly VITE_I18N_FALLBACK_LOCALE?: string
+  readonly VITE_LEAVE_TYPES_FULL_DAY?: string
+  readonly VITE_LEAVE_TYPES_MORNING?: string
+  readonly VITE_LEAVE_TYPES_AFTERNOON?: string
+  readonly VITE_LEAVE_TYPES_EXCLUDED?: string
 }
 
 interface ImportMeta {

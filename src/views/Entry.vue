@@ -83,6 +83,7 @@ import axios from "axios"
 import { useIdUtils } from "@/composables/useIdUtils"
 import UserChip from "@/components/UserChip.vue"
 import type { Entry, User as UserType } from "@/types"
+import { selectableLeaveTypes } from "@/leaveTypes"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -100,11 +101,7 @@ const editable = computed(() => {
   return entry.value.user_id.toString() === current_user_id.value
 })
 
-const types = computed(() => [
-  { title: t("All day"), value: "有休" },
-  { title: t("Morning"), value: "前半休" },
-  { title: t("Afternoon"), value: "後半休" },
-])
+const types = selectableLeaveTypes.map((value) => ({ title: value, value }))
 
 function format_date(date: string) {
   const options: Intl.DateTimeFormatOptions = {

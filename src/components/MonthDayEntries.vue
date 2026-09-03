@@ -2,7 +2,11 @@
   <div class="entries_container">
     <router-link
       class="entry"
-      :class="{ taken: passed_date(entry), refresh: entry.refresh }"
+      :class="{
+        taken: passed_date(entry),
+        refresh: entry.refresh,
+        excluded: isExcludedLeaveType(entry.type),
+      }"
       v-for="entry in entries"
       :key="entry._id"
       :to="{ name: 'entry', params: { id: entry._id } }"
@@ -10,12 +14,12 @@
       {{ day_of_entry(entry) }}
       <span
         class="half_indicator"
-        v-if="(entry.am && !entry.pm) || entry.type === '前半休'"
+        v-if="(entry.am && !entry.pm) || leaveTypeHalf(entry.type) === 'am'"
         >am</span
       >
       <span
         class="half_indicator"
-        v-if="(entry.pm && !entry.am) || entry.type === '後半休'"
+        v-if="(entry.pm && !entry.am) || leaveTypeHalf(entry.type) === 'pm'"
         >pm</span
       >
     </router-link>
@@ -24,6 +28,7 @@
 
 <script setup lang="ts">
 import type { Entry } from "@/types"
+import { leaveTypeHalf, isExcludedLeaveType } from "@/leaveTypes"
 
 const props = defineProps<{
   month: number
@@ -59,6 +64,11 @@ function passed_date(entry: Entry): boolean {
 
 .entry:not(.taken) {
   color: rgb(var(--v-theme-secondary));
+}
+
+.entry.excluded,
+.entry.excluded:not(.taken) {
+  color: rgba(var(--v-theme-on-surface), 0.5);
 }
 
 .month_header {

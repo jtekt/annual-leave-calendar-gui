@@ -50,13 +50,14 @@ import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 import type { Entry } from "@/types"
+import { selectableLeaveTypes } from "@/leaveTypes"
 
 const { t } = useI18n()
 const router = useRouter()
 const loading = ref(false)
 
 const date = ref<string | null>(null)
-const type = ref("有休")
+const type = ref(selectableLeaveTypes[0])
 const entries = ref<Entry[]>([])
 
 const entryDates = computed(() =>
@@ -69,11 +70,7 @@ const entryDates = computed(() =>
   })
 )
 
-const types = computed(() => [
-  { title: t("All day"), value: "有休" },
-  { title: t("Morning"), value: "前半休" },
-  { title: t("Afternoon"), value: "後半休" },
-])
+const types = selectableLeaveTypes.map((value) => ({ title: value, value }))
 
 async function get_entries() {
   try {
