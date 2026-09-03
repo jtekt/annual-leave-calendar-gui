@@ -50,6 +50,7 @@
   "Must take this year": "今年取らないといけない分: {n}",
   "Days taken this year": "当年度取得日数",
   "Days planned this year": "当年度予定日数",
+  "Excluded days off": "集計対象外の休暇",
   "No data": "データなし",
   "people count": "{n}人",
   "Max export limit": "最大: 500人",

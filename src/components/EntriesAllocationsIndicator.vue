@@ -34,6 +34,7 @@
         <div style="color: rgb(var(--v-theme-secondary))">
           {{ t("Days planned this year") }}: {{ future }}
         </div>
+        <div v-if="excluded">{{ t("Excluded days off") }}: {{ excluded }}</div>
       </div>
       <div v-if="total_allocations">
         <div class="text-h6">
@@ -70,6 +71,7 @@
 import { computed } from "vue"
 import { useI18n } from "vue-i18n"
 import type { Entry, AllocationData } from "@/types"
+import { isExcludedLeaveType } from "@/leaveTypes"
 import { reduceTotal } from "../utils"
 
 const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
@@ -95,6 +97,10 @@ const total_allocations = computed(() => {
 const future = computed(() => props.entries.reduce(reduceTotal("future"), 0))
 
 const taken = computed(() => props.entries.reduce(reduceTotal("past"), 0))
+
+const excluded = computed(
+  () => props.entries.filter((e) => isExcludedLeaveType(e.type)).length
+)
 
 const max = computed(() => {
   if (props.reserve)

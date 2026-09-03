@@ -50,6 +50,7 @@
   "Must take this year": "Must take this year: {n}",
   "Days taken this year": "Days taken this year",
   "Days planned this year": "Days planned this year",
+  "Excluded days off": "Excluded days off",
   "No data": "No data",
   "people count": "{n} people",
   "Max export limit": "Max: 500 people",
