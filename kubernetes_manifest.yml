@@ -100,11 +100,13 @@ spec:
     spec:
       containers:
         - name: ${APPLICATION_NAME}-redirection
-          image: moreillon/redirection:c8ab3fdf
+          image: moreillon/redirection:v1.0.3
           env:
             - name: REDIRECTION_TARGET_URL
               value: https://leaves.jtektrnd.net
             - name: REDIRECTION_WARN
+              value: "true"
+            - name: REDIRECTION_EXPORT_METRICS
               value: "true"
 ---
 apiVersion: v1
