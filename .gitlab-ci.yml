@@ -21,7 +21,7 @@ build:
       || echo "Repository might have already existed"
   script:
     # Building the container image
-    - docker build -t ${CONTAINER_IMAGE} .
+    - docker build --build-arg APP_VERSION=${CI_COMMIT_TAG} -t ${CONTAINER_IMAGE} .
     # Tagging
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
     # Push the container image to the container registry
