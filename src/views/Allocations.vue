@@ -130,6 +130,7 @@ import { useI18n } from "vue-i18n"
 import axios from "axios"
 import type { AllocationData, Allocations } from "@/types"
 import { useYear } from "@/composables/useYear"
+import { useReplaceSelfInRoute } from "@/composables/useReplaceSelfInRoute"
 import YearSelector from "@/components/YearSelector.vue"
 import cleanDeep from "clean-deep"
 import runtimeEnv from "@/runtimeEnv"
@@ -140,6 +141,8 @@ const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const { year } = useYear()
+
+useReplaceSelfInRoute(route, router)
 const loading = ref(false)
 const ready = ref(false)
 const form = ref()
