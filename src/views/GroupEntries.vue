@@ -58,6 +58,7 @@ import UserCard from "@/components/UserCard.vue"
 import CalendarDisplayToggle from "@/components/CalendarDisplayToggle.vue"
 import YearSelector from "@/components/YearSelector.vue"
 import { useYear } from "@/composables/useYear"
+import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -76,7 +77,7 @@ const group_loading = ref(false)
 
 async function get_group() {
   group_loading.value = true
-  const url = `${import.meta.env.VITE_GROUP_MANAGER_API_URL}/v3/groups/${group_id.value}`
+  const url = `${runtimeEnv.VITE_GROUP_MANAGER_API_URL}/v3/groups/${group_id.value}`
 
   try {
     const { data } = await axios.get<Group>(url)

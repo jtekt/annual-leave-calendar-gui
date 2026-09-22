@@ -35,6 +35,7 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n"
 import pjson from "../../package.json"
+import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 
@@ -44,7 +45,7 @@ const {
   VITE_USER_MANAGER_API_URL,
   VITE_LOGIN_URL,
   VITE_AUTH_IDENTIFICATION_URL,
-} = import.meta.env
+} = runtimeEnv
 
 const version = pjson.version
 </script>

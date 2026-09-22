@@ -132,8 +132,9 @@ import type { AllocationData, Allocations } from "@/types"
 import { useYear } from "@/composables/useYear"
 import YearSelector from "@/components/YearSelector.vue"
 import cleanDeep from "clean-deep"
+import runtimeEnv from "@/runtimeEnv"
 
-const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
+const { VITE_MINIMUM_LEAVES = "0" } = runtimeEnv
 
 const { t } = useI18n()
 const route = useRoute()

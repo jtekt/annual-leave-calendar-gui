@@ -84,6 +84,7 @@ import { useIdUtils } from "@/composables/useIdUtils"
 import UserChip from "@/components/UserChip.vue"
 import type { Entry, User as UserType } from "@/types"
 import { selectableLeaveTypes } from "@/leaveTypes"
+import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -115,7 +116,7 @@ function format_date(date: string) {
 async function get_user(user_id: string) {
   try {
     user_loading.value = true
-    const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+    const url = `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
     const { data } = await axios.get<UserType>(url)
     user.value = data
   } catch (error) {
