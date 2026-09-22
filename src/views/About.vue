@@ -1,7 +1,5 @@
 <template>
   <v-card
-    max-width="40rem"
-    class="mx-auto"
     prepend-icon="mdi-information"
     :title="t('App title')"
     :subtitle="version"
