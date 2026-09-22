@@ -7,24 +7,24 @@
   >
     <v-card-text>
       <v-list>
-        <v-list-item :title="t('Developer')" subtitle="Maxime MOREILLON" />
         <v-list-item :title="t('Version')" :subtitle="version" />
         <v-divider />
+        <v-list-subheader>{{ t("Environment variables") }}</v-list-subheader>
         <v-list-item
-          :title="t('API URL')"
+          title="VITE_NENKYUU_CALENDAR_API_URL"
           :subtitle="VITE_NENKYUU_CALENDAR_API_URL"
         />
         <v-list-item
-          :title="t('User manager API URL')"
+          title="VITE_USER_MANAGER_API_URL"
           :subtitle="VITE_USER_MANAGER_API_URL"
         />
-        <v-list-item :title="t('Login URL')" :subtitle="VITE_LOGIN_URL" />
+        <v-list-item title="VITE_LOGIN_URL" :subtitle="VITE_LOGIN_URL" />
         <v-list-item
-          :title="t('Identification URL')"
+          title="VITE_AUTH_IDENTIFICATION_URL"
           :subtitle="VITE_AUTH_IDENTIFICATION_URL"
         />
         <v-list-item
-          :title="t('Group manager API URL')"
+          title="VITE_GROUP_MANAGER_API_URL"
           :subtitle="VITE_GROUP_MANAGER_API_URL"
         />
       </v-list>
