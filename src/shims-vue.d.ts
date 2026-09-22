@@ -17,6 +17,7 @@ interface ImportMetaEnv {
   readonly VITE_AUTH_ENRICHMENT_ID_FIELD?: string
   readonly VITE_LOGIN_HINT?: string
   readonly VITE_APPS_URL?: string
+  readonly VITE_HELP_URL?: string
   readonly VITE_USER_MANAGER_API_URL?: string
   readonly VITE_GROUP_MANAGER_API_URL?: string
   readonly VITE_AUTHENTICATION_API_URL?: string
