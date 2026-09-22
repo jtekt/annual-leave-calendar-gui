@@ -8,6 +8,7 @@
           <LocaleSelector />
           <ThemeToggler />
           <v-btn v-if="VITE_APPS_URL" :href="VITE_APPS_URL" icon="mdi-apps" />
+          <v-btn v-if="VITE_HELP_URL" :href="VITE_HELP_URL" icon="mdi-help" />
           <v-btn v-if="session" icon="mdi-logout" @click="logout" />
         </template>
       </v-app-bar>
@@ -57,7 +58,7 @@ const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
 
-const { VITE_APPS_URL } = runtimeEnv
+const { VITE_APPS_URL, VITE_HELP_URL } = runtimeEnv
 
 const nav = computed(() => [
   {
