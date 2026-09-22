@@ -68,10 +68,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from "vue"
-import { useRoute } from "vue-router"
+import { useRoute, useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
 import { useIdUtils } from "@/composables/useIdUtils"
+import { useReplaceSelfInRoute } from "@/composables/useReplaceSelfInRoute"
 
 import type { User, Entry, Allocations } from "@/types"
 import UserCard from "@/components/UserCard.vue"
@@ -82,7 +83,10 @@ import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const { current_user_id } = useIdUtils()
+
+useReplaceSelfInRoute(route, router)
 
 const user_id = computed(() => String(route.params.id))
 const { year } = useYear()
@@ -127,7 +131,9 @@ async function get_user(id: string) {
   }
 }
 
-watch(user_id, (id) => {
+watch(user_id, (id, previous_id) => {
+  // "self" being swapped for the real id refers to the same user, skip the refetch
+  if (previous_id === "self" && id === current_user_id.value) return
   get_entries()
   get_user(id)
 })
