@@ -78,6 +78,7 @@ import UserCard from "@/components/UserCard.vue"
 import CalendarDisplayToggle from "@/components/CalendarDisplayToggle.vue"
 import YearSelector from "@/components/YearSelector.vue"
 import { useYear } from "@/composables/useYear"
+import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 const route = useRoute()
@@ -114,7 +115,7 @@ function get_entries() {
 
 async function get_user(id: string) {
   user_loading.value = true
-  const url = `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
+  const url = `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
   try {
     const { data } = await axios.get<User>(url)
     user.value = data

@@ -39,6 +39,7 @@ import { ref, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useI18n } from "vue-i18n"
 import axios from "axios"
+import runtimeEnv from "@/runtimeEnv"
 
 const { t } = useI18n()
 const router = useRouter()
@@ -71,7 +72,7 @@ async function query_users() {
     }
 
     const { data } = await axios.get(
-      `${import.meta.env.VITE_USER_MANAGER_API_URL}/v3/employees`,
+      `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees`,
       { params }
     )
 

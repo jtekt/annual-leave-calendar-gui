@@ -73,8 +73,9 @@ import { useI18n } from "vue-i18n"
 import type { Entry, AllocationData } from "@/types"
 import { isExcludedLeaveType } from "@/leaveTypes"
 import { reduceTotal } from "../utils"
+import runtimeEnv from "@/runtimeEnv"
 
-const { VITE_MINIMUM_LEAVES = "0" } = import.meta.env
+const { VITE_MINIMUM_LEAVES = "0" } = runtimeEnv
 
 const props = defineProps<{
   entries: Entry[]

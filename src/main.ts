@@ -6,6 +6,7 @@ import VueAxios from "vue-axios"
 import vuetify from "./plugins/vuetify"
 import i18n from "./plugins/i18n"
 import { createAuthPlugin } from "@jtekt/vuetify-auth"
+import runtimeEnv from "@/runtimeEnv"
 const {
   VITE_NENKYUU_CALENDAR_API_URL,
   VITE_OIDC_CLIENT_ID,
@@ -13,7 +14,7 @@ const {
   VITE_LOGIN_URL,
   VITE_AUTH_IDENTIFICATION_URL,
   VITE_AUTH_ENRICHMENT_ID_FIELD,
-} = import.meta.env
+} = runtimeEnv
 
 axios.defaults.baseURL = VITE_NENKYUU_CALENDAR_API_URL
 

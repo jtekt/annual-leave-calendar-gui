@@ -7,23 +7,16 @@
  * company through environment variables so the app stays generic.
  */
 
+import runtimeEnv from "@/runtimeEnv"
+
 const DEFAULT_FULL_DAY = "有休"
 const DEFAULT_MORNING = "前半休"
 const DEFAULT_AFTERNOON = "後半休"
 const DEFAULT_EXCLUDED = "振休"
 
-/**
- * Reads an env var, falling back to `fallback` when it is missing, empty or still
- * holds the build-time `*_PLACEHOLDER` string (an unconfigured runtime deploy).
- */
-function envValue(raw: string | undefined, fallback: string): string {
-  if (!raw || raw.endsWith("_PLACEHOLDER")) return fallback
-  return raw
-}
-
 /** Splits a comma-separated env var into a trimmed, non-empty list. */
 function envList(raw: string | undefined, fallback: string): string[] {
-  return envValue(raw, fallback)
+  return (raw || fallback)
     .split(",")
     .map((type) => type.trim())
     .filter(Boolean)
@@ -34,7 +27,7 @@ const {
   VITE_LEAVE_TYPES_MORNING,
   VITE_LEAVE_TYPES_AFTERNOON,
   VITE_LEAVE_TYPES_EXCLUDED,
-} = import.meta.env
+} = runtimeEnv
 
 /** Type names that count as a full leave day. */
 export const fullDayLeaveTypes = envList(

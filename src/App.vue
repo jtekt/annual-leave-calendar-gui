@@ -47,6 +47,7 @@ const route = useRoute()
 import { useAxiosAuth } from "@/composables/useAxiosAuth"
 import { useAuth } from "@jtekt/vuetify-auth"
 import { localStorageKeys } from "./constants"
+import runtimeEnv from "@/runtimeEnv"
 
 useAxiosAuth()
 
@@ -56,7 +57,7 @@ const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
 
-const { VITE_APPS_URL } = import.meta.env
+const { VITE_APPS_URL } = runtimeEnv
 
 const nav = computed(() => [
   {
