@@ -4,7 +4,7 @@ import router from "./router"
 import axios from "axios"
 import VueAxios from "vue-axios"
 import vuetify from "./plugins/vuetify"
-import i18n from "./plugins/i18n"
+import { i18n } from "./plugins/i18n"
 import { createAuthPlugin } from "@jtekt/vuetify-auth"
 import runtimeEnv from "@/runtimeEnv"
 const {
