@@ -6,7 +6,7 @@
         <v-app-bar-title>Leaves calendar</v-app-bar-title>
         <template #append>
           <LocaleSelector />
-          <ThemeToggler />
+          <ThemeToggle />
           <v-btn v-if="VITE_APPS_URL" :href="VITE_APPS_URL" icon="mdi-apps" />
           <v-btn v-if="VITE_HELP_URL" :href="VITE_HELP_URL" icon="mdi-help" />
           <v-btn v-if="session" icon="mdi-logout" @click="logout" />
@@ -42,7 +42,7 @@ import { ref, computed } from "vue"
 import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
 import LocaleSelector from "./components/LocaleSelector.vue"
-import ThemeToggler from "./components/ThemeToggler.vue"
+import ThemeToggle from "./components/ThemeToggle.vue"
 const { t } = useI18n()
 const route = useRoute()
 import { useAxiosAuth } from "@/composables/useAxiosAuth"
