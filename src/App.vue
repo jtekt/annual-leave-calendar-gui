@@ -38,16 +38,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref, computed } from "vue"
 import { useRoute } from "vue-router"
 import { useI18n } from "vue-i18n"
 import LocaleSelector from "./components/LocaleSelector.vue"
 import ThemeToggler from "./components/ThemeToggler.vue"
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const route = useRoute()
 import { useAxiosAuth } from "@/composables/useAxiosAuth"
 import { useAuth } from "@jtekt/vuetify-auth"
-import { localStorageKeys } from "./constants"
 import runtimeEnv from "@/runtimeEnv"
 
 useAxiosAuth()
@@ -94,15 +93,6 @@ const nav = computed(() => [
     icon: "mdi-information-outline",
   },
 ])
-
-// Watch the locale
-watch(locale, (newLocale) => {
-  // Update the document language attribute
-  document.documentElement.setAttribute('lang', newLocale)
-
-  // Save in local storage on change
-  localStorage.setItem(localStorageKeys.locale, locale.value);
-}, { immediate: true })
 </script>
 
 <style>
