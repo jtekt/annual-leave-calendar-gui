@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@jtekt/group-manager-vue-picker": "latest",
-    "@jtekt/vuetify-auth": "^0.3.2",
+    "@jtekt/vuetify-auth": "^0.3.3",
     "@mdi/font": "^7.2.96",
     "axios": "^1.4.0",
     "clean-deep": "^3.4.0",
