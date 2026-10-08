@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+import runtimeEnv from "@/runtimeEnv"
 
 // Extend RouteMeta with our custom fields
 declare module "vue-router" {
@@ -6,6 +7,10 @@ declare module "vue-router" {
     requiresAuth?: boolean
   }
 }
+
+// Group pages need the group manager: without it, go to the home page
+const requireGroupManager = () =>
+  !!runtimeEnv.VITE_GROUP_MANAGER_API_URL || { name: "new_entry" }
 
 const routes = [
   {
@@ -17,11 +22,13 @@ const routes = [
     path: "/groups",
     name: "groups",
     component: () => import("../views/Groups.vue"),
+    beforeEnter: requireGroupManager,
   },
   {
     path: "/groups/:id/entries",
     name: "group_entries",
     component: () => import("../views/GroupEntries.vue"),
+    beforeEnter: requireGroupManager,
   },
   {
     path: "/entries/new",
