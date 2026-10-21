@@ -45,11 +45,8 @@ import LocaleSelector from "./components/LocaleSelector.vue"
 import ThemeToggle from "./components/ThemeToggle.vue"
 const { t } = useI18n()
 const route = useRoute()
-import { useAxiosAuth } from "@/composables/useAxiosAuth"
 import { useAuth } from "@jtekt/vuetify-auth"
 import runtimeEnv from "@/runtimeEnv"
-
-useAxiosAuth()
 
 const { session, logout } = useAuth()
 const drawer = ref(true)
