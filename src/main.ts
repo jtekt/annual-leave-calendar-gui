@@ -1,7 +1,7 @@
 import { createApp } from "vue"
 import App from "./App.vue"
 import router from "./router"
-import axios, { type AxiosInstance } from "axios"
+import axios from "axios"
 import VueAxios from "vue-axios"
 import vuetify from "./plugins/vuetify"
 import { i18n } from "./plugins/i18n"
@@ -46,7 +46,6 @@ const auth = createAuthPlugin(
         delete axios.defaults.headers.common["Authorization"]
         return
       }
-      console.log("[SESSION]", session)
       const token = session.accessToken
       if (token) {
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`
