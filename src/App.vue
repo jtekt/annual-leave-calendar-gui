@@ -78,16 +78,11 @@ const nav = computed(() => [
     to: { name: "user_search" },
     icon: "mdi-account-search",
   },
-  // Groups come from the group manager, so they are only shown when it is set
-  ...(VITE_GROUP_MANAGER_API_URL
-    ? [
-        {
-          title: t("Groups"),
-          to: { name: "groups" },
-          icon: "mdi-account-multiple",
-        },
-      ]
-    : []),
+  {
+    title: t("Groups"),
+    to: { name: "groups" },
+    icon: "mdi-account-multiple",
+  },
   { divider: true },
   {
     title: t("About"),

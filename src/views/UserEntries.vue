@@ -119,7 +119,9 @@ function get_entries() {
 
 async function get_user(id: string) {
   user_loading.value = true
-  const url = `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
+  const url = runtimeEnv.VITE_USER_MANAGER_API_URL
+    ? `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${id}`
+    : `/v1/users/${id}`
   try {
     const { data } = await axios.get<User>(url)
     user.value = data

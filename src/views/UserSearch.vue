@@ -71,10 +71,12 @@ async function query_users() {
       search: query.value,
     }
 
-    const { data } = await axios.get(
-      `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees`,
-      { params }
-    )
+    const { data } = runtimeEnv.VITE_USER_MANAGER_API_URL
+      ? await axios.get(
+          `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees`,
+          { params }
+        )
+      : await axios.get("/v1/users", { params })
 
     total.value = data.count
     employees.value = data.users

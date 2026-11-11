@@ -8,10 +8,6 @@ declare module "vue-router" {
   }
 }
 
-// Group pages need the group manager: without it, go to the home page
-const requireGroupManager = () =>
-  !!runtimeEnv.VITE_GROUP_MANAGER_API_URL || { name: "new_entry" }
-
 const routes = [
   {
     path: "/about",
@@ -22,13 +18,11 @@ const routes = [
     path: "/groups",
     name: "groups",
     component: () => import("../views/Groups.vue"),
-    beforeEnter: requireGroupManager,
   },
   {
     path: "/groups/:id/entries",
     name: "group_entries",
     component: () => import("../views/GroupEntries.vue"),
-    beforeEnter: requireGroupManager,
   },
   {
     path: "/entries/new",

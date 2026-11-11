@@ -99,6 +99,9 @@ const snackbar = ref({ show: false, message: "", color: "red" })
 
 const editable = computed(() => {
   if (!entry.value) return false
+  console.log(
+    `current_user_id: ${current_user_id.value}, entry.user_id: ${entry.value.user_id}`
+  )
   return entry.value.user_id.toString() === current_user_id.value
 })
 
@@ -116,7 +119,9 @@ function format_date(date: string) {
 async function get_user(user_id: string) {
   try {
     user_loading.value = true
-    const url = `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+    const url = runtimeEnv.VITE_USER_MANAGER_API_URL
+      ? `${runtimeEnv.VITE_USER_MANAGER_API_URL}/v3/employees/${user_id}`
+      : `/v1/users/${user_id}`
     const { data } = await axios.get<UserType>(url)
     user.value = data
   } catch (error) {

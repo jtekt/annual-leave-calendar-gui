@@ -76,6 +76,7 @@ let observer: IntersectionObserver | null = null
 const group_loading = ref(false)
 
 async function get_group() {
+  if (!runtimeEnv.VITE_GROUP_MANAGER_API_URL) return
   group_loading.value = true
   const url = `${runtimeEnv.VITE_GROUP_MANAGER_API_URL}/v3/groups/${group_id.value}`
 
