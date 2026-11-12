@@ -54,7 +54,7 @@ const colors = { app_bar: "#000" }
 
 const isLoginRoute = computed(() => route.name === "login")
 
-const { VITE_APPS_URL, VITE_HELP_URL, VITE_GROUP_MANAGER_API_URL } = runtimeEnv
+const { VITE_APPS_URL, VITE_HELP_URL, VITE_GROUP_MANAGER_API_URL, VITE_STANDALONE_MODE } = runtimeEnv
 
 const nav = computed(() => [
   {
@@ -78,11 +78,15 @@ const nav = computed(() => [
     to: { name: "user_search" },
     icon: "mdi-account-search",
   },
-  {
-    title: t("Groups"),
-    to: { name: "groups" },
-    icon: "mdi-account-multiple",
-  },
+  ...(VITE_STANDALONE_MODE || VITE_GROUP_MANAGER_API_URL
+    ? [
+        {
+          title: t("Groups"),
+          to: { name: "groups" },
+          icon: "mdi-account-multiple",
+        },
+      ]
+    : []),
   { divider: true },
   {
     title: t("About"),

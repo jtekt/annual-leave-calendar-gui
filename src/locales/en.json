@@ -66,5 +66,7 @@
   "Leave target": "Leave target",
   "Must be minimum days or more": "Must be minimum: {min_days} days or more",
   "Failed to query user": "Failed to query user",
-  "Failed to query group": "Failed to query group"
+  "Failed to query group": "Failed to query group",
+  "members": "Members",
+  "member": "Member"
 }

@@ -96,7 +96,7 @@ async function get_entries() {
   if (loading.value || all_loaded.value) return
   try {
     loading.value = true
-    const url = `/groups/${group_id.value}/entries`
+    const url = `/groups/${encodeURIComponent(group_id.value)}/entries`
     const params = { year: year.value, limit: 10, skip: items.value.length }
     const { data } = await axios.get<{ items: GroupItem[]; total: number }>(
       url,

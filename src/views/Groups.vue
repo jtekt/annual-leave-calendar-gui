@@ -4,9 +4,9 @@
 
     <v-card-text>
       <GroupPicker
-        v-if="groupManagerApiUrl"
+        v-if="VITE_GROUP_MANAGER_API_URL"
         class="group_picker"
-        :groupManagerApiUrl="groupManagerApiUrl"
+        :groupManagerApiUrl="VITE_GROUP_MANAGER_API_URL"
         :accessToken="session?.accessToken"
         @selection="select_group($event)"
       />
@@ -19,8 +19,21 @@
             :title="group._id"
             :subtitle="`${group.member_count} ${t('members')}`"
             prepend-icon="mdi-account-multiple"
-            @click="router.push({ name: 'group_entries', params: { id: group._id } })"
-          />
+            :href="`/groups/${encodeURIComponent(group._id)}/entries`"
+          >
+            <template #append>
+              <v-chip
+                v-if="group.is_member"
+                color="primary"
+                size="x-small"
+                variant="tonal"
+                prepend-icon="mdi-account-check"
+                class="mr-1"
+              >
+                {{ t("member") }}
+              </v-chip>
+            </template>
+          </v-list-item>
         </v-list>
       </template>
     </v-card-text>
@@ -41,9 +54,11 @@ const { session } = useAuth()
 const { t } = useI18n()
 const router = useRouter()
 const { get_id_of_item } = useIdUtils()
-const groupManagerApiUrl = runtimeEnv.VITE_GROUP_MANAGER_API_URL
+const { VITE_GROUP_MANAGER_API_URL, VITE_STANDALONE_MODE } = runtimeEnv
 
-const groups = ref<{ _id: string; member_count: number }[]>([])
+type GroupApiItem = { _id: string; member_count: number; is_member: number }
+
+const groups = ref<GroupApiItem[]>([])
 const groups_loading = ref(false)
 
 function select_group(group: Record<string, unknown>) {
@@ -54,9 +69,7 @@ function select_group(group: Record<string, unknown>) {
 async function fetch_groups() {
   groups_loading.value = true
   try {
-    const { data } = await axios.get<{ _id: string; member_count: number }[]>(
-      "/v1/groups"
-    )
+    const { data } = await axios.get<GroupApiItem[]>("/v1/groups")
     groups.value = data
   } catch (error) {
     console.error(error)
@@ -66,7 +79,7 @@ async function fetch_groups() {
 }
 
 onMounted(() => {
-  if (!groupManagerApiUrl) fetch_groups()
+  if (!VITE_GROUP_MANAGER_API_URL && VITE_STANDALONE_MODE) fetch_groups()
 })
 </script>
 
